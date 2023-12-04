@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -85,9 +119,6 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
         }
     };
 </script>
-<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
-<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
-<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -185,7 +216,10 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#the-decomposition-logic" id="toc-the-decomposition-logic" class="nav-link active" data-scroll-target="#the-decomposition-logic"><span class="header-section-number">4.1</span> The Decomposition Logic</a></li>
+  <li><a href="#the-decomposition-logic" id="toc-the-decomposition-logic" class="nav-link active" data-scroll-target="#the-decomposition-logic"><span class="header-section-number">4.1</span> The Decomposition Logic</a>
+  <ul class="collapse">
+  <li><a href="#benders-decomposition" id="toc-benders-decomposition" class="nav-link" data-scroll-target="#benders-decomposition"><span class="header-section-number">4.1.1</span> Benders decomposition</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -275,26 +309,120 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
 &amp; &amp;\quad &amp;\quad (\mathbf{b} - \mathbf{B} \mathbf{y})^{T} \mathbf{u}_j^{point} \leq g, \ \forall k \in \mathbf{K}_s \\
 &amp; &amp;\quad &amp;\quad j \in \mathbf{J}, k \in \mathbf{K}, \mathbf{y} \geq 0
 \end{align}\]</span></p>
-<div class="cell">
-<div class="cell-output-display">
-<div id="fig-benders-flowchart" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<div>
-<pre class="mermaid mermaid-js" data-label="fig-benders-flowchart">flowchart LR
-   A[Start] --&gt; B{Is it?}
-    B --&gt;|Yes| C[OK]
-    C --&gt; D[Rethink]
-    D --&gt; B
-    B ----&gt;|No| E[End]
-</pre>
-</div>
-<figcaption class="figure-caption">Figure&nbsp;4.1: Benders decomposition workflow</figcaption>
-</figure>
-</div>
-</div>
-</div>
+<!-- ```{mermaid}
+%%| label: fig-benders-flowchart
+%%| fig-cap: Benders decomposition workflow
+
+flowchart LR
+   A[Start] -->
+<p>B{Is} B –&gt;|Yes| C[OK] C –&gt; D[Rethink] D –&gt; B B —-&gt;|No| E[End]</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource --> number-lines code-with-copy"><code class="sourceCode"><span id="cb1-1"><a href="#cb1-1"></a></span>
+<span id="cb1-2"><a href="#cb1-2"></a>## A linear programming example</span>
+<span id="cb1-3"><a href="#cb1-3"></a></span>
+<span id="cb1-4"><a href="#cb1-4"></a>In this section, we will first present a small linear programming problem and solve it directly using the Gurobi API in Python - *gurobipy*.</span>
+<span id="cb1-5"><a href="#cb1-5"></a>Then we will demonstrate the Benders decomposition approach on this artificial problem.</span>
+<span id="cb1-6"><a href="#cb1-6"></a>Lastly, we will provide an implementation to solve this problem in gurobipy.</span>
+<span id="cb1-7"><a href="#cb1-7"></a></span>
+<span id="cb1-8"><a href="#cb1-8"></a>### The original problem and its optimal solution</span>
+<span id="cb1-9"><a href="#cb1-9"></a></span>
+<span id="cb1-10"><a href="#cb1-10"></a>The linear program we examine here is devoid of any practical meaning and is solely used to demonstrate the solution process of Benders decomposition.</span>
+<span id="cb1-11"><a href="#cb1-11"></a>The problem is stated below, in which $\mathbf{x} = (x_1, x_2, x_3)$ and $\mathbf{y} = (y_1, y_2)$ are the decision variables.</span>
+<span id="cb1-12"><a href="#cb1-12"></a>We assume that $\mathbf{y}$ is the complicating variable.</span>
+<span id="cb1-13"><a href="#cb1-13"></a></span>
+<span id="cb1-14"><a href="#cb1-14"></a>\begin{align*}</span>
+<span id="cb1-15"><a href="#cb1-15"></a>    \text{min.} &amp;\quad 8x_1 + 12x_2 +10x_3 + 15y_1 + 18y_2 \\</span>
+<span id="cb1-16"><a href="#cb1-16"></a>    \text{s.t.} &amp;\quad 2x_1 + 3x_2 + 2x_3 + 4y_1 + 5y_2 = 300 \\</span>
+<span id="cb1-17"><a href="#cb1-17"></a>    &amp;\quad 4x_1 + 2x_2 + 3x_3 + 2y_1 + 3y_2 = 228.75 \\</span>
+<span id="cb1-18"><a href="#cb1-18"></a>    &amp;\quad 1x_1 + 2x_2 + 1x_3 + 1.5y_1 + 2y_2 = 150 \\</span>
+<span id="cb1-19"><a href="#cb1-19"></a>    &amp;\quad 3x_1 + 2x_2 + 2x_3 + 1y_1 + 2y_2 = 180 \\</span>
+<span id="cb1-20"><a href="#cb1-20"></a>    &amp;\quad x_i \geq 0, \ \forall i = 1, \cdots, 3 \\</span>
+<span id="cb1-21"><a href="#cb1-21"></a>    &amp;\quad y_i \geq 0, \ \forall j = 1, 2</span>
+<span id="cb1-22"><a href="#cb1-22"></a>\end{align*}</span>
+<span id="cb1-23"><a href="#cb1-23"></a></span>
+<span id="cb1-24"><a href="#cb1-24"></a>In this example, $\mathbf{c}^T = (8, 12, 10)$, $\mathbf{f}^T = (15, 18)$ and $\mathbf{b}^T = (300, 228.75, 150, 180)$.</span>
+<span id="cb1-25"><a href="#cb1-25"></a>In addition,</span>
+<span id="cb1-26"><a href="#cb1-26"></a></span>
+<span id="cb1-27"><a href="#cb1-27"></a>\begin{equation*}</span>
+<span id="cb1-28"><a href="#cb1-28"></a>\mathbf{A} = </span>
+<span id="cb1-29"><a href="#cb1-29"></a>\begin{bmatrix}</span>
+<span id="cb1-30"><a href="#cb1-30"></a>    2 &amp; 3 &amp; 2 \\</span>
+<span id="cb1-31"><a href="#cb1-31"></a>    4 &amp; 2 &amp; 3 \\</span>
+<span id="cb1-32"><a href="#cb1-32"></a>    1 &amp; 2 &amp; 1 \\</span>
+<span id="cb1-33"><a href="#cb1-33"></a>    3 &amp; 2 &amp; 2</span>
+<span id="cb1-34"><a href="#cb1-34"></a>\end{bmatrix}</span>
+<span id="cb1-35"><a href="#cb1-35"></a></span>
+<span id="cb1-36"><a href="#cb1-36"></a>\qquad</span>
+<span id="cb1-37"><a href="#cb1-37"></a>\mathbf{B} = </span>
+<span id="cb1-38"><a href="#cb1-38"></a>\begin{bmatrix}</span>
+<span id="cb1-39"><a href="#cb1-39"></a>    4 &amp; 5 \\</span>
+<span id="cb1-40"><a href="#cb1-40"></a>    2 &amp; 3 \\</span>
+<span id="cb1-41"><a href="#cb1-41"></a>    1.5 &amp; 2 \\</span>
+<span id="cb1-42"><a href="#cb1-42"></a>    1 &amp; 2</span>
+<span id="cb1-43"><a href="#cb1-43"></a>\end{bmatrix}</span>
+<span id="cb1-44"><a href="#cb1-44"></a>\end{equation*}</span>
+<span id="cb1-45"><a href="#cb1-45"></a></span>
+<span id="cb1-46"><a href="#cb1-46"></a>We first use Gurobi to identify its optimal solution.</span>
+<span id="cb1-47"><a href="#cb1-47"></a></span>
+<span id="cb1-48"><a href="#cb1-48"></a>::: {.cell execution_count=2}</span>
+<span id="cb1-49"><a href="#cb1-49"></a>``` {.python .cell-code}</span>
+<span id="cb1-50"><a href="#cb1-50"></a>import gurobipy as gp</span>
+<span id="cb1-51"><a href="#cb1-51"></a>from gurobipy import GRB</span>
+<span id="cb1-52"><a href="#cb1-52"></a></span>
+<span id="cb1-53"><a href="#cb1-53"></a># Create a new model</span>
+<span id="cb1-54"><a href="#cb1-54"></a>env = gp.Env(empty=True)</span>
+<span id="cb1-55"><a href="#cb1-55"></a>env.setParam('OutputFlag', 0)</span>
+<span id="cb1-56"><a href="#cb1-56"></a>env.start()</span>
+<span id="cb1-57"><a href="#cb1-57"></a>model = gp.Model(env=env, name="original_problem")</span>
+<span id="cb1-58"><a href="#cb1-58"></a></span>
+<span id="cb1-59"><a href="#cb1-59"></a># Decision variables</span>
+<span id="cb1-60"><a href="#cb1-60"></a>x1 = model.addVar(vtype=GRB.CONTINUOUS, name='x1')</span>
+<span id="cb1-61"><a href="#cb1-61"></a>x2 = model.addVar(vtype=GRB.CONTINUOUS, name='x2')</span>
+<span id="cb1-62"><a href="#cb1-62"></a>x3 = model.addVar(vtype=GRB.CONTINUOUS, name='x3')</span>
+<span id="cb1-63"><a href="#cb1-63"></a>y1 = model.addVar(vtype=GRB.CONTINUOUS, name='y1')</span>
+<span id="cb1-64"><a href="#cb1-64"></a>y2 = model.addVar(vtype=GRB.CONTINUOUS, name='y2')</span>
+<span id="cb1-65"><a href="#cb1-65"></a></span>
+<span id="cb1-66"><a href="#cb1-66"></a># Objective function</span>
+<span id="cb1-67"><a href="#cb1-67"></a>model.setObjective(8*x1 + 12*x2 + 10*x3 + 15*y1 + 18*y2, </span>
+<span id="cb1-68"><a href="#cb1-68"></a>                   GRB.MINIMIZE)</span>
+<span id="cb1-69"><a href="#cb1-69"></a></span>
+<span id="cb1-70"><a href="#cb1-70"></a># Constraints</span>
+<span id="cb1-71"><a href="#cb1-71"></a>model.addConstr(2*x1 + 3*x2 + 2*x3 + 4*y1 + 5*y2 == 300)</span>
+<span id="cb1-72"><a href="#cb1-72"></a>model.addConstr(4*x1 + 2*x2 + 3*x3 + 2*y1 + 3*y2 == 220)</span>
+<span id="cb1-73"><a href="#cb1-73"></a># model.addConstr(1*x1 + 2*x2 + 1*x3 + 1.5*y1 + 2*y2 == 150)</span>
+<span id="cb1-74"><a href="#cb1-74"></a># model.addConstr(3*x1 + 2*x2 + 2*x3 + 1*y1 + 2*y2 == 180)</span>
+<span id="cb1-75"><a href="#cb1-75"></a></span>
+<span id="cb1-76"><a href="#cb1-76"></a># Optimize the model</span>
+<span id="cb1-77"><a href="#cb1-77"></a>model.optimize()</span>
+<span id="cb1-78"><a href="#cb1-78"></a></span>
+<span id="cb1-79"><a href="#cb1-79"></a># Print the results</span>
+<span id="cb1-80"><a href="#cb1-80"></a>if model.status == GRB.OPTIMAL:</span>
+<span id="cb1-81"><a href="#cb1-81"></a>    print("Optimal solution found!")</span>
+<span id="cb1-82"><a href="#cb1-82"></a>    print(f'x1 = {x1.X:.2f}')</span>
+<span id="cb1-83"><a href="#cb1-83"></a>    print(f'x2 = {x2.X:.2f}')</span>
+<span id="cb1-84"><a href="#cb1-84"></a>    print(f'x3 = {x3.X:.2f}')</span>
+<span id="cb1-85"><a href="#cb1-85"></a>    print(f'y1 = {y1.X:.2f}')</span>
+<span id="cb1-86"><a href="#cb1-86"></a>    print(f'y2 = {y2.X:.2f}')</span>
+<span id="cb1-87"><a href="#cb1-87"></a>    print(f"Total cost: {model.objVal:.2f}")</span>
+<span id="cb1-88"><a href="#cb1-88"></a>else:</span>
+<span id="cb1-89"><a href="#cb1-89"></a>    print("No solution found.")</span>
+<span id="cb1-90"><a href="#cb1-90"></a></span>
+<span id="cb1-91"><a href="#cb1-91"></a># Close the Gurobi environment</span>
+<span id="cb1-92"><a href="#cb1-92"></a>model.dispose()</span>
+<span id="cb1-93"><a href="#cb1-93"></a>env.dispose()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>:::</p>
+<p>The optimal solution and objective value are as follows.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource {{python}} number-lines code-with-copy"><code class="sourceCode"><span id="cb2-1"><a href="#cb2-1"></a>Optimal solution found!</span>
+<span id="cb2-2"><a href="#cb2-2"></a>x1 = 14.29</span>
+<span id="cb2-3"><a href="#cb2-3"></a>x2 = 0.00</span>
+<span id="cb2-4"><a href="#cb2-4"></a>x3 = 0.00</span>
+<span id="cb2-5"><a href="#cb2-5"></a>y1 = 0.00</span>
+<span id="cb2-6"><a href="#cb2-6"></a>y2 = 54.29</span>
+<span id="cb2-7"><a href="#cb2-7"></a>Total cost: 1091.43</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="benders-decomposition" class="level3" data-number="4.1.1">
+<h3 data-number="4.1.1" class="anchored" data-anchor-id="benders-decomposition"><span class="header-section-number">4.1.1</span> Benders decomposition</h3>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

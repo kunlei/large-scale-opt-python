@@ -1,27 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://kunlei.github.io/large-scale-opt-python/index.html</loc>
-    <lastmod>2023-11-26T22:41:16.036Z</lastmod>
-  </url>
-  <url>
     <loc>https://kunlei.github.io/large-scale-opt-python/preface.html</loc>
-    <lastmod>2023-11-26T22:41:16.043Z</lastmod>
+    <lastmod>2023-12-04T03:34:31.566Z</lastmod>
   </url>
   <url>
     <loc>https://kunlei.github.io/large-scale-opt-python/intro.html</loc>
-    <lastmod>2023-11-26T22:41:16.044Z</lastmod>
+    <lastmod>2023-12-04T03:34:31.568Z</lastmod>
   </url>
   <url>
     <loc>https://kunlei.github.io/large-scale-opt-python/env-setup.html</loc>
-    <lastmod>2023-11-26T22:41:16.049Z</lastmod>
+    <lastmod>2023-12-04T03:34:31.576Z</lastmod>
   </url>
   <url>
     <loc>https://kunlei.github.io/large-scale-opt-python/benders-theory.html</loc>
-    <lastmod>2023-11-26T22:41:16.052Z</lastmod>
+    <lastmod>2023-12-04T03:34:31.583Z</lastmod>
   </url>
   <url>
     <loc>https://kunlei.github.io/large-scale-opt-python/Hands-on-Large-Scale-Optimization-in-Python.pdf</loc>
-    <lastmod>2023-11-26T22:41:15.991Z</lastmod>
+    <lastmod>2023-12-04T03:34:31.499Z</lastmod>
   </url>
 </urlset>
