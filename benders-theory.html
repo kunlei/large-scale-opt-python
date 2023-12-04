@@ -223,6 +223,8 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
   <li><a href="#a-linear-programming-example" id="toc-a-linear-programming-example" class="nav-link" data-scroll-target="#a-linear-programming-example"><span class="header-section-number">4.2</span> A linear programming example</a>
   <ul class="collapse">
   <li><a href="#the-original-problem-and-its-optimal-solution" id="toc-the-original-problem-and-its-optimal-solution" class="nav-link" data-scroll-target="#the-original-problem-and-its-optimal-solution"><span class="header-section-number">4.2.1</span> The original problem and its optimal solution</a></li>
+  <li><a href="#benders-decomposition" id="toc-benders-decomposition" class="nav-link" data-scroll-target="#benders-decomposition"><span class="header-section-number">4.2.2</span> Benders decomposition</a></li>
+  <li><a href="#implementation" id="toc-implementation" class="nav-link" data-scroll-target="#implementation"><span class="header-section-number">4.2.3</span> Implementation</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -420,6 +422,97 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
 <span id="cb2-5"><a href="#cb2-5"></a>y1 = 0.00</span>
 <span id="cb2-6"><a href="#cb2-6"></a>y2 = 54.29</span>
 <span id="cb2-7"><a href="#cb2-7"></a>Total cost: 1091.43</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="benders-decomposition" class="level3" data-number="4.2.2">
+<h3 data-number="4.2.2" class="anchored" data-anchor-id="benders-decomposition"><span class="header-section-number">4.2.2</span> Benders decomposition</h3>
+<p>We first state the subproblem as follows:</p>
+<p><span class="math display">\[\begin{align*}
+    &amp;(\mathbf{SP}) &amp;\quad \text{min.} &amp;\quad 8x_1 + 12x_2 +10x_3 \\
+    &amp;&amp;\quad \text{s.t.} &amp;\quad 2x_1 + 3x_2 + 2x_3 = 300 - 4y_1 - 5y_2 \\
+    &amp;&amp;&amp;\quad 4x_1 + 2x_2 + 3x_3 = 220 - 2y_1 + 3y_2 \\
+    &amp;&amp;&amp;\quad x_i \geq 0, \ \forall i = 1, \cdots, 3
+\end{align*}\]</span></p>
+<p>We define two dual variables <span class="math inline">\(u_1\)</span> and <span class="math inline">\(u_2\)</span> to associate with the two constraints in the subproblem. The dual subproblem could then be stated as follows:</p>
+<p><span class="math display">\[\begin{align*}
+    &amp;(\mathbf{DSP}) &amp;\quad \text{max.} &amp;\quad (300 - 4y_1 - 5y_2) u_1 + (220 - 2y_1 + 3y_2) u_2 \\
+    &amp;&amp;\quad \text{s.t.} &amp;\quad 2u_1 + 4u_2 \leq 8\\
+    &amp;&amp;&amp;\quad 3u_1 + 2u_2 \leq 12 \\
+    &amp;&amp;&amp;\quad 2u_1 + 3u_2 \leq 10 \\
+    &amp;&amp;&amp;\quad u_1, u_2\  \text{unrestricted}
+\end{align*}\]</span></p>
+<p>The <em>RBMP</em> can be stated as:</p>
+<p><span class="math display">\[\begin{align*}
+    &amp;(\mathbf{RBMP}) &amp;\quad \text{min.} &amp;\quad 15 y_1 + 18 y_2 + g \\
+    &amp;&amp;\quad \text{s.t.} &amp;\quad  y_1, y_2 \geq 0 \\
+    &amp;&amp;&amp;\quad g \leq 0
+\end{align*}\]</span></p>
+</section>
+<section id="implementation" class="level3" data-number="4.2.3">
+<h3 data-number="4.2.3" class="anchored" data-anchor-id="implementation"><span class="header-section-number">4.2.3</span> Implementation</h3>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="im">import</span> gurobipy <span class="im">as</span> gp</span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="im">from</span> gurobipy <span class="im">import</span> GRB</span>
+<span id="cb3-3"><a href="#cb3-3"></a></span>
+<span id="cb3-4"><a href="#cb3-4"></a>env <span class="op">=</span> gp.Env(<span class="st">'benders'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Set parameter Username
+Set parameter LogFile to value "benders"</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># create restricted Benders master problem</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a>rbmp <span class="op">=</span> gp.Model(env<span class="op">=</span>env, name<span class="op">=</span><span class="st">'RBMP'</span>)</span>
+<span id="cb5-3"><a href="#cb5-3"></a></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="co"># create decision variables</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a>y1 <span class="op">=</span> rbmp.addVar(vtype<span class="op">=</span>GRB.CONTINUOUS, lb<span class="op">=</span><span class="dv">0</span>, name<span class="op">=</span><span class="st">'y1'</span>)</span>
+<span id="cb5-6"><a href="#cb5-6"></a>y2 <span class="op">=</span> rbmp.addVar(vtype<span class="op">=</span>GRB.CONTINUOUS, lb<span class="op">=</span><span class="dv">0</span>, name<span class="op">=</span><span class="st">'y2'</span>)</span>
+<span id="cb5-7"><a href="#cb5-7"></a>g <span class="op">=</span> rbmp.addVar(vtype<span class="op">=</span>GRB.CONTINUOUS, lb<span class="op">=</span><span class="dv">0</span>, name<span class="op">=</span><span class="st">'g'</span>)</span>
+<span id="cb5-8"><a href="#cb5-8"></a></span>
+<span id="cb5-9"><a href="#cb5-9"></a><span class="co"># create objective</span></span>
+<span id="cb5-10"><a href="#cb5-10"></a>rbmp.setObjective(<span class="dv">15</span><span class="op">*</span>y1 <span class="op">+</span> <span class="dv">18</span><span class="op">*</span>y2 <span class="op">+</span> g, GRB.MINIMIZE)</span>
+<span id="cb5-11"><a href="#cb5-11"></a></span>
+<span id="cb5-12"><a href="#cb5-12"></a>rbmp.optimize()</span>
+<span id="cb5-13"><a href="#cb5-13"></a></span>
+<span id="cb5-14"><a href="#cb5-14"></a><span class="cf">if</span> rbmp.Status <span class="op">==</span> GRB.OPTIMAL:</span>
+<span id="cb5-15"><a href="#cb5-15"></a>    <span class="bu">print</span>(<span class="ss">f'y1 = </span><span class="sc">{</span>y1<span class="sc">.</span>X<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb5-16"><a href="#cb5-16"></a>    <span class="bu">print</span>(<span class="ss">f'y2 = </span><span class="sc">{</span>y2<span class="sc">.</span>X<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb5-17"><a href="#cb5-17"></a>    <span class="bu">print</span>(<span class="ss">f'g = </span><span class="sc">{</span>g<span class="sc">.</span>X<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb5-18"><a href="#cb5-18"></a><span class="cf">else</span>:</span>
+<span id="cb5-19"><a href="#cb5-19"></a>    <span class="bu">print</span>(<span class="ss">f'No solution found!'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Gurobi Optimizer version 10.0.3 build v10.0.3rc0 (mac64[arm])
+
+CPU model: Apple M1
+Thread count: 8 physical cores, 8 logical processors, using up to 8 threads
+
+Optimize a model with 0 rows, 3 columns and 0 nonzeros
+Model fingerprint: 0xb00b2c2a
+Coefficient statistics:
+  Matrix range     [0e+00, 0e+00]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [0e+00, 0e+00]
+  RHS range        [0e+00, 0e+00]
+Presolve removed 0 rows and 3 columns
+Presolve time: 0.01s
+Presolve: All rows and columns removed
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    0.0000000e+00   0.000000e+00   0.000000e+00      0s
+
+Solved in 0 iterations and 0.02 seconds (0.00 work units)
+Optimal objective  0.000000000e+00
+y1 = 0.0
+y2 = 0.0
+g = 0.0</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># create subproblem</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a>sp <span class="op">=</span> gp.Model(env<span class="op">=</span>env, name<span class="op">=</span><span class="st">'SP'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># create dual subproblem</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a>dsp <span class="op">=</span> gp.Model(env<span class="op">=</span>env, name<span class="op">=</span><span class="st">'DSP'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 
 
 </section>
