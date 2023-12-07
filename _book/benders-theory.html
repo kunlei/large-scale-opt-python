@@ -224,7 +224,10 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
   <ul class="collapse">
   <li><a href="#the-original-problem-and-its-optimal-solution" id="toc-the-original-problem-and-its-optimal-solution" class="nav-link" data-scroll-target="#the-original-problem-and-its-optimal-solution"><span class="header-section-number">4.2.1</span> The original problem and its optimal solution</a></li>
   <li><a href="#benders-decomposition" id="toc-benders-decomposition" class="nav-link" data-scroll-target="#benders-decomposition"><span class="header-section-number">4.2.2</span> Benders decomposition</a></li>
-  <li><a href="#implementation" id="toc-implementation" class="nav-link" data-scroll-target="#implementation"><span class="header-section-number">4.2.3</span> Implementation</a></li>
+  <li><a href="#solving-the-problem-step-by-step" id="toc-solving-the-problem-step-by-step" class="nav-link" data-scroll-target="#solving-the-problem-step-by-step"><span class="header-section-number">4.2.3</span> Solving the problem step by step</a></li>
+  <li><a href="#putting-it-together" id="toc-putting-it-together" class="nav-link" data-scroll-target="#putting-it-together"><span class="header-section-number">4.2.4</span> Putting it together</a></li>
+  <li><a href="#a-generic-solver" id="toc-a-generic-solver" class="nav-link" data-scroll-target="#a-generic-solver"><span class="header-section-number">4.2.5</span> A generic solver</a></li>
+  <li><a href="#implementation-with-callbacks" id="toc-implementation-with-callbacks" class="nav-link" data-scroll-target="#implementation-with-callbacks"><span class="header-section-number">4.2.6</span> Implementation with callbacks</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -368,7 +371,7 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
 \end{bmatrix}
 \end{equation*}\]</span></p>
 <p>We first use Gurobi to identify its optimal solution.</p>
-<div class="cell">
+<div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">import</span> gurobipy <span class="im">as</span> gp</span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="im">from</span> gurobipy <span class="im">import</span> GRB</span>
 <span id="cb1-3"><a href="#cb1-3"></a></span>
@@ -429,7 +432,7 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
 <p><span class="math display">\[\begin{align*}
     &amp;(\mathbf{SP}) &amp;\quad \text{min.} &amp;\quad 8x_1 + 12x_2 +10x_3 \\
     &amp;&amp;\quad \text{s.t.} &amp;\quad 2x_1 + 3x_2 + 2x_3 = 300 - 4y_1 - 5y_2 \\
-    &amp;&amp;&amp;\quad 4x_1 + 2x_2 + 3x_3 = 220 - 2y_1 + 3y_2 \\
+    &amp;&amp;&amp;\quad 4x_1 + 2x_2 + 3x_3 = 220 - 2y_1 - 3y_2 \\
     &amp;&amp;&amp;\quad x_i \geq 0, \ \forall i = 1, \cdots, 3
 \end{align*}\]</span></p>
 <p>We define two dual variables <span class="math inline">\(u_1\)</span> and <span class="math inline">\(u_2\)</span> to associate with the two constraints in the subproblem. The dual subproblem could then be stated as follows:</p>
@@ -447,72 +450,286 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
     &amp;&amp;&amp;\quad g \leq 0
 \end{align*}\]</span></p>
 </section>
-<section id="implementation" class="level3" data-number="4.2.3">
-<h3 data-number="4.2.3" class="anchored" data-anchor-id="implementation"><span class="header-section-number">4.2.3</span> Implementation</h3>
-<div class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="im">import</span> gurobipy <span class="im">as</span> gp</span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="im">from</span> gurobipy <span class="im">import</span> GRB</span>
-<span id="cb3-3"><a href="#cb3-3"></a></span>
-<span id="cb3-4"><a href="#cb3-4"></a>env <span class="op">=</span> gp.Env(<span class="st">'benders'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Set parameter Username
-Set parameter LogFile to value "benders"</code></pre>
+<section id="solving-the-problem-step-by-step" class="level3" data-number="4.2.3">
+<h3 data-number="4.2.3" class="anchored" data-anchor-id="solving-the-problem-step-by-step"><span class="header-section-number">4.2.3</span> Solving the problem step by step</h3>
+<p>In this section, we will solve the linear program step by step using Gurobi. To this end, we first import the necessary libraries and create an environment <code>env</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="co">#｜ output: false</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="im">import</span> gurobipy <span class="im">as</span> gp</span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="im">from</span> gurobipy <span class="im">import</span> GRB</span>
+<span id="cb3-5"><a href="#cb3-5"></a></span>
+<span id="cb3-6"><a href="#cb3-6"></a>env <span class="op">=</span> gp.Env(<span class="st">'benders'</span>)</span>
+<span id="cb3-7"><a href="#cb3-7"></a>env.setParam(<span class="st">'OutputFlag'</span>, <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
+<p>Next, we initialize several algorithm parameters, specifically, we use <code>lb</code> and <code>ub</code> to represent the lower and upper bounds of the solution. The <code>eps</code> is defined as a small number to decide whether the searching process should stop.</p>
+<p>The remaining codes aim to create the restricted master Benders problem indicated by <code>rbmp</code>. Note that it only has the <span class="math inline">\(y\)</span> and <span class="math inline">\(g\)</span> variables and the objective function, there is no constraint added to the model yet.</p>
 <div class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># create restricted Benders master problem</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a>rbmp <span class="op">=</span> gp.Model(env<span class="op">=</span>env, name<span class="op">=</span><span class="st">'RBMP'</span>)</span>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># parameters</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a>lb <span class="op">=</span> <span class="op">-</span>GRB.INFINITY</span>
+<span id="cb4-3"><a href="#cb4-3"></a>ub <span class="op">=</span> GRB.INFINITY</span>
+<span id="cb4-4"><a href="#cb4-4"></a>eps <span class="op">=</span> <span class="fl">1.0e-5</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a></span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="co"># create restricted Benders master problem</span></span>
+<span id="cb4-7"><a href="#cb4-7"></a>rbmp <span class="op">=</span> gp.Model(env<span class="op">=</span>env, name<span class="op">=</span><span class="st">'RBMP'</span>)</span>
+<span id="cb4-8"><a href="#cb4-8"></a></span>
+<span id="cb4-9"><a href="#cb4-9"></a><span class="co"># create decision variables</span></span>
+<span id="cb4-10"><a href="#cb4-10"></a>y1 <span class="op">=</span> rbmp.addVar(vtype<span class="op">=</span>GRB.CONTINUOUS, lb<span class="op">=</span><span class="dv">0</span>, name<span class="op">=</span><span class="st">'y1'</span>)</span>
+<span id="cb4-11"><a href="#cb4-11"></a>y2 <span class="op">=</span> rbmp.addVar(vtype<span class="op">=</span>GRB.CONTINUOUS, lb<span class="op">=</span><span class="dv">0</span>, name<span class="op">=</span><span class="st">'y2'</span>)</span>
+<span id="cb4-12"><a href="#cb4-12"></a>g <span class="op">=</span> rbmp.addVar(vtype<span class="op">=</span>GRB.CONTINUOUS, lb<span class="op">=</span><span class="dv">0</span>, name<span class="op">=</span><span class="st">'g'</span>)</span>
+<span id="cb4-13"><a href="#cb4-13"></a></span>
+<span id="cb4-14"><a href="#cb4-14"></a><span class="co"># create objective</span></span>
+<span id="cb4-15"><a href="#cb4-15"></a>rbmp.setObjective(<span class="dv">15</span><span class="op">*</span>y1 <span class="op">+</span> <span class="dv">18</span><span class="op">*</span>y2 <span class="op">+</span> g, GRB.MINIMIZE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We then define the model in Gurobi to solve the dual subproblem, represented by <code>dsp</code>. It consists of two decision variables <code>u1</code> and <code>u2</code>. The constraints are created in lines 12 - 14.</p>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># create dual subproblem</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a>dsp <span class="op">=</span> gp.Model(env<span class="op">=</span>env, name<span class="op">=</span><span class="st">'DSP'</span>)</span>
 <span id="cb5-3"><a href="#cb5-3"></a></span>
 <span id="cb5-4"><a href="#cb5-4"></a><span class="co"># create decision variables</span></span>
-<span id="cb5-5"><a href="#cb5-5"></a>y1 <span class="op">=</span> rbmp.addVar(vtype<span class="op">=</span>GRB.CONTINUOUS, lb<span class="op">=</span><span class="dv">0</span>, name<span class="op">=</span><span class="st">'y1'</span>)</span>
-<span id="cb5-6"><a href="#cb5-6"></a>y2 <span class="op">=</span> rbmp.addVar(vtype<span class="op">=</span>GRB.CONTINUOUS, lb<span class="op">=</span><span class="dv">0</span>, name<span class="op">=</span><span class="st">'y2'</span>)</span>
-<span id="cb5-7"><a href="#cb5-7"></a>g <span class="op">=</span> rbmp.addVar(vtype<span class="op">=</span>GRB.CONTINUOUS, lb<span class="op">=</span><span class="dv">0</span>, name<span class="op">=</span><span class="st">'g'</span>)</span>
-<span id="cb5-8"><a href="#cb5-8"></a></span>
-<span id="cb5-9"><a href="#cb5-9"></a><span class="co"># create objective</span></span>
-<span id="cb5-10"><a href="#cb5-10"></a>rbmp.setObjective(<span class="dv">15</span><span class="op">*</span>y1 <span class="op">+</span> <span class="dv">18</span><span class="op">*</span>y2 <span class="op">+</span> g, GRB.MINIMIZE)</span>
-<span id="cb5-11"><a href="#cb5-11"></a></span>
-<span id="cb5-12"><a href="#cb5-12"></a>rbmp.optimize()</span>
-<span id="cb5-13"><a href="#cb5-13"></a></span>
-<span id="cb5-14"><a href="#cb5-14"></a><span class="cf">if</span> rbmp.Status <span class="op">==</span> GRB.OPTIMAL:</span>
-<span id="cb5-15"><a href="#cb5-15"></a>    <span class="bu">print</span>(<span class="ss">f'y1 = </span><span class="sc">{</span>y1<span class="sc">.</span>X<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb5-16"><a href="#cb5-16"></a>    <span class="bu">print</span>(<span class="ss">f'y2 = </span><span class="sc">{</span>y2<span class="sc">.</span>X<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb5-17"><a href="#cb5-17"></a>    <span class="bu">print</span>(<span class="ss">f'g = </span><span class="sc">{</span>g<span class="sc">.</span>X<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb5-18"><a href="#cb5-18"></a><span class="cf">else</span>:</span>
-<span id="cb5-19"><a href="#cb5-19"></a>    <span class="bu">print</span>(<span class="ss">f'No solution found!'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-5"><a href="#cb5-5"></a>u1 <span class="op">=</span> dsp.addVar(vtype<span class="op">=</span>GRB.CONTINUOUS, name<span class="op">=</span><span class="st">'u1'</span>)</span>
+<span id="cb5-6"><a href="#cb5-6"></a>u2 <span class="op">=</span> dsp.addVar(vtype<span class="op">=</span>GRB.CONTINUOUS, name<span class="op">=</span><span class="st">'u2'</span>)</span>
+<span id="cb5-7"><a href="#cb5-7"></a></span>
+<span id="cb5-8"><a href="#cb5-8"></a><span class="co"># create objective function</span></span>
+<span id="cb5-9"><a href="#cb5-9"></a>dsp.setObjective(<span class="dv">300</span><span class="op">*</span>u1 <span class="op">+</span> <span class="dv">220</span><span class="op">*</span>u2)</span>
+<span id="cb5-10"><a href="#cb5-10"></a></span>
+<span id="cb5-11"><a href="#cb5-11"></a><span class="co"># create constraints</span></span>
+<span id="cb5-12"><a href="#cb5-12"></a>dsp.addConstr(<span class="dv">2</span><span class="op">*</span>u1 <span class="op">+</span> <span class="dv">4</span><span class="op">*</span>u2 <span class="op">&lt;=</span> <span class="dv">8</span>, name<span class="op">=</span><span class="st">'c1'</span>)</span>
+<span id="cb5-13"><a href="#cb5-13"></a>dsp.addConstr(<span class="dv">3</span><span class="op">*</span>u1 <span class="op">+</span> <span class="dv">2</span><span class="op">*</span>u2 <span class="op">&lt;=</span> <span class="dv">12</span>, name<span class="op">=</span><span class="st">'c2'</span>)</span>
+<span id="cb5-14"><a href="#cb5-14"></a>dsp.addConstr(<span class="dv">2</span><span class="op">*</span>u1 <span class="op">+</span> <span class="dv">3</span><span class="op">*</span>u2 <span class="op">&lt;=</span> <span class="dv">10</span>, name<span class="op">=</span><span class="st">'c3'</span>)</span>
+<span id="cb5-15"><a href="#cb5-15"></a></span>
+<span id="cb5-16"><a href="#cb5-16"></a>dsp.update()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In the very first iteration, we solve the <strong>RBMP</strong>, as shown in the following code snippet.</p>
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a>rbmp.optimize()</span>
+<span id="cb6-2"><a href="#cb6-2"></a></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="cf">if</span> rbmp.status <span class="op">==</span> GRB.OPTIMAL:</span>
+<span id="cb6-4"><a href="#cb6-4"></a>    <span class="bu">print</span>(<span class="ss">f'optimal solution found!'</span>)</span>
+<span id="cb6-5"><a href="#cb6-5"></a>    </span>
+<span id="cb6-6"><a href="#cb6-6"></a>    y1_opt <span class="op">=</span> y1.X</span>
+<span id="cb6-7"><a href="#cb6-7"></a>    y2_opt <span class="op">=</span> y2.X</span>
+<span id="cb6-8"><a href="#cb6-8"></a>    g_opt <span class="op">=</span> g.X</span>
+<span id="cb6-9"><a href="#cb6-9"></a>    lb <span class="op">=</span> np.<span class="bu">max</span>([lb, rbmp.objVal])</span>
+<span id="cb6-10"><a href="#cb6-10"></a>    </span>
+<span id="cb6-11"><a href="#cb6-11"></a>    <span class="bu">print</span>(<span class="ss">f'optimal obj: </span><span class="sc">{</span>rbmp<span class="sc">.</span>objVal<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="cb6-12"><a href="#cb6-12"></a>    <span class="bu">print</span>(<span class="ss">f'y1 = </span><span class="sc">{</span>y1_opt<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="cb6-13"><a href="#cb6-13"></a>    <span class="bu">print</span>(<span class="ss">f'y2 = </span><span class="sc">{</span>y2_opt<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="cb6-14"><a href="#cb6-14"></a>    <span class="bu">print</span>(<span class="ss">f'g = </span><span class="sc">{</span>g_opt<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="cb6-15"><a href="#cb6-15"></a>    <span class="bu">print</span>(<span class="ss">f'lb=</span><span class="sc">{</span>lb<span class="sc">}</span><span class="ss">, ub=</span><span class="sc">{</span>ub<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb6-16"><a href="#cb6-16"></a><span class="cf">elif</span> rbmp.status <span class="op">==</span> GRB.INFEASIBLE:</span>
+<span id="cb6-17"><a href="#cb6-17"></a>    <span class="bu">print</span>(<span class="ss">f'original problem is infeasible!'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Gurobi Optimizer version 10.0.3 build v10.0.3rc0 (mac64[arm])
-
-CPU model: Apple M1
-Thread count: 8 physical cores, 8 logical processors, using up to 8 threads
-
-Optimize a model with 0 rows, 3 columns and 0 nonzeros
-Model fingerprint: 0xb00b2c2a
-Coefficient statistics:
-  Matrix range     [0e+00, 0e+00]
-  Objective range  [1e+00, 2e+01]
-  Bounds range     [0e+00, 0e+00]
-  RHS range        [0e+00, 0e+00]
-Presolve removed 0 rows and 3 columns
-Presolve time: 0.01s
-Presolve: All rows and columns removed
-Iteration    Objective       Primal Inf.    Dual Inf.      Time
-       0    0.0000000e+00   0.000000e+00   0.000000e+00      0s
-
-Solved in 0 iterations and 0.02 seconds (0.00 work units)
-Optimal objective  0.000000000e+00
-y1 = 0.0
-y2 = 0.0
-g = 0.0</code></pre>
+<pre><code>optimal solution found!
+optimal obj: 0.00
+y1 = 0.00
+y2 = 0.00
+g = 0.00
+lb=0.0, ub=1200.0</code></pre>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># create subproblem</span></span>
-<span id="cb7-2"><a href="#cb7-2"></a>sp <span class="op">=</span> gp.Model(env<span class="op">=</span>env, name<span class="op">=</span><span class="st">'SP'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now we have obtained an optimal solution <span class="math inline">\((\bar{y_1}, \bar{y_2}, \bar{g}) = (0, 0, 0)\)</span>, which also provides a new lower bound to our problem. We now feed the values of <span class="math inline">\(\bar{y_1}\)</span> and <span class="math inline">\(\bar{y_2}\)</span> into the Benders subproblem <strong>(SP)</strong>:</p>
+<div class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a></span>
+<span id="cb8-2"><a href="#cb8-2"></a>dsp.setObjective((<span class="dv">300</span><span class="op">-</span><span class="dv">4</span><span class="op">*</span>y1_opt<span class="op">-</span><span class="dv">5</span><span class="op">*</span>y2_opt)<span class="op">*</span>u1 <span class="op">+</span> </span>
+<span id="cb8-3"><a href="#cb8-3"></a>                 (<span class="dv">220</span><span class="op">-</span><span class="dv">2</span><span class="op">*</span>y1_opt<span class="op">-</span><span class="dv">3</span><span class="op">*</span>y2_opt)<span class="op">*</span>u2, </span>
+<span id="cb8-4"><a href="#cb8-4"></a>                 GRB.MAXIMIZE)</span>
+<span id="cb8-5"><a href="#cb8-5"></a>dsp.update()</span>
+<span id="cb8-6"><a href="#cb8-6"></a>dsp.optimize()</span>
+<span id="cb8-7"><a href="#cb8-7"></a></span>
+<span id="cb8-8"><a href="#cb8-8"></a><span class="cf">if</span> dsp.status <span class="op">==</span> GRB.OPTIMAL:</span>
+<span id="cb8-9"><a href="#cb8-9"></a>    u1_opt <span class="op">=</span> u1.X</span>
+<span id="cb8-10"><a href="#cb8-10"></a>    u2_opt <span class="op">=</span> u2.X</span>
+<span id="cb8-11"><a href="#cb8-11"></a>    </span>
+<span id="cb8-12"><a href="#cb8-12"></a>    <span class="bu">print</span>(<span class="ss">f'optimal obj = </span><span class="sc">{</span>dsp<span class="sc">.</span>objVal<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="cb8-13"><a href="#cb8-13"></a>    <span class="bu">print</span>(<span class="ss">f'u1 = </span><span class="sc">{</span>u1_opt<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="cb8-14"><a href="#cb8-14"></a>    <span class="bu">print</span>(<span class="ss">f'u2 = </span><span class="sc">{</span>u2_opt<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="cb8-15"><a href="#cb8-15"></a>    ub <span class="op">=</span> np.<span class="bu">min</span>([ub, <span class="dv">15</span><span class="op">*</span>y1_opt <span class="op">+</span> <span class="dv">18</span><span class="op">*</span>y2_opt <span class="op">+</span> dsp.objVal])</span>
+<span id="cb8-16"><a href="#cb8-16"></a>    <span class="bu">print</span>(<span class="ss">f'lb=</span><span class="sc">{</span>lb<span class="sc">}</span><span class="ss">, ub=</span><span class="sc">{</span>ub<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb8-17"><a href="#cb8-17"></a><span class="cf">elif</span> dsp.Status <span class="op">==</span> GRB.UNBOUNDED:</span>
+<span id="cb8-18"><a href="#cb8-18"></a>    <span class="co"># add feasibility cut</span></span>
+<span id="cb8-19"><a href="#cb8-19"></a>    <span class="cf">pass</span></span>
+<span id="cb8-20"><a href="#cb8-20"></a><span class="cf">else</span>:</span>
+<span id="cb8-21"><a href="#cb8-21"></a>    <span class="cf">pass</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>optimal obj = 1200.00
+u1 = 4.00
+u2 = 0.00
+lb=0.0, ub=1200.0</code></pre>
 </div>
-<div class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># create dual subproblem</span></span>
-<span id="cb8-2"><a href="#cb8-2"></a>dsp <span class="op">=</span> gp.Model(env<span class="op">=</span>env, name<span class="op">=</span><span class="st">'DSP'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>We see that the dual subproblem has an optimal solution. Note that in line 15, the upper bound of the problem is updated.</p>
+<p>Since the optimal objective value of the subproblem turns out to be 1200 and is greater than <span class="math inline">\(\bar{g} = 0\)</span>, which implies that an optimality cut is needed to make sure that the variable <span class="math inline">\(g\)</span> in the restricted Benders master problem reflects this newly obtained information from the subproblem.</p>
+<div class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a>rbmp.addConstr((<span class="dv">300</span><span class="op">-</span><span class="dv">4</span><span class="op">*</span>y2<span class="op">-</span><span class="dv">5</span><span class="op">*</span>y2)<span class="op">*</span>u1_opt </span>
+<span id="cb10-2"><a href="#cb10-2"></a>               <span class="op">+</span> (<span class="dv">220</span><span class="op">-</span><span class="dv">2</span><span class="op">*</span>y1<span class="op">-</span><span class="dv">3</span><span class="op">*</span>y2)<span class="op">*</span>u2_opt <span class="op">&lt;=</span> g, </span>
+<span id="cb10-3"><a href="#cb10-3"></a>               name<span class="op">=</span><span class="st">'c3'</span>)</span>
+<span id="cb10-4"><a href="#cb10-4"></a>rbmp.update()</span>
+<span id="cb10-5"><a href="#cb10-5"></a>rbmp.optimize()</span>
+<span id="cb10-6"><a href="#cb10-6"></a></span>
+<span id="cb10-7"><a href="#cb10-7"></a><span class="cf">if</span> rbmp.status <span class="op">==</span> GRB.OPTIMAL:</span>
+<span id="cb10-8"><a href="#cb10-8"></a>    <span class="bu">print</span>(<span class="ss">f'optimal solution found!'</span>)</span>
+<span id="cb10-9"><a href="#cb10-9"></a>    </span>
+<span id="cb10-10"><a href="#cb10-10"></a>    y1_opt <span class="op">=</span> y1.X</span>
+<span id="cb10-11"><a href="#cb10-11"></a>    y2_opt <span class="op">=</span> y2.X</span>
+<span id="cb10-12"><a href="#cb10-12"></a>    g_opt <span class="op">=</span> g.X</span>
+<span id="cb10-13"><a href="#cb10-13"></a>    lb <span class="op">=</span> np.<span class="bu">max</span>([lb, rbmp.objVal])</span>
+<span id="cb10-14"><a href="#cb10-14"></a>    </span>
+<span id="cb10-15"><a href="#cb10-15"></a>    <span class="bu">print</span>(<span class="ss">f'optimal obj: </span><span class="sc">{</span>rbmp<span class="sc">.</span>objVal<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="cb10-16"><a href="#cb10-16"></a>    <span class="bu">print</span>(<span class="ss">f'y1 = </span><span class="sc">{</span>y1_opt<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="cb10-17"><a href="#cb10-17"></a>    <span class="bu">print</span>(<span class="ss">f'y2 = </span><span class="sc">{</span>y2_opt<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="cb10-18"><a href="#cb10-18"></a>    <span class="bu">print</span>(<span class="ss">f'g = </span><span class="sc">{</span>g_opt<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="cb10-19"><a href="#cb10-19"></a>    <span class="bu">print</span>(<span class="ss">f'lb=</span><span class="sc">{</span>lb<span class="sc">}</span><span class="ss">, ub=</span><span class="sc">{</span>ub<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb10-20"><a href="#cb10-20"></a><span class="cf">elif</span> rbmp.status <span class="op">==</span> GRB.INFEASIBLE:</span>
+<span id="cb10-21"><a href="#cb10-21"></a>    <span class="bu">print</span>(<span class="ss">f'original problem is infeasible!'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>optimal solution found!
+optimal obj: 600.00
+y1 = 0.00
+y2 = 33.33
+g = 0.00
+lb=600.0, ub=1200.0</code></pre>
+</div>
+</div>
+<p>Now we solve the subproblem again with the newly obtained solution <span class="math inline">\((\bar{y_1}, \bar{y_2}, \bar{g}) = (0, 33.33, 0)\)</span>.</p>
+<div class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a>dsp.setObjective((<span class="dv">300</span> <span class="op">-</span> <span class="dv">4</span><span class="op">*</span>y1_opt <span class="op">-</span> <span class="dv">5</span><span class="op">*</span>y2_opt) <span class="op">*</span> u1 </span>
+<span id="cb12-2"><a href="#cb12-2"></a>                 <span class="op">+</span> (<span class="dv">220</span> <span class="op">-</span> <span class="dv">2</span><span class="op">*</span>y1_opt <span class="op">-</span> <span class="dv">3</span><span class="op">*</span>y2_opt) <span class="op">*</span> u2, </span>
+<span id="cb12-3"><a href="#cb12-3"></a>                 GRB.MAXIMIZE)</span>
+<span id="cb12-4"><a href="#cb12-4"></a>dsp.update()</span>
+<span id="cb12-5"><a href="#cb12-5"></a>dsp.optimize()</span>
+<span id="cb12-6"><a href="#cb12-6"></a></span>
+<span id="cb12-7"><a href="#cb12-7"></a><span class="cf">if</span> dsp.status <span class="op">==</span> GRB.OPTIMAL:</span>
+<span id="cb12-8"><a href="#cb12-8"></a>    u1_opt <span class="op">=</span> u1.X</span>
+<span id="cb12-9"><a href="#cb12-9"></a>    u2_opt <span class="op">=</span> u2.X</span>
+<span id="cb12-10"><a href="#cb12-10"></a>    </span>
+<span id="cb12-11"><a href="#cb12-11"></a>    <span class="bu">print</span>(<span class="ss">f'optimal obj = </span><span class="sc">{</span>dsp<span class="sc">.</span>objVal<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="cb12-12"><a href="#cb12-12"></a>    <span class="bu">print</span>(<span class="ss">f'u1 = </span><span class="sc">{</span>u1_opt<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="cb12-13"><a href="#cb12-13"></a>    <span class="bu">print</span>(<span class="ss">f'u2 = </span><span class="sc">{</span>u2_opt<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="cb12-14"><a href="#cb12-14"></a>    ub <span class="op">=</span> np.<span class="bu">min</span>([ub, <span class="dv">15</span><span class="op">*</span>y1_opt <span class="op">+</span> <span class="dv">18</span><span class="op">*</span>y2_opt <span class="op">+</span> dsp.objVal])</span>
+<span id="cb12-15"><a href="#cb12-15"></a>    <span class="bu">print</span>(<span class="ss">f'lb=</span><span class="sc">{</span>lb<span class="sc">}</span><span class="ss">, ub=</span><span class="sc">{</span>ub<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb12-16"><a href="#cb12-16"></a><span class="cf">elif</span> dsp.status <span class="op">==</span> GRB.UNBOUNDED:</span>
+<span id="cb12-17"><a href="#cb12-17"></a>    <span class="bu">print</span>(<span class="ss">f'dual subproblem is unbounded!'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>optimal obj = 533.33
+u1 = 4.00
+u2 = 0.00
+lb=600.0, ub=1133.3333333333333</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a>rbmp.addConstr((<span class="dv">300</span> <span class="op">-</span> <span class="dv">4</span><span class="op">*</span>y1 <span class="op">-</span> <span class="dv">5</span><span class="op">*</span>y2) <span class="op">*</span> u1_opt <span class="op">+</span> (<span class="dv">220</span> <span class="op">-</span> <span class="dv">2</span><span class="op">*</span>y1 <span class="op">-</span> <span class="dv">3</span><span class="op">*</span>y2) <span class="op">*</span> u2_opt <span class="op">&lt;=</span> g, name<span class="op">=</span><span class="st">'c3'</span>)</span>
+<span id="cb14-2"><a href="#cb14-2"></a>rbmp.update()</span>
+<span id="cb14-3"><a href="#cb14-3"></a>rbmp.optimize()</span>
+<span id="cb14-4"><a href="#cb14-4"></a></span>
+<span id="cb14-5"><a href="#cb14-5"></a><span class="cf">if</span> rbmp.status <span class="op">==</span> GRB.OPTIMAL:</span>
+<span id="cb14-6"><a href="#cb14-6"></a>    <span class="bu">print</span>(<span class="ss">f'optimal solution found!'</span>)</span>
+<span id="cb14-7"><a href="#cb14-7"></a>    </span>
+<span id="cb14-8"><a href="#cb14-8"></a>    y1_opt <span class="op">=</span> y1.X</span>
+<span id="cb14-9"><a href="#cb14-9"></a>    y2_opt <span class="op">=</span> y2.X</span>
+<span id="cb14-10"><a href="#cb14-10"></a>    g_opt <span class="op">=</span> g.X</span>
+<span id="cb14-11"><a href="#cb14-11"></a>    lb <span class="op">=</span> np.<span class="bu">max</span>([lb, rbmp.objVal])</span>
+<span id="cb14-12"><a href="#cb14-12"></a>    </span>
+<span id="cb14-13"><a href="#cb14-13"></a>    <span class="bu">print</span>(<span class="ss">f'optimal obj: </span><span class="sc">{</span>rbmp<span class="sc">.</span>objVal<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="cb14-14"><a href="#cb14-14"></a>    <span class="bu">print</span>(<span class="ss">f'y1 = </span><span class="sc">{</span>y1_opt<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="cb14-15"><a href="#cb14-15"></a>    <span class="bu">print</span>(<span class="ss">f'y2 = </span><span class="sc">{</span>y2_opt<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="cb14-16"><a href="#cb14-16"></a>    <span class="bu">print</span>(<span class="ss">f'g = </span><span class="sc">{</span>g_opt<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="cb14-17"><a href="#cb14-17"></a>    <span class="bu">print</span>(<span class="ss">f'lb=</span><span class="sc">{</span>lb<span class="sc">}</span><span class="ss">, ub=</span><span class="sc">{</span>ub<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb14-18"><a href="#cb14-18"></a><span class="cf">elif</span> rbmp.status <span class="op">==</span> GRB.INFEASIBLE:</span>
+<span id="cb14-19"><a href="#cb14-19"></a>    <span class="bu">print</span>(<span class="ss">f'original problem is infeasible!'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>optimal solution found!
+optimal obj: 1080.00
+y1 = 0.00
+y2 = 60.00
+g = 0.00
+lb=1080.0, ub=1133.3333333333333</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1"></a>dsp.setObjective((<span class="dv">300</span> <span class="op">-</span> <span class="dv">4</span><span class="op">*</span>y1_opt <span class="op">-</span> <span class="dv">5</span><span class="op">*</span>y2_opt) <span class="op">*</span> u1 <span class="op">+</span> (<span class="dv">220</span> <span class="op">-</span> <span class="dv">2</span><span class="op">*</span>y1_opt <span class="op">-</span> <span class="dv">3</span><span class="op">*</span>y2_opt) <span class="op">*</span> u2, GRB.MAXIMIZE)</span>
+<span id="cb16-2"><a href="#cb16-2"></a>dsp.update()</span>
+<span id="cb16-3"><a href="#cb16-3"></a>dsp.optimize()</span>
+<span id="cb16-4"><a href="#cb16-4"></a></span>
+<span id="cb16-5"><a href="#cb16-5"></a><span class="cf">if</span> dsp.status <span class="op">==</span> GRB.OPTIMAL:</span>
+<span id="cb16-6"><a href="#cb16-6"></a>    u1_opt <span class="op">=</span> u1.X</span>
+<span id="cb16-7"><a href="#cb16-7"></a>    u2_opt <span class="op">=</span> u2.X</span>
+<span id="cb16-8"><a href="#cb16-8"></a>    </span>
+<span id="cb16-9"><a href="#cb16-9"></a>    <span class="bu">print</span>(<span class="ss">f'optimal obj = </span><span class="sc">{</span>dsp<span class="sc">.</span>objVal<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="cb16-10"><a href="#cb16-10"></a>    <span class="bu">print</span>(<span class="ss">f'u1 = </span><span class="sc">{</span>u1_opt<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="cb16-11"><a href="#cb16-11"></a>    <span class="bu">print</span>(<span class="ss">f'u2 = </span><span class="sc">{</span>u2_opt<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="cb16-12"><a href="#cb16-12"></a>    ub <span class="op">=</span> np.<span class="bu">min</span>([ub, <span class="dv">15</span><span class="op">*</span>y1_opt <span class="op">+</span> <span class="dv">18</span><span class="op">*</span>y2_opt <span class="op">+</span> dsp.objVal])</span>
+<span id="cb16-13"><a href="#cb16-13"></a>    <span class="bu">print</span>(<span class="ss">f'lb=</span><span class="sc">{</span>lb<span class="sc">}</span><span class="ss">, ub=</span><span class="sc">{</span>ub<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb16-14"><a href="#cb16-14"></a><span class="cf">elif</span> dsp.status <span class="op">==</span> GRB.UNBOUNDED:</span>
+<span id="cb16-15"><a href="#cb16-15"></a>    <span class="bu">print</span>(<span class="ss">f'dual subproblem is unbounded!'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>optimal obj = 80.00
+u1 = 0.00
+u2 = 2.00
+lb=1080.0, ub=1133.3333333333333</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1"></a>rbmp.addConstr((<span class="dv">300</span> <span class="op">-</span> <span class="dv">4</span><span class="op">*</span>y1 <span class="op">-</span> <span class="dv">5</span><span class="op">*</span>y2) <span class="op">*</span> u1_opt <span class="op">+</span> (<span class="dv">220</span> <span class="op">-</span> <span class="dv">2</span><span class="op">*</span>y1 <span class="op">-</span> <span class="dv">3</span><span class="op">*</span>y2) <span class="op">*</span> u2_opt <span class="op">&lt;=</span> g, name<span class="op">=</span><span class="st">'c3'</span>)</span>
+<span id="cb18-2"><a href="#cb18-2"></a>rbmp.update()</span>
+<span id="cb18-3"><a href="#cb18-3"></a>rbmp.optimize()</span>
+<span id="cb18-4"><a href="#cb18-4"></a></span>
+<span id="cb18-5"><a href="#cb18-5"></a><span class="cf">if</span> rbmp.status <span class="op">==</span> GRB.OPTIMAL:</span>
+<span id="cb18-6"><a href="#cb18-6"></a>    <span class="bu">print</span>(<span class="ss">f'optimal solution found!'</span>)</span>
+<span id="cb18-7"><a href="#cb18-7"></a>    </span>
+<span id="cb18-8"><a href="#cb18-8"></a>    y1_opt <span class="op">=</span> y1.X</span>
+<span id="cb18-9"><a href="#cb18-9"></a>    y2_opt <span class="op">=</span> y2.X</span>
+<span id="cb18-10"><a href="#cb18-10"></a>    g_opt <span class="op">=</span> g.X</span>
+<span id="cb18-11"><a href="#cb18-11"></a>    lb <span class="op">=</span> np.<span class="bu">max</span>([lb, rbmp.objVal])</span>
+<span id="cb18-12"><a href="#cb18-12"></a>    </span>
+<span id="cb18-13"><a href="#cb18-13"></a>    <span class="bu">print</span>(<span class="ss">f'optimal obj: </span><span class="sc">{</span>rbmp<span class="sc">.</span>objVal<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="cb18-14"><a href="#cb18-14"></a>    <span class="bu">print</span>(<span class="ss">f'y1 = </span><span class="sc">{</span>y1_opt<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="cb18-15"><a href="#cb18-15"></a>    <span class="bu">print</span>(<span class="ss">f'y2 = </span><span class="sc">{</span>y2_opt<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="cb18-16"><a href="#cb18-16"></a>    <span class="bu">print</span>(<span class="ss">f'g = </span><span class="sc">{</span>g_opt<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="cb18-17"><a href="#cb18-17"></a>    <span class="bu">print</span>(<span class="ss">f'lb=</span><span class="sc">{</span>lb<span class="sc">}</span><span class="ss">, ub=</span><span class="sc">{</span>ub<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb18-18"><a href="#cb18-18"></a><span class="cf">elif</span> rbmp.status <span class="op">==</span> GRB.INFEASIBLE:</span>
+<span id="cb18-19"><a href="#cb18-19"></a>    <span class="bu">print</span>(<span class="ss">f'original problem is infeasible!'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>optimal solution found!
+optimal obj: 1091.43
+y1 = 0.00
+y2 = 54.29
+g = 114.29
+lb=1091.4285714285713, ub=1133.3333333333333</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1"></a>dsp.setObjective((<span class="dv">300</span> <span class="op">-</span> <span class="dv">4</span><span class="op">*</span>y1_opt <span class="op">-</span> <span class="dv">5</span><span class="op">*</span>y2_opt) <span class="op">*</span> u1 <span class="op">+</span> (<span class="dv">220</span> <span class="op">-</span> <span class="dv">2</span><span class="op">*</span>y1_opt <span class="op">-</span> <span class="dv">3</span><span class="op">*</span>y2_opt) <span class="op">*</span> u2, GRB.MAXIMIZE)</span>
+<span id="cb20-2"><a href="#cb20-2"></a>dsp.update()</span>
+<span id="cb20-3"><a href="#cb20-3"></a>dsp.optimize()</span>
+<span id="cb20-4"><a href="#cb20-4"></a></span>
+<span id="cb20-5"><a href="#cb20-5"></a><span class="cf">if</span> dsp.status <span class="op">==</span> GRB.OPTIMAL:</span>
+<span id="cb20-6"><a href="#cb20-6"></a>    u1_opt <span class="op">=</span> u1.X</span>
+<span id="cb20-7"><a href="#cb20-7"></a>    u2_opt <span class="op">=</span> u2.X</span>
+<span id="cb20-8"><a href="#cb20-8"></a>    </span>
+<span id="cb20-9"><a href="#cb20-9"></a>    <span class="bu">print</span>(<span class="ss">f'optimal obj = </span><span class="sc">{</span>dsp<span class="sc">.</span>objVal<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="cb20-10"><a href="#cb20-10"></a>    <span class="bu">print</span>(<span class="ss">f'u1 = </span><span class="sc">{</span>u1_opt<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="cb20-11"><a href="#cb20-11"></a>    <span class="bu">print</span>(<span class="ss">f'u2 = </span><span class="sc">{</span>u2_opt<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="cb20-12"><a href="#cb20-12"></a>    ub <span class="op">=</span> np.<span class="bu">min</span>([ub, <span class="dv">15</span><span class="op">*</span>y1_opt <span class="op">+</span> <span class="dv">18</span><span class="op">*</span>y2_opt <span class="op">+</span> dsp.objVal])</span>
+<span id="cb20-13"><a href="#cb20-13"></a>    <span class="bu">print</span>(<span class="ss">f'lb=</span><span class="sc">{</span>lb<span class="sc">}</span><span class="ss">, ub=</span><span class="sc">{</span>ub<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb20-14"><a href="#cb20-14"></a><span class="cf">elif</span> dsp.status <span class="op">==</span> GRB.UNBOUNDED:</span>
+<span id="cb20-15"><a href="#cb20-15"></a>    <span class="bu">print</span>(<span class="ss">f'dual subproblem is unbounded!'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>optimal obj = 114.29
+u1 = 0.00
+u2 = 2.00
+lb=1091.4285714285713, ub=1091.4285714285713</code></pre>
+</div>
+</div>
+</section>
+<section id="putting-it-together" class="level3" data-number="4.2.4">
+<h3 data-number="4.2.4" class="anchored" data-anchor-id="putting-it-together"><span class="header-section-number">4.2.4</span> Putting it together</h3>
+</section>
+<section id="a-generic-solver" class="level3" data-number="4.2.5">
+<h3 data-number="4.2.5" class="anchored" data-anchor-id="a-generic-solver"><span class="header-section-number">4.2.5</span> A generic solver</h3>
+</section>
+<section id="implementation-with-callbacks" class="level3" data-number="4.2.6">
+<h3 data-number="4.2.6" class="anchored" data-anchor-id="implementation-with-callbacks"><span class="header-section-number">4.2.6</span> Implementation with callbacks</h3>
 
 
 </section>
