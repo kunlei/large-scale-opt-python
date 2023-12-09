@@ -729,7 +729,7 @@ lb=1091.4285714285713, ub=1091.4285714285713</code></pre>
 <section id="putting-it-together" class="level3" data-number="4.2.4">
 <h3 data-number="4.2.4" class="anchored" data-anchor-id="putting-it-together"><span class="header-section-number">4.2.4</span> Putting it together</h3>
 <p>Certainly we don’t want to manually control the interaction between the master problem and subproblem to find the optimal solution. Therefore, in this section, we will put every together to come up with a control flow to help us identify the optimal solution automatically.</p>
-<div class="cell" data-execution_count="28">
+<div class="cell" data-execution_count="31">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1"></a><span class="im">from</span> enum <span class="im">import</span> Enum</span>
 <span id="cb22-2"><a href="#cb22-2"></a></span>
 <span id="cb22-3"><a href="#cb22-3"></a><span class="kw">class</span> OptStatus(Enum):</span>
@@ -738,12 +738,12 @@ lb=1091.4285714285713, ub=1091.4285714285713</code></pre>
 <span id="cb22-6"><a href="#cb22-6"></a>    INFEASIBLE <span class="op">=</span> <span class="dv">2</span></span>
 <span id="cb22-7"><a href="#cb22-7"></a>    ERROR <span class="op">=</span> <span class="dv">3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="24">
+<div class="cell" data-execution_count="36">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1"></a><span class="kw">class</span> MasterSolver:</span>
 <span id="cb23-2"><a href="#cb23-2"></a>    </span>
 <span id="cb23-3"><a href="#cb23-3"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
 <span id="cb23-4"><a href="#cb23-4"></a>        <span class="va">self</span>._env <span class="op">=</span> gp.Env(<span class="st">'MasterProbEnv'</span>)</span>
-<span id="cb23-5"><a href="#cb23-5"></a>        <span class="va">self</span>._model <span class="op">=</span> gp.Model(env<span class="op">=</span>env, name<span class="op">=</span><span class="st">'RBMP'</span>)</span>
+<span id="cb23-5"><a href="#cb23-5"></a>        <span class="va">self</span>._model <span class="op">=</span> gp.Model(env<span class="op">=</span><span class="va">self</span>._env, name<span class="op">=</span><span class="st">'RBMP'</span>)</span>
 <span id="cb23-6"><a href="#cb23-6"></a>        </span>
 <span id="cb23-7"><a href="#cb23-7"></a>        <span class="co"># create decision variables</span></span>
 <span id="cb23-8"><a href="#cb23-8"></a>        <span class="va">self</span>._y1 <span class="op">=</span> <span class="va">self</span>._model.addVar(vtype<span class="op">=</span>GRB.CONTINUOUS, lb<span class="op">=</span><span class="dv">0</span>, name<span class="op">=</span><span class="st">'y1'</span>)</span>
@@ -775,13 +775,13 @@ lb=1091.4285714285713, ub=1091.4285714285713</code></pre>
 <span id="cb23-34"><a href="#cb23-34"></a>            </span>
 <span id="cb23-35"><a href="#cb23-35"></a>        <span class="cf">return</span> opt_status</span>
 <span id="cb23-36"><a href="#cb23-36"></a>    </span>
-<span id="cb23-37"><a href="#cb23-37"></a>    <span class="kw">def</span> add_feasibility_cut(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="cb23-38"><a href="#cb23-38"></a>        </span>
-<span id="cb23-39"><a href="#cb23-39"></a>        <span class="cf">pass</span></span>
+<span id="cb23-37"><a href="#cb23-37"></a>    <span class="kw">def</span> add_feasibility_cut(<span class="va">self</span>, opt_u1, opt_u2) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb23-38"><a href="#cb23-38"></a>        <span class="va">self</span>._model.addConstr((<span class="dv">300</span> <span class="op">-</span> <span class="dv">4</span><span class="op">*</span><span class="va">self</span>._y1 <span class="op">-</span> <span class="dv">5</span><span class="op">*</span><span class="va">self</span>._y2) <span class="op">*</span> opt_u1 <span class="op">+</span> </span>
+<span id="cb23-39"><a href="#cb23-39"></a>                              (<span class="dv">220</span> <span class="op">-</span> <span class="dv">2</span><span class="op">*</span><span class="va">self</span>._y1 <span class="op">-</span> <span class="dv">3</span><span class="op">*</span><span class="va">self</span>._y2) <span class="op">*</span> opt_u2 <span class="op">&lt;=</span> <span class="dv">0</span>)</span>
 <span id="cb23-40"><a href="#cb23-40"></a>    </span>
-<span id="cb23-41"><a href="#cb23-41"></a>    <span class="kw">def</span> add_optimality_cut(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="cb23-42"><a href="#cb23-42"></a>        </span>
-<span id="cb23-43"><a href="#cb23-43"></a>        <span class="cf">pass</span></span>
+<span id="cb23-41"><a href="#cb23-41"></a>    <span class="kw">def</span> add_optimality_cut(<span class="va">self</span>, opt_u1, opt_u2) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb23-42"><a href="#cb23-42"></a>        <span class="va">self</span>._model.addConstr((<span class="dv">300</span> <span class="op">-</span> <span class="dv">4</span><span class="op">*</span><span class="va">self</span>._y1 <span class="op">-</span> <span class="dv">5</span><span class="op">*</span><span class="va">self</span>._y2) <span class="op">*</span> opt_u1 <span class="op">+</span> </span>
+<span id="cb23-43"><a href="#cb23-43"></a>                              (<span class="dv">220</span> <span class="op">-</span> <span class="dv">2</span><span class="op">*</span><span class="va">self</span>._y1 <span class="op">-</span> <span class="dv">3</span><span class="op">*</span><span class="va">self</span>._y2) <span class="op">*</span> opt_u2 <span class="op">&lt;=</span> g)</span>
 <span id="cb23-44"><a href="#cb23-44"></a>    </span>
 <span id="cb23-45"><a href="#cb23-45"></a>    <span class="kw">def</span> clean_up(<span class="va">self</span>):</span>
 <span id="cb23-46"><a href="#cb23-46"></a>        <span class="va">self</span>._env.dispose()</span>
@@ -803,26 +803,68 @@ lb=1091.4285714285713, ub=1091.4285714285713</code></pre>
 <span id="cb23-62"><a href="#cb23-62"></a>    <span class="kw">def</span> opt_g(<span class="va">self</span>):</span>
 <span id="cb23-63"><a href="#cb23-63"></a>        <span class="cf">return</span> <span class="va">self</span>._g</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="25">
+<div class="cell" data-execution_count="68">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1"></a><span class="kw">class</span> DualSubprobSolver:</span>
 <span id="cb24-2"><a href="#cb24-2"></a>    </span>
 <span id="cb24-3"><a href="#cb24-3"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
-<span id="cb24-4"><a href="#cb24-4"></a>        </span>
-<span id="cb24-5"><a href="#cb24-5"></a>        <span class="cf">pass</span></span>
-<span id="cb24-6"><a href="#cb24-6"></a>    </span>
-<span id="cb24-7"><a href="#cb24-7"></a>    <span class="kw">def</span> solve(<span class="va">self</span>):</span>
-<span id="cb24-8"><a href="#cb24-8"></a>        </span>
-<span id="cb24-9"><a href="#cb24-9"></a>        <span class="cf">pass</span></span>
-<span id="cb24-10"><a href="#cb24-10"></a>    </span>
-<span id="cb24-11"><a href="#cb24-11"></a>    <span class="kw">def</span> update_objective(<span class="va">self</span>):</span>
-<span id="cb24-12"><a href="#cb24-12"></a>        </span>
-<span id="cb24-13"><a href="#cb24-13"></a>        <span class="cf">pass</span></span>
-<span id="cb24-14"><a href="#cb24-14"></a>    </span>
-<span id="cb24-15"><a href="#cb24-15"></a>    <span class="kw">def</span> clean_up(<span class="va">self</span>):</span>
-<span id="cb24-16"><a href="#cb24-16"></a>        <span class="va">self</span>._env.dispose()</span>
-<span id="cb24-17"><a href="#cb24-17"></a>        <span class="va">self</span>._model.dispose()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb24-4"><a href="#cb24-4"></a>        <span class="va">self</span>._env <span class="op">=</span> gp.Env(<span class="st">'DualSubprobEnv'</span>)</span>
+<span id="cb24-5"><a href="#cb24-5"></a>        <span class="va">self</span>._model <span class="op">=</span> gp.Model(env<span class="op">=</span><span class="va">self</span>._env, name<span class="op">=</span><span class="st">'DSP'</span>)</span>
+<span id="cb24-6"><a href="#cb24-6"></a>        </span>
+<span id="cb24-7"><a href="#cb24-7"></a>        <span class="co"># create decision variables</span></span>
+<span id="cb24-8"><a href="#cb24-8"></a>        <span class="va">self</span>._u1 <span class="op">=</span> <span class="va">self</span>._model.addVar(vtype<span class="op">=</span>GRB.CONTINUOUS, name<span class="op">=</span><span class="st">'u1'</span>)</span>
+<span id="cb24-9"><a href="#cb24-9"></a>        <span class="va">self</span>._u2 <span class="op">=</span> <span class="va">self</span>._model.addVar(vtype<span class="op">=</span>GRB.CONTINUOUS, name<span class="op">=</span><span class="st">'u2'</span>)</span>
+<span id="cb24-10"><a href="#cb24-10"></a>        </span>
+<span id="cb24-11"><a href="#cb24-11"></a>        <span class="co"># create constraints</span></span>
+<span id="cb24-12"><a href="#cb24-12"></a>        <span class="va">self</span>._model.addConstr(<span class="dv">2</span><span class="op">*</span><span class="va">self</span>._u1 <span class="op">+</span> <span class="dv">4</span><span class="op">*</span><span class="va">self</span>._u2 <span class="op">&lt;=</span> <span class="dv">8</span>, name<span class="op">=</span><span class="st">'c1'</span>)</span>
+<span id="cb24-13"><a href="#cb24-13"></a>        <span class="va">self</span>._model.addConstr(<span class="dv">3</span><span class="op">*</span><span class="va">self</span>._u1 <span class="op">+</span> <span class="dv">2</span><span class="op">*</span><span class="va">self</span>._u2 <span class="op">&lt;=</span> <span class="dv">12</span>, name<span class="op">=</span><span class="st">'c2'</span>)</span>
+<span id="cb24-14"><a href="#cb24-14"></a>        <span class="va">self</span>._model.addConstr(<span class="dv">2</span><span class="op">*</span><span class="va">self</span>._u1 <span class="op">+</span> <span class="dv">3</span><span class="op">*</span><span class="va">self</span>._u2 <span class="op">&lt;=</span> <span class="dv">10</span>, name<span class="op">=</span><span class="st">'c3'</span>)</span>
+<span id="cb24-15"><a href="#cb24-15"></a>        <span class="va">self</span>._model.update()</span>
+<span id="cb24-16"><a href="#cb24-16"></a>        </span>
+<span id="cb24-17"><a href="#cb24-17"></a>        <span class="va">self</span>._opt_obj <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb24-18"><a href="#cb24-18"></a>        <span class="va">self</span>._opt_u1 <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb24-19"><a href="#cb24-19"></a>        <span class="va">self</span>._opt_u2 <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb24-20"><a href="#cb24-20"></a>    </span>
+<span id="cb24-21"><a href="#cb24-21"></a>    <span class="kw">def</span> solve(<span class="va">self</span>):</span>
+<span id="cb24-22"><a href="#cb24-22"></a>        <span class="va">self</span>._model.optimize()</span>
+<span id="cb24-23"><a href="#cb24-23"></a>        </span>
+<span id="cb24-24"><a href="#cb24-24"></a>        <span class="cf">if</span> <span class="va">self</span>._model.status <span class="op">==</span> GRB.OPTIMAL:</span>
+<span id="cb24-25"><a href="#cb24-25"></a>            <span class="va">self</span>._opt_obj <span class="op">=</span> <span class="va">self</span>._model.objVal</span>
+<span id="cb24-26"><a href="#cb24-26"></a>            <span class="va">self</span>._opt_u1 <span class="op">=</span> <span class="va">self</span>._u1.X</span>
+<span id="cb24-27"><a href="#cb24-27"></a>            <span class="va">self</span>._opt_u2 <span class="op">=</span> <span class="va">self</span>._u2.X</span>
+<span id="cb24-28"><a href="#cb24-28"></a>            <span class="cf">return</span> OptStatus.OPTIMAL</span>
+<span id="cb24-29"><a href="#cb24-29"></a>        <span class="cf">elif</span> <span class="va">self</span>._model.status <span class="op">==</span> GRB.UNBOUNDED:</span>
+<span id="cb24-30"><a href="#cb24-30"></a>            <span class="cf">return</span> OptStatus.UNBOUNDED</span>
+<span id="cb24-31"><a href="#cb24-31"></a>        <span class="cf">else</span>:</span>
+<span id="cb24-32"><a href="#cb24-32"></a>            <span class="cf">return</span> OptStatus.ERROR</span>
+<span id="cb24-33"><a href="#cb24-33"></a>    </span>
+<span id="cb24-34"><a href="#cb24-34"></a>    <span class="kw">def</span> update_objective(<span class="va">self</span>, opt_y1, opt_y2):</span>
+<span id="cb24-35"><a href="#cb24-35"></a>        <span class="co"># Print the values of all variables</span></span>
+<span id="cb24-36"><a href="#cb24-36"></a>        <span class="cf">for</span> v <span class="kw">in</span> <span class="va">self</span>._model.getVars():</span>
+<span id="cb24-37"><a href="#cb24-37"></a>            <span class="bu">print</span>(<span class="ss">f'v.name = </span><span class="sc">{</span>v<span class="sc">.</span>VarName<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb24-38"><a href="#cb24-38"></a>        </span>
+<span id="cb24-39"><a href="#cb24-39"></a>        <span class="bu">print</span>(<span class="ss">f'u1: </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>_u1<span class="sc">.</span>VarName<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb24-40"><a href="#cb24-40"></a>        u1 <span class="op">=</span> <span class="va">self</span>._model.getVarByName(<span class="st">'u1'</span>)</span>
+<span id="cb24-41"><a href="#cb24-41"></a>        u2 <span class="op">=</span> <span class="va">self</span>._model.getVarByName(<span class="st">'u2'</span>)</span>
+<span id="cb24-42"><a href="#cb24-42"></a>        <span class="va">self</span>._model.setObjective((<span class="dv">300</span><span class="op">-</span><span class="dv">4</span><span class="op">*</span>opt_y1<span class="op">-</span><span class="dv">5</span><span class="op">*</span>opt_y2)<span class="op">*</span>u1 <span class="op">+</span> (<span class="dv">220</span><span class="op">-</span><span class="dv">2</span><span class="op">*</span>opt_y1<span class="op">-</span><span class="dv">3</span><span class="op">*</span>opt_y2)<span class="op">*</span>u2, GRB.MAXIMIZE)</span>
+<span id="cb24-43"><a href="#cb24-43"></a>        <span class="va">self</span>._model.update()</span>
+<span id="cb24-44"><a href="#cb24-44"></a>    </span>
+<span id="cb24-45"><a href="#cb24-45"></a>    <span class="kw">def</span> clean_up(<span class="va">self</span>):</span>
+<span id="cb24-46"><a href="#cb24-46"></a>        <span class="va">self</span>._model.dispose()</span>
+<span id="cb24-47"><a href="#cb24-47"></a>        <span class="va">self</span>._env.dispose()</span>
+<span id="cb24-48"><a href="#cb24-48"></a>        </span>
+<span id="cb24-49"><a href="#cb24-49"></a>    <span class="at">@property</span></span>
+<span id="cb24-50"><a href="#cb24-50"></a>    <span class="kw">def</span> opt_obj(<span class="va">self</span>):</span>
+<span id="cb24-51"><a href="#cb24-51"></a>        <span class="cf">return</span> <span class="va">self</span>._opt_obj</span>
+<span id="cb24-52"><a href="#cb24-52"></a>    </span>
+<span id="cb24-53"><a href="#cb24-53"></a>    <span class="at">@property</span></span>
+<span id="cb24-54"><a href="#cb24-54"></a>    <span class="kw">def</span> opt_u1(<span class="va">self</span>):</span>
+<span id="cb24-55"><a href="#cb24-55"></a>        <span class="cf">return</span> <span class="va">self</span>._opt_u1</span>
+<span id="cb24-56"><a href="#cb24-56"></a>    </span>
+<span id="cb24-57"><a href="#cb24-57"></a>    <span class="at">@property</span></span>
+<span id="cb24-58"><a href="#cb24-58"></a>    <span class="kw">def</span> opt_u2(<span class="va">self</span>):</span>
+<span id="cb24-59"><a href="#cb24-59"></a>        <span class="cf">return</span> <span class="va">self</span>._opt_u2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="26">
+<div class="cell" data-execution_count="69">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1"></a><span class="kw">class</span> BendersDecomposition:</span>
 <span id="cb25-2"><a href="#cb25-2"></a>    </span>
 <span id="cb25-3"><a href="#cb25-3"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, master_solver, dual_subprob_solver):</span>
@@ -844,13 +886,68 @@ lb=1091.4285714285713, ub=1091.4285714285713</code></pre>
 <span id="cb25-19"><a href="#cb25-19"></a>            <span class="co"># update lower bound</span></span>
 <span id="cb25-20"><a href="#cb25-20"></a>            lb <span class="op">=</span> np.<span class="bu">max</span>([lb, <span class="va">self</span>._master_solver.opt_obj])</span>
 <span id="cb25-21"><a href="#cb25-21"></a>            </span>
-<span id="cb25-22"><a href="#cb25-22"></a>            <span class="co"># solve subproblem</span></span>
-<span id="cb25-23"><a href="#cb25-23"></a>            <span class="va">self</span>._dual_subprob_solver.solve()</span>
+<span id="cb25-22"><a href="#cb25-22"></a>            opt_y1 <span class="op">=</span> <span class="va">self</span>._master_solver.opt_y1</span>
+<span id="cb25-23"><a href="#cb25-23"></a>            opt_y2 <span class="op">=</span> <span class="va">self</span>._master_solver.opt_y2</span>
 <span id="cb25-24"><a href="#cb25-24"></a>            </span>
-<span id="cb25-25"><a href="#cb25-25"></a>            <span class="co"># update upper bound</span></span>
-<span id="cb25-26"><a href="#cb25-26"></a>            </span>
-<span id="cb25-27"><a href="#cb25-27"></a>            <span class="cf">if</span> ub <span class="op">-</span> lb <span class="op">&lt;=</span> eps:</span>
-<span id="cb25-28"><a href="#cb25-28"></a>                <span class="cf">break</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb25-25"><a href="#cb25-25"></a>            <span class="co"># solve subproblem</span></span>
+<span id="cb25-26"><a href="#cb25-26"></a>            <span class="va">self</span>._dual_subprob_solver.update_objective(opt_y1, opt_y2)</span>
+<span id="cb25-27"><a href="#cb25-27"></a>            dsp_status <span class="op">=</span> <span class="va">self</span>._dual_subprob_solver.solve()</span>
+<span id="cb25-28"><a href="#cb25-28"></a>            </span>
+<span id="cb25-29"><a href="#cb25-29"></a>            <span class="cf">if</span> dsp_status <span class="op">==</span> OptStatus.OPTIMAL:</span>
+<span id="cb25-30"><a href="#cb25-30"></a>                <span class="co"># update upper bound</span></span>
+<span id="cb25-31"><a href="#cb25-31"></a>                opt_obj <span class="op">=</span> <span class="va">self</span>._dual_subprob_solver.opt_obj</span>
+<span id="cb25-32"><a href="#cb25-32"></a>                ub <span class="op">=</span> np.<span class="bu">min</span>([ub, <span class="dv">15</span><span class="op">*</span>y1_opt <span class="op">+</span> <span class="dv">18</span><span class="op">*</span>y2_opt <span class="op">+</span> opt_obj])</span>
+<span id="cb25-33"><a href="#cb25-33"></a>                </span>
+<span id="cb25-34"><a href="#cb25-34"></a>                <span class="cf">if</span> ub <span class="op">-</span> lb <span class="op">&lt;=</span> eps:</span>
+<span id="cb25-35"><a href="#cb25-35"></a>                    <span class="cf">break</span></span>
+<span id="cb25-36"><a href="#cb25-36"></a>                </span>
+<span id="cb25-37"><a href="#cb25-37"></a>                opt_u1 <span class="op">=</span> <span class="va">self</span>._dual_subprob_solver.opt_u1</span>
+<span id="cb25-38"><a href="#cb25-38"></a>                opt_u2 <span class="op">=</span> <span class="va">self</span>._dual_subprob_solver.opt_u2</span>
+<span id="cb25-39"><a href="#cb25-39"></a>                <span class="va">self</span>._master_solver.add_optimality_cut(opt_u1, opt_u2) </span>
+<span id="cb25-40"><a href="#cb25-40"></a>            <span class="cf">elif</span> dsp_status <span class="op">==</span> OptStatus.UNBOUNDED:</span>
+<span id="cb25-41"><a href="#cb25-41"></a>                opt_u1 <span class="op">=</span> <span class="va">self</span>._dual_subprob_solver.opt_u1</span>
+<span id="cb25-42"><a href="#cb25-42"></a>                opt_u2 <span class="op">=</span> <span class="va">self</span>._dual_subprob_solver.opt_u2</span>
+<span id="cb25-43"><a href="#cb25-43"></a>                <span class="va">self</span>._master_solver.add_feasibility_cut(opt_u1, opt_u2) </span>
+<span id="cb25-44"><a href="#cb25-44"></a>            </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="70">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1"></a>master_solver <span class="op">=</span> MasterSolver()</span>
+<span id="cb26-2"><a href="#cb26-2"></a>dual_subprob_solver <span class="op">=</span> DualSubprobSolver()</span>
+<span id="cb26-3"><a href="#cb26-3"></a></span>
+<span id="cb26-4"><a href="#cb26-4"></a>benders_decomposition <span class="op">=</span> BendersDecomposition(master_solver, dual_subprob_solver)</span>
+<span id="cb26-5"><a href="#cb26-5"></a>benders_decomposition.optimize()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Set parameter Username
+Set parameter LogFile to value "MasterProbEnv"
+Set parameter Username
+Set parameter LogFile to value "DualSubprobEnv"
+Gurobi Optimizer version 10.0.3 build v10.0.3rc0 (mac64[arm])
+
+CPU model: Apple M1
+Thread count: 8 physical cores, 8 logical processors, using up to 8 threads
+
+Optimize a model with 0 rows, 3 columns and 0 nonzeros
+Model fingerprint: 0xb00b2c2a
+Coefficient statistics:
+  Matrix range     [0e+00, 0e+00]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [0e+00, 0e+00]
+  RHS range        [0e+00, 0e+00]
+Presolve removed 0 rows and 3 columns
+Presolve time: 0.00s
+Presolve: All rows and columns removed
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    0.0000000e+00   0.000000e+00   0.000000e+00      0s
+
+Solved in 0 iterations and 0.00 seconds (0.00 work units)
+Optimal objective  0.000000000e+00
+v.name = u1
+v.name = u2
+u1: u1</code></pre>
+</div>
+<div class="cell-output cell-output-error">
+<pre><code>GurobiError: Variable not in model</code></pre>
+</div>
 </div>
 </section>
 <section id="a-generic-solver" class="level3" data-number="4.2.5">
