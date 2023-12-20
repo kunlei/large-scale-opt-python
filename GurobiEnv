@@ -1075,3 +1075,56 @@ Iteration    Objective       Primal Inf.    Dual Inf.      Time
 
 Solved in 13 iterations and 0.00 seconds (0.00 work units)
 Infeasible model
+
+Gurobi 10.0.3 (mac64[arm], Python) logging started Tue Dec 19 23:09:01 2023
+
+Set parameter Username
+Set parameter LogFile to value "GurobiEnv"
+Gurobi Optimizer version 10.0.3 build v10.0.3rc0 (mac64[arm])
+
+CPU model: Apple M1
+Thread count: 8 physical cores, 8 logical processors, using up to 8 threads
+
+Optimize a model with 20 rows, 30 columns and 600 nonzeros
+Model fingerprint: 0x05cb70d4
+Coefficient statistics:
+  Matrix range     [2e+00, 2e+01]
+  Objective range  [2e+00, 1e+01]
+  Bounds range     [0e+00, 0e+00]
+  RHS range        [2e+01, 5e+01]
+Presolve time: 0.00s
+Presolved: 20 rows, 30 columns, 600 nonzeros
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    3.3913043e+00   5.119565e+01   0.000000e+00      0s
+
+Solved in 13 iterations and 0.00 seconds (0.00 work units)
+Infeasible model
+
+Gurobi 10.0.3 (mac64[arm], Python) logging started Tue Dec 19 23:09:18 2023
+
+Set parameter Username
+Set parameter LogFile to value "GurobiEnv"
+Gurobi Optimizer version 10.0.3 build v10.0.3rc0 (mac64[arm])
+
+CPU model: Apple M1
+Thread count: 8 physical cores, 8 logical processors, using up to 8 threads
+
+Optimize a model with 20 rows, 30 columns and 600 nonzeros
+Model fingerprint: 0x05cb70d4
+Coefficient statistics:
+  Matrix range     [2e+00, 2e+01]
+  Objective range  [2e+00, 1e+01]
+  Bounds range     [0e+00, 0e+00]
+  RHS range        [2e+01, 5e+01]
+Presolve time: 0.00s
+Presolved: 20 rows, 30 columns, 600 nonzeros
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    3.3913043e+00   5.119565e+01   0.000000e+00      0s
+
+Solved in 13 iterations and 0.00 seconds (0.00 work units)
+Infeasible model
+
+Gurobi 10.0.3 (mac64[arm], Python) logging started Tue Dec 19 23:12:20 2023
+
