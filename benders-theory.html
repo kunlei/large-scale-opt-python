@@ -233,8 +233,8 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
   <li><a href="#a-serious-lp-problem-that-cannot-wait-to-be-decomposed" id="toc-a-serious-lp-problem-that-cannot-wait-to-be-decomposed" class="nav-link" data-scroll-target="#a-serious-lp-problem-that-cannot-wait-to-be-decomposed"><span class="header-section-number">4.2.2</span> A serious LP problem that cannot wait to be decomposed!</a></li>
   <li><a href="#benders-decomposition-formulations" id="toc-benders-decomposition-formulations" class="nav-link" data-scroll-target="#benders-decomposition-formulations"><span class="header-section-number">4.2.3</span> Benders decomposition formulations</a></li>
   <li><a href="#benders-decomposition-step-by-step" id="toc-benders-decomposition-step-by-step" class="nav-link" data-scroll-target="#benders-decomposition-step-by-step"><span class="header-section-number">4.2.4</span> Benders decomposition step by step</a></li>
-  <li><a href="#putting-it-together" id="toc-putting-it-together" class="nav-link" data-scroll-target="#putting-it-together"><span class="header-section-number">4.2.5</span> Putting it together</a></li>
-  <li><a href="#generic-benders-decomposition-solvers-for-lp-problems" id="toc-generic-benders-decomposition-solvers-for-lp-problems" class="nav-link" data-scroll-target="#generic-benders-decomposition-solvers-for-lp-problems"><span class="header-section-number">4.2.6</span> Generic Benders decomposition solvers for LP problems</a></li>
+  <li><a href="#benders-decomposition-automated" id="toc-benders-decomposition-automated" class="nav-link" data-scroll-target="#benders-decomposition-automated"><span class="header-section-number">4.2.5</span> Benders decomposition automated</a></li>
+  <li><a href="#benders-decomposition---design-and-implementation" id="toc-benders-decomposition---design-and-implementation" class="nav-link" data-scroll-target="#benders-decomposition---design-and-implementation"><span class="header-section-number">4.2.6</span> Benders decomposition - design and implementation</a></li>
   <li><a href="#implementation-with-callbacks" id="toc-implementation-with-callbacks" class="nav-link" data-scroll-target="#implementation-with-callbacks"><span class="header-section-number">4.2.7</span> Implementation with callbacks</a></li>
   <li><a href="#testing-and-validation" id="toc-testing-and-validation" class="nav-link" data-scroll-target="#testing-and-validation"><span class="header-section-number">4.2.8</span> Testing and validation</a></li>
   </ul></li>
@@ -919,8 +919,8 @@ lb=1091.43, ub=1091.43</code></pre>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>env.dispose()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="putting-it-together" class="level3" data-number="4.2.5">
-<h3 data-number="4.2.5" class="anchored" data-anchor-id="putting-it-together"><span class="header-section-number">4.2.5</span> Putting it together</h3>
+<section id="benders-decomposition-automated" class="level3" data-number="4.2.5">
+<h3 data-number="4.2.5" class="anchored" data-anchor-id="benders-decomposition-automated"><span class="header-section-number">4.2.5</span> Benders decomposition automated</h3>
 <p>It typically takes Benders decomposition many iterations to reach optimality or conclude infeasibility/unboundedness. In this section, we put everything we have learned from the manual approach above into an automatic workflow.</p>
 <p><a href="#lst-bd-whole-status" class="quarto-xref">Listing&nbsp;<span>4.15</span></a> defines an <code>Enum</code> class that specifies four possible optimization statuses. The meanings of these statuses are self-explanatory from their corresponding names and further explanations are omitted here.</p>
 <div id="cell-80" class="cell" data-execution_count="2">
@@ -1276,72 +1276,319 @@ Bounds: lb=1091.43, ub=1091.43</code></pre>
 </div>
 </div>
 </section>
-<section id="generic-benders-decomposition-solvers-for-lp-problems" class="level3" data-number="4.2.6">
-<h3 data-number="4.2.6" class="anchored" data-anchor-id="generic-benders-decomposition-solvers-for-lp-problems"><span class="header-section-number">4.2.6</span> Generic Benders decomposition solvers for LP problems</h3>
-<p>The Benders decomposition solver we put together in the last section is a big step toward automating the interaction between the master solver and the dual subproblem solver. However, it is still rather limited in that both the master and subproblem solvers are tied to a specific problem. In this section, we aim to develop more generic solvers that are able to solve any LP problems following a specific form.</p>
-<p>We present the generic solvers in three steps. First, a generic Benders decomposition control flow is created that internally employs a master solver and a subproblem solver. Two separate implementations based on Gurobi and SCIP are then illustrated that can both fulfill the functionalities required by the control flow. The aim is to demonstrate how Benders decomposition can be implemented in open source and commercial modeling languages.</p>
-<section id="benders-decomposition-workflow" class="level4" data-number="4.2.6.1">
-<h4 data-number="4.2.6.1" class="anchored" data-anchor-id="benders-decomposition-workflow"><span class="header-section-number">4.2.6.1</span> Benders decomposition workflow</h4>
-<p>We can see from the Benders decomposition process in the last section that the interaction between the master problem and the subproblem is not dependent on any specific solver. Based on this realization, we first create a class that orchestrates the iterative problem solving process. <a href="#lst-generic-bd-workflow" class="quarto-xref">Listing&nbsp;<span>4.20</span></a> shows such an implementation.</p>
-<p>Notice that the class <code>GenericBendersDecomposition</code> keeps two internal objects: a master solver object and a subproblem solver object. The iterative problem solving process happens within a <code>while</code> loop. Within each iteration, the master problem is solved first, followed by the subproblem. Depending on whether the subproblem is optimal or unbounded, an optimality or feasibility cut is added to the master correspondingly. Any master/subproblem solver implementations that provide the desired interface could be feed into the class and perform Benders decomposition.</p>
-<div id="cell-94" class="cell" data-execution_count="9">
-<div id="lst-generic-bd-workflow" class="python cell-code listing">
+<section id="benders-decomposition---design-and-implementation" class="level3" data-number="4.2.6">
+<h3 data-number="4.2.6" class="anchored" data-anchor-id="benders-decomposition---design-and-implementation"><span class="header-section-number">4.2.6</span> Benders decomposition - design and implementation</h3>
+<p>The Benders decomposition algorithm we put together in the last section is a big step towards automating the interaction between the master problem optimizer and the dual subproblem optimizer. However, it is still limited in that both optimizers are tied to a specific problem instance. Even a slight change in the instance data requires an updated optimizer implementation. Ideally, we would like to to have an algorithm that could solve various LP problems as long as they follow the same form.</p>
+<p>In addition, we might want to have the flexibility to switch to different solvers within the master and dual subproblem optimizers. A good algorithm design should allow alternative implementations with minimal impact on the overall algorithm structure.</p>
+<p>With these needs in mind, in this section, we aim to design a Benders decomposition algorithm that can solve any LP problems following a standard form and allow various implementations in both the master problem and dual subproblem optimizers.</p>
+<p>We develop the algorithm in three steps. First, we present a Benders decomposition algorithm design that focuses on the overall algorithm workflow and only the abstract implementations of the master problem and dual subproblem optimizers. Next, an implementation of the Benders decomposition based on Gurobi is demonstrated. Lastly, an alternative implementation based on the open source solver SCIP is illustrated.</p>
+<section id="benders-decomposition-algorithm-design" class="level4" data-number="4.2.6.1">
+<h4 data-number="4.2.6.1" class="anchored" data-anchor-id="benders-decomposition-algorithm-design"><span class="header-section-number">4.2.6.1</span> Benders decomposition algorithm design</h4>
+<p>We could see from the previous sections that Benders decomposition involves three key components:</p>
+<ul>
+<li>An optimizer that solves the master problem</li>
+<li>An optimizer that solves the dual subproblem</li>
+<li>An orchestrator that dictates the interaction between the two optimizers</li>
+</ul>
+<p>To be able to solve LP problems of various sizes, both the master and dual subproblem optimizers must take a generic form and not be tied to a fixed number of various and/or constraints. Furthermore, to be able to switch to different solvers, both optimizers need to conform to a common interface.</p>
+<p>To this end, <a href="#lst-base-class-master" class="quarto-xref">Listing&nbsp;<span>4.21</span></a> defines a base class for master problem optimizers. The constructor <code>__init__()</code> takes three inputs, namely, objective coefficients, constraint matrix and the right-hand side. Any concrete implementation of the base class is responsible for constructing a model from these three input values using solver-specific modeling languages. The base class also defines several other key functions:</p>
+<ul>
+<li><code>solve()</code>: this is the function that invokes solver-specific optimization process and saves the corresponding optimization results.</li>
+<li><code>add_feasibility_cut()</code>: this function takes an extreme ray identified by the dual subproblem optimizer and adds a feasibility cut to the master problem.</li>
+<li><code>add_optimality_cut()</code>: this function takes an optimal solution identified by the dual subproblem optimizer and adds an optimality cut to the master problem.</li>
+<li><code>opt_obj_val()</code>: this function returns the optimal objective value obtained.</li>
+<li><code>opt_val_for_complicating_vars()</code>: this function returns the optimal solution values for all the complicating decision variables.</li>
+<li><code>opt_val_for_surrogate_var()</code>: this function returns the optimal value of the surrogate variable.</li>
+</ul>
+<div id="cell-94" class="cell" data-execution_count="41">
+<div id="lst-base-class-master" class="python cell-code listing">
 <figure class="quarto-float quarto-float-lst figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-generic-bd-workflow-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Listing&nbsp;4.20: Generic Benders decomposition for LP problems
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-base-class-master-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Listing&nbsp;4.20: Base class for restricted master problem implementations
 </figcaption>
-<div aria-describedby="lst-generic-bd-workflow-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="sourceCode cell-code" id="lst-generic-bd-workflow"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="lst-generic-bd-workflow-1"><a href="#lst-generic-bd-workflow-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> GenericBendersDecomposition:</span>
-<span id="lst-generic-bd-workflow-2"><a href="#lst-generic-bd-workflow-2" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="lst-generic-bd-workflow-3"><a href="#lst-generic-bd-workflow-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, master_solver, dual_subprob_solver):</span>
-<span id="lst-generic-bd-workflow-4"><a href="#lst-generic-bd-workflow-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._master_solver <span class="op">=</span> master_solver</span>
-<span id="lst-generic-bd-workflow-5"><a href="#lst-generic-bd-workflow-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._dual_subprob_solver <span class="op">=</span> dual_subprob_solver</span>
-<span id="lst-generic-bd-workflow-6"><a href="#lst-generic-bd-workflow-6" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="lst-generic-bd-workflow-7"><a href="#lst-generic-bd-workflow-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> optimize(<span class="va">self</span>,) <span class="op">-&gt;</span> OptStatus:</span>
-<span id="lst-generic-bd-workflow-8"><a href="#lst-generic-bd-workflow-8" aria-hidden="true" tabindex="-1"></a>        eps <span class="op">=</span> <span class="fl">1.0e-5</span></span>
-<span id="lst-generic-bd-workflow-9"><a href="#lst-generic-bd-workflow-9" aria-hidden="true" tabindex="-1"></a>        lb <span class="op">=</span> <span class="op">-</span>np.inf</span>
-<span id="lst-generic-bd-workflow-10"><a href="#lst-generic-bd-workflow-10" aria-hidden="true" tabindex="-1"></a>        ub <span class="op">=</span> np.inf</span>
-<span id="lst-generic-bd-workflow-11"><a href="#lst-generic-bd-workflow-11" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="lst-generic-bd-workflow-12"><a href="#lst-generic-bd-workflow-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">iter</span> <span class="op">=</span> <span class="dv">0</span></span>
-<span id="lst-generic-bd-workflow-13"><a href="#lst-generic-bd-workflow-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="va">True</span>:</span>
-<span id="lst-generic-bd-workflow-14"><a href="#lst-generic-bd-workflow-14" aria-hidden="true" tabindex="-1"></a>            <span class="bu">iter</span> <span class="op">+=</span> <span class="dv">1</span></span>
-<span id="lst-generic-bd-workflow-15"><a href="#lst-generic-bd-workflow-15" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f'</span><span class="ch">\n</span><span class="ss">Iteration: </span><span class="sc">{</span><span class="bu">iter</span><span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="lst-generic-bd-workflow-16"><a href="#lst-generic-bd-workflow-16" aria-hidden="true" tabindex="-1"></a>            <span class="co"># solve master problem</span></span>
-<span id="lst-generic-bd-workflow-17"><a href="#lst-generic-bd-workflow-17" aria-hidden="true" tabindex="-1"></a>            master_status <span class="op">=</span> <span class="va">self</span>._master_solver.solve()</span>
-<span id="lst-generic-bd-workflow-18"><a href="#lst-generic-bd-workflow-18" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> master_status <span class="op">==</span> OptStatus.INFEASIBLE:</span>
-<span id="lst-generic-bd-workflow-19"><a href="#lst-generic-bd-workflow-19" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f'Model is infeasible!'</span>)</span>
-<span id="lst-generic-bd-workflow-20"><a href="#lst-generic-bd-workflow-20" aria-hidden="true" tabindex="-1"></a>                <span class="cf">return</span> OptStatus.INFEASIBLE</span>
-<span id="lst-generic-bd-workflow-21"><a href="#lst-generic-bd-workflow-21" aria-hidden="true" tabindex="-1"></a>            </span>
-<span id="lst-generic-bd-workflow-22"><a href="#lst-generic-bd-workflow-22" aria-hidden="true" tabindex="-1"></a>            <span class="co"># update lower bound</span></span>
-<span id="lst-generic-bd-workflow-23"><a href="#lst-generic-bd-workflow-23" aria-hidden="true" tabindex="-1"></a>            lb <span class="op">=</span> np.<span class="bu">max</span>([lb, <span class="va">self</span>._master_solver.opt_obj])</span>
-<span id="lst-generic-bd-workflow-24"><a href="#lst-generic-bd-workflow-24" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f'Bounds: lb=</span><span class="sc">{</span>lb<span class="sc">:.2f}</span><span class="ss">, ub=</span><span class="sc">{</span>ub<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
-<span id="lst-generic-bd-workflow-25"><a href="#lst-generic-bd-workflow-25" aria-hidden="true" tabindex="-1"></a>            </span>
-<span id="lst-generic-bd-workflow-26"><a href="#lst-generic-bd-workflow-26" aria-hidden="true" tabindex="-1"></a>            opt_y <span class="op">=</span> <span class="va">self</span>._master_solver.opt_y</span>
-<span id="lst-generic-bd-workflow-27"><a href="#lst-generic-bd-workflow-27" aria-hidden="true" tabindex="-1"></a>            </span>
-<span id="lst-generic-bd-workflow-28"><a href="#lst-generic-bd-workflow-28" aria-hidden="true" tabindex="-1"></a>            <span class="co"># solve subproblem</span></span>
-<span id="lst-generic-bd-workflow-29"><a href="#lst-generic-bd-workflow-29" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>._dual_subprob_solver.update_objective(opt_y)</span>
-<span id="lst-generic-bd-workflow-30"><a href="#lst-generic-bd-workflow-30" aria-hidden="true" tabindex="-1"></a>            dsp_status <span class="op">=</span> <span class="va">self</span>._dual_subprob_solver.solve()</span>
-<span id="lst-generic-bd-workflow-31"><a href="#lst-generic-bd-workflow-31" aria-hidden="true" tabindex="-1"></a>            </span>
-<span id="lst-generic-bd-workflow-32"><a href="#lst-generic-bd-workflow-32" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> dsp_status <span class="op">==</span> OptStatus.OPTIMAL:</span>
-<span id="lst-generic-bd-workflow-33"><a href="#lst-generic-bd-workflow-33" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f'DSP is optimal!'</span>)</span>
-<span id="lst-generic-bd-workflow-34"><a href="#lst-generic-bd-workflow-34" aria-hidden="true" tabindex="-1"></a>                <span class="co"># update upper bound</span></span>
-<span id="lst-generic-bd-workflow-35"><a href="#lst-generic-bd-workflow-35" aria-hidden="true" tabindex="-1"></a>                opt_obj <span class="op">=</span> <span class="va">self</span>._dual_subprob_solver.opt_obj</span>
-<span id="lst-generic-bd-workflow-36"><a href="#lst-generic-bd-workflow-36" aria-hidden="true" tabindex="-1"></a>                opt_obj_y <span class="op">=</span> <span class="va">self</span>._master_solver.opt_obj_y</span>
-<span id="lst-generic-bd-workflow-37"><a href="#lst-generic-bd-workflow-37" aria-hidden="true" tabindex="-1"></a>                ub <span class="op">=</span> np.<span class="bu">min</span>([ub, opt_obj_y <span class="op">+</span> opt_obj])</span>
-<span id="lst-generic-bd-workflow-38"><a href="#lst-generic-bd-workflow-38" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f'Bounds: lb=</span><span class="sc">{</span>lb<span class="sc">:.2f}</span><span class="ss">, ub=</span><span class="sc">{</span>ub<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
-<span id="lst-generic-bd-workflow-39"><a href="#lst-generic-bd-workflow-39" aria-hidden="true" tabindex="-1"></a>                </span>
-<span id="lst-generic-bd-workflow-40"><a href="#lst-generic-bd-workflow-40" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> ub <span class="op">-</span> lb <span class="op">&lt;=</span> eps:</span>
-<span id="lst-generic-bd-workflow-41"><a href="#lst-generic-bd-workflow-41" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">return</span> OptStatus.OPTIMAL</span>
-<span id="lst-generic-bd-workflow-42"><a href="#lst-generic-bd-workflow-42" aria-hidden="true" tabindex="-1"></a>                </span>
-<span id="lst-generic-bd-workflow-43"><a href="#lst-generic-bd-workflow-43" aria-hidden="true" tabindex="-1"></a>                opt_u <span class="op">=</span> <span class="va">self</span>._dual_subprob_solver.opt_u</span>
-<span id="lst-generic-bd-workflow-44"><a href="#lst-generic-bd-workflow-44" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>._master_solver.add_optimality_cut(opt_u) </span>
-<span id="lst-generic-bd-workflow-45"><a href="#lst-generic-bd-workflow-45" aria-hidden="true" tabindex="-1"></a>            <span class="cf">elif</span> dsp_status <span class="op">==</span> OptStatus.UNBOUNDED:</span>
-<span id="lst-generic-bd-workflow-46"><a href="#lst-generic-bd-workflow-46" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f'DSP is unbounded!!!'</span>)</span>
-<span id="lst-generic-bd-workflow-47"><a href="#lst-generic-bd-workflow-47" aria-hidden="true" tabindex="-1"></a>                ray_u <span class="op">=</span> <span class="va">self</span>._dual_subprob_solver.ray_u</span>
-<span id="lst-generic-bd-workflow-48"><a href="#lst-generic-bd-workflow-48" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>._master_solver.add_feasibility_cut(ray_u) </span>
-<span id="lst-generic-bd-workflow-49"><a href="#lst-generic-bd-workflow-49" aria-hidden="true" tabindex="-1"></a>            <span class="cf">else</span>:</span>
-<span id="lst-generic-bd-workflow-50"><a href="#lst-generic-bd-workflow-50" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f"DSP solve ERROR!!!"</span>)</span>
-<span id="lst-generic-bd-workflow-51"><a href="#lst-generic-bd-workflow-51" aria-hidden="true" tabindex="-1"></a>                <span class="cf">return</span> OptStatus.ERROR</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div aria-describedby="lst-base-class-master-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="sourceCode cell-code" id="lst-base-class-master"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="lst-base-class-master-1"><a href="#lst-base-class-master-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> abc <span class="im">import</span> ABC, abstractmethod</span>
+<span id="lst-base-class-master-2"><a href="#lst-base-class-master-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> Dict</span>
+<span id="lst-base-class-master-3"><a href="#lst-base-class-master-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="lst-base-class-master-4"><a href="#lst-base-class-master-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="lst-base-class-master-5"><a href="#lst-base-class-master-5" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> BendersMasterOptimizer(ABC):</span>
+<span id="lst-base-class-master-6"><a href="#lst-base-class-master-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""base class for master solver implementation</span></span>
+<span id="lst-base-class-master-7"><a href="#lst-base-class-master-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="lst-base-class-master-8"><a href="#lst-base-class-master-8" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="lst-base-class-master-9"><a href="#lst-base-class-master-9" aria-hidden="true" tabindex="-1"></a><span class="co">        ABC (ABCMeta): helper class</span></span>
+<span id="lst-base-class-master-10"><a href="#lst-base-class-master-10" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="lst-base-class-master-11"><a href="#lst-base-class-master-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="lst-base-class-master-12"><a href="#lst-base-class-master-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, objective_coefficients: np.array, </span>
+<span id="lst-base-class-master-13"><a href="#lst-base-class-master-13" aria-hidden="true" tabindex="-1"></a>                 constraint_matrix: np.array, </span>
+<span id="lst-base-class-master-14"><a href="#lst-base-class-master-14" aria-hidden="true" tabindex="-1"></a>                 right_hand_side: np.array):</span>
+<span id="lst-base-class-master-15"><a href="#lst-base-class-master-15" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""constructor for master problem model initialization.</span></span>
+<span id="lst-base-class-master-16"><a href="#lst-base-class-master-16" aria-hidden="true" tabindex="-1"></a><span class="co">        Note that two types of variables will be created:</span></span>
+<span id="lst-base-class-master-17"><a href="#lst-base-class-master-17" aria-hidden="true" tabindex="-1"></a><span class="co">        - the complicating variables</span></span>
+<span id="lst-base-class-master-18"><a href="#lst-base-class-master-18" aria-hidden="true" tabindex="-1"></a><span class="co">        - the surrogate variable</span></span>
+<span id="lst-base-class-master-19"><a href="#lst-base-class-master-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="lst-base-class-master-20"><a href="#lst-base-class-master-20" aria-hidden="true" tabindex="-1"></a><span class="co">        Args:</span></span>
+<span id="lst-base-class-master-21"><a href="#lst-base-class-master-21" aria-hidden="true" tabindex="-1"></a><span class="co">            objective_coefficients (np.array): an array of size n that </span></span>
+<span id="lst-base-class-master-22"><a href="#lst-base-class-master-22" aria-hidden="true" tabindex="-1"></a><span class="co">                defines the coefficient value for each variable in the </span></span>
+<span id="lst-base-class-master-23"><a href="#lst-base-class-master-23" aria-hidden="true" tabindex="-1"></a><span class="co">                master problem objective function.</span></span>
+<span id="lst-base-class-master-24"><a href="#lst-base-class-master-24" aria-hidden="true" tabindex="-1"></a><span class="co">            constraint_matrix (np.array): a matrix of size m * n that </span></span>
+<span id="lst-base-class-master-25"><a href="#lst-base-class-master-25" aria-hidden="true" tabindex="-1"></a><span class="co">                defines the constraint coefficients.</span></span>
+<span id="lst-base-class-master-26"><a href="#lst-base-class-master-26" aria-hidden="true" tabindex="-1"></a><span class="co">            right_hand_side (np.array): an array of size n that </span></span>
+<span id="lst-base-class-master-27"><a href="#lst-base-class-master-27" aria-hidden="true" tabindex="-1"></a><span class="co">                defines the right hand side for each constraint.</span></span>
+<span id="lst-base-class-master-28"><a href="#lst-base-class-master-28" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
+<span id="lst-base-class-master-29"><a href="#lst-base-class-master-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">NotImplementedError</span></span>
+<span id="lst-base-class-master-30"><a href="#lst-base-class-master-30" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="lst-base-class-master-31"><a href="#lst-base-class-master-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="lst-base-class-master-32"><a href="#lst-base-class-master-32" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> solve(<span class="va">self</span>) <span class="op">-&gt;</span> OptStatus:</span>
+<span id="lst-base-class-master-33"><a href="#lst-base-class-master-33" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""solve the problem and return optimization status</span></span>
+<span id="lst-base-class-master-34"><a href="#lst-base-class-master-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="lst-base-class-master-35"><a href="#lst-base-class-master-35" aria-hidden="true" tabindex="-1"></a><span class="co">        Returns:</span></span>
+<span id="lst-base-class-master-36"><a href="#lst-base-class-master-36" aria-hidden="true" tabindex="-1"></a><span class="co">            OptStatus: an enum object</span></span>
+<span id="lst-base-class-master-37"><a href="#lst-base-class-master-37" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
+<span id="lst-base-class-master-38"><a href="#lst-base-class-master-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">NotImplementedError</span></span>
+<span id="lst-base-class-master-39"><a href="#lst-base-class-master-39" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="lst-base-class-master-40"><a href="#lst-base-class-master-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="lst-base-class-master-41"><a href="#lst-base-class-master-41" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> add_feasibility_cut(<span class="va">self</span>, extreme_ray: Dict[<span class="bu">int</span>, <span class="bu">float</span>]) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="lst-base-class-master-42"><a href="#lst-base-class-master-42" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""add feasibility cut.</span></span>
+<span id="lst-base-class-master-43"><a href="#lst-base-class-master-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="lst-base-class-master-44"><a href="#lst-base-class-master-44" aria-hidden="true" tabindex="-1"></a><span class="co">        Args:</span></span>
+<span id="lst-base-class-master-45"><a href="#lst-base-class-master-45" aria-hidden="true" tabindex="-1"></a><span class="co">            extreme_ray (Dict[int, float]): a mapping between variable key </span></span>
+<span id="lst-base-class-master-46"><a href="#lst-base-class-master-46" aria-hidden="true" tabindex="-1"></a><span class="co">                and extreme ray element. For example:</span></span>
+<span id="lst-base-class-master-47"><a href="#lst-base-class-master-47" aria-hidden="true" tabindex="-1"></a><span class="co">                extreme_ray = {</span></span>
+<span id="lst-base-class-master-48"><a href="#lst-base-class-master-48" aria-hidden="true" tabindex="-1"></a><span class="co">                    0: 1.0,</span></span>
+<span id="lst-base-class-master-49"><a href="#lst-base-class-master-49" aria-hidden="true" tabindex="-1"></a><span class="co">                    1: 2.0</span></span>
+<span id="lst-base-class-master-50"><a href="#lst-base-class-master-50" aria-hidden="true" tabindex="-1"></a><span class="co">                }</span></span>
+<span id="lst-base-class-master-51"><a href="#lst-base-class-master-51" aria-hidden="true" tabindex="-1"></a><span class="co">                It is assumed that the key type is integer.</span></span>
+<span id="lst-base-class-master-52"><a href="#lst-base-class-master-52" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
+<span id="lst-base-class-master-53"><a href="#lst-base-class-master-53" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">NotImplementedError</span></span>
+<span id="lst-base-class-master-54"><a href="#lst-base-class-master-54" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="lst-base-class-master-55"><a href="#lst-base-class-master-55" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="lst-base-class-master-56"><a href="#lst-base-class-master-56" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> add_optimality_cut(<span class="va">self</span>, opt_sol: Dict[<span class="bu">int</span>, <span class="bu">float</span>]) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="lst-base-class-master-57"><a href="#lst-base-class-master-57" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""add optimality cut.</span></span>
+<span id="lst-base-class-master-58"><a href="#lst-base-class-master-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="lst-base-class-master-59"><a href="#lst-base-class-master-59" aria-hidden="true" tabindex="-1"></a><span class="co">        Args:</span></span>
+<span id="lst-base-class-master-60"><a href="#lst-base-class-master-60" aria-hidden="true" tabindex="-1"></a><span class="co">            opt_sol (Dict[int, float]): a mapping between variable key </span></span>
+<span id="lst-base-class-master-61"><a href="#lst-base-class-master-61" aria-hidden="true" tabindex="-1"></a><span class="co">                and optimal solution element. For example:</span></span>
+<span id="lst-base-class-master-62"><a href="#lst-base-class-master-62" aria-hidden="true" tabindex="-1"></a><span class="co">                opt_sol = {</span></span>
+<span id="lst-base-class-master-63"><a href="#lst-base-class-master-63" aria-hidden="true" tabindex="-1"></a><span class="co">                    0: 1.0,</span></span>
+<span id="lst-base-class-master-64"><a href="#lst-base-class-master-64" aria-hidden="true" tabindex="-1"></a><span class="co">                    1: 2.0</span></span>
+<span id="lst-base-class-master-65"><a href="#lst-base-class-master-65" aria-hidden="true" tabindex="-1"></a><span class="co">                }</span></span>
+<span id="lst-base-class-master-66"><a href="#lst-base-class-master-66" aria-hidden="true" tabindex="-1"></a><span class="co">                It is assumed that the key type is integer.</span></span>
+<span id="lst-base-class-master-67"><a href="#lst-base-class-master-67" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
+<span id="lst-base-class-master-68"><a href="#lst-base-class-master-68" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">NotImplementedError</span></span>
+<span id="lst-base-class-master-69"><a href="#lst-base-class-master-69" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="lst-base-class-master-70"><a href="#lst-base-class-master-70" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="lst-base-class-master-71"><a href="#lst-base-class-master-71" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> opt_obj_val(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="lst-base-class-master-72"><a href="#lst-base-class-master-72" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""return the optimal objective value if exists</span></span>
+<span id="lst-base-class-master-73"><a href="#lst-base-class-master-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="lst-base-class-master-74"><a href="#lst-base-class-master-74" aria-hidden="true" tabindex="-1"></a><span class="co">        Returns:</span></span>
+<span id="lst-base-class-master-75"><a href="#lst-base-class-master-75" aria-hidden="true" tabindex="-1"></a><span class="co">            float: objective value</span></span>
+<span id="lst-base-class-master-76"><a href="#lst-base-class-master-76" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
+<span id="lst-base-class-master-77"><a href="#lst-base-class-master-77" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">NotImplementedError</span></span>
+<span id="lst-base-class-master-78"><a href="#lst-base-class-master-78" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="lst-base-class-master-79"><a href="#lst-base-class-master-79" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="lst-base-class-master-80"><a href="#lst-base-class-master-80" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> opt_obj_val_comp(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="lst-base-class-master-81"><a href="#lst-base-class-master-81" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""return the optimal objective value for the complicating variables</span></span>
+<span id="lst-base-class-master-82"><a href="#lst-base-class-master-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="lst-base-class-master-83"><a href="#lst-base-class-master-83" aria-hidden="true" tabindex="-1"></a><span class="co">        Returns:</span></span>
+<span id="lst-base-class-master-84"><a href="#lst-base-class-master-84" aria-hidden="true" tabindex="-1"></a><span class="co">            float: objective value for the complicating variables</span></span>
+<span id="lst-base-class-master-85"><a href="#lst-base-class-master-85" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
+<span id="lst-base-class-master-86"><a href="#lst-base-class-master-86" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">NotImplementedError</span></span>
+<span id="lst-base-class-master-87"><a href="#lst-base-class-master-87" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="lst-base-class-master-88"><a href="#lst-base-class-master-88" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="lst-base-class-master-89"><a href="#lst-base-class-master-89" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> opt_val_for_complicating_vars(<span class="va">self</span>) <span class="op">-&gt;</span> Dict[<span class="bu">int</span>, <span class="bu">float</span>]:</span>
+<span id="lst-base-class-master-90"><a href="#lst-base-class-master-90" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""return the optimal solution values for complicating variables</span></span>
+<span id="lst-base-class-master-91"><a href="#lst-base-class-master-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="lst-base-class-master-92"><a href="#lst-base-class-master-92" aria-hidden="true" tabindex="-1"></a><span class="co">        Returns:</span></span>
+<span id="lst-base-class-master-93"><a href="#lst-base-class-master-93" aria-hidden="true" tabindex="-1"></a><span class="co">            Dict[int, float]: mapping between variable key and optimal value.</span></span>
+<span id="lst-base-class-master-94"><a href="#lst-base-class-master-94" aria-hidden="true" tabindex="-1"></a><span class="co">            For example, opt_val = {</span></span>
+<span id="lst-base-class-master-95"><a href="#lst-base-class-master-95" aria-hidden="true" tabindex="-1"></a><span class="co">                0: 2.0,</span></span>
+<span id="lst-base-class-master-96"><a href="#lst-base-class-master-96" aria-hidden="true" tabindex="-1"></a><span class="co">                1: 3.0</span></span>
+<span id="lst-base-class-master-97"><a href="#lst-base-class-master-97" aria-hidden="true" tabindex="-1"></a><span class="co">            }</span></span>
+<span id="lst-base-class-master-98"><a href="#lst-base-class-master-98" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
+<span id="lst-base-class-master-99"><a href="#lst-base-class-master-99" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">NotImplementedError</span></span>
+<span id="lst-base-class-master-100"><a href="#lst-base-class-master-100" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="lst-base-class-master-101"><a href="#lst-base-class-master-101" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="lst-base-class-master-102"><a href="#lst-base-class-master-102" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> opt_val_for_surrogate_var(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="lst-base-class-master-103"><a href="#lst-base-class-master-103" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""return the optimal value for the surrogate variable</span></span>
+<span id="lst-base-class-master-104"><a href="#lst-base-class-master-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="lst-base-class-master-105"><a href="#lst-base-class-master-105" aria-hidden="true" tabindex="-1"></a><span class="co">        Returns:</span></span>
+<span id="lst-base-class-master-106"><a href="#lst-base-class-master-106" aria-hidden="true" tabindex="-1"></a><span class="co">            float: optimal value for the surrogate variable</span></span>
+<span id="lst-base-class-master-107"><a href="#lst-base-class-master-107" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
+<span id="lst-base-class-master-108"><a href="#lst-base-class-master-108" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">NotImplementedError</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</figure>
+</div>
+</div>
+<p>Similarly, <a href="#lst-base-class-master" class="quarto-xref">Listing&nbsp;<span>4.21</span></a> presents a base class for dual subproblem optimizers. The constructor <code>__init__()</code> takes the objective coefficients and constraint matrix that correspond to the variables in the subproblem. These information are required to create variables and constraints for the dual subproblem. However, the objective function will not be instantiated without the optimal solution of the restricted master problem. This base class also contains several other key functions:</p>
+<ul>
+<li><code>solve()</code>: this is the function that calls solver-specific procedure to solve the underlying dual subproblem.</li>
+<li><code>update_objective()</code>: this function takes the optimal solution obtained by the master problem optimizer and updates the objective function for the dual subproblem.</li>
+<li><code>opt_obj_val()</code>: this function returns the optimal objective values identified by the optimizer.</li>
+<li><code>opt_sol()</code>: this function returns the optimal solution identified by the optimizer.</li>
+<li><code>extreme_ray()</code>: this function returns the extreme ray identified by the optimizer.</li>
+</ul>
+<div id="cell-96" class="cell" data-execution_count="40">
+<div id="lst-base-class-master" class="python cell-code listing">
+<figure class="quarto-float quarto-float-lst figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-base-class-master-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Listing&nbsp;4.21: Base class for restricted master problem implementations
+</figcaption>
+<div aria-describedby="lst-base-class-master-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="sourceCode cell-code" id="lst-base-class-master"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="lst-base-class-master-1"><a href="#lst-base-class-master-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> abc <span class="im">import</span> ABC, abstractmethod</span>
+<span id="lst-base-class-master-2"><a href="#lst-base-class-master-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> Dict</span>
+<span id="lst-base-class-master-3"><a href="#lst-base-class-master-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="lst-base-class-master-4"><a href="#lst-base-class-master-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="lst-base-class-master-5"><a href="#lst-base-class-master-5" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> BendersDspOptimizer(ABC):</span>
+<span id="lst-base-class-master-6"><a href="#lst-base-class-master-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""base class for dual subproblem implementation</span></span>
+<span id="lst-base-class-master-7"><a href="#lst-base-class-master-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="lst-base-class-master-8"><a href="#lst-base-class-master-8" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="lst-base-class-master-9"><a href="#lst-base-class-master-9" aria-hidden="true" tabindex="-1"></a><span class="co">        ABC (ABCMeta): helper class</span></span>
+<span id="lst-base-class-master-10"><a href="#lst-base-class-master-10" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="lst-base-class-master-11"><a href="#lst-base-class-master-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="lst-base-class-master-12"><a href="#lst-base-class-master-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="lst-base-class-master-13"><a href="#lst-base-class-master-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, objective_coefficients: np.array, </span>
+<span id="lst-base-class-master-14"><a href="#lst-base-class-master-14" aria-hidden="true" tabindex="-1"></a>                 constraint_matrix: np.array):</span>
+<span id="lst-base-class-master-15"><a href="#lst-base-class-master-15" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""constructor for dual subproblem model initialization.</span></span>
+<span id="lst-base-class-master-16"><a href="#lst-base-class-master-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="lst-base-class-master-17"><a href="#lst-base-class-master-17" aria-hidden="true" tabindex="-1"></a><span class="co">        Args:</span></span>
+<span id="lst-base-class-master-18"><a href="#lst-base-class-master-18" aria-hidden="true" tabindex="-1"></a><span class="co">            objective_coefficients (np.array): an array of size m that </span></span>
+<span id="lst-base-class-master-19"><a href="#lst-base-class-master-19" aria-hidden="true" tabindex="-1"></a><span class="co">                represents the coefficient value for each variable in the </span></span>
+<span id="lst-base-class-master-20"><a href="#lst-base-class-master-20" aria-hidden="true" tabindex="-1"></a><span class="co">                original problem objective function.</span></span>
+<span id="lst-base-class-master-21"><a href="#lst-base-class-master-21" aria-hidden="true" tabindex="-1"></a><span class="co">            constraint_matrix (np.array): a matrix of size m * n that </span></span>
+<span id="lst-base-class-master-22"><a href="#lst-base-class-master-22" aria-hidden="true" tabindex="-1"></a><span class="co">                defines the constraint coefficients in the original problem.</span></span>
+<span id="lst-base-class-master-23"><a href="#lst-base-class-master-23" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
+<span id="lst-base-class-master-24"><a href="#lst-base-class-master-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">NotImplementedError</span></span>
+<span id="lst-base-class-master-25"><a href="#lst-base-class-master-25" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="lst-base-class-master-26"><a href="#lst-base-class-master-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="lst-base-class-master-27"><a href="#lst-base-class-master-27" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> solve(<span class="va">self</span>) <span class="op">-&gt;</span> OptStatus:</span>
+<span id="lst-base-class-master-28"><a href="#lst-base-class-master-28" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""solve the problem and return optimization status</span></span>
+<span id="lst-base-class-master-29"><a href="#lst-base-class-master-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="lst-base-class-master-30"><a href="#lst-base-class-master-30" aria-hidden="true" tabindex="-1"></a><span class="co">        Returns:</span></span>
+<span id="lst-base-class-master-31"><a href="#lst-base-class-master-31" aria-hidden="true" tabindex="-1"></a><span class="co">            OptStatus: an enum object</span></span>
+<span id="lst-base-class-master-32"><a href="#lst-base-class-master-32" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
+<span id="lst-base-class-master-33"><a href="#lst-base-class-master-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">NotImplementedError</span></span>
+<span id="lst-base-class-master-34"><a href="#lst-base-class-master-34" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="lst-base-class-master-35"><a href="#lst-base-class-master-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="lst-base-class-master-36"><a href="#lst-base-class-master-36" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> update_objective(<span class="va">self</span>, opt_sol_rbmp: Dict[<span class="bu">int</span>, <span class="bu">float</span>],</span>
+<span id="lst-base-class-master-37"><a href="#lst-base-class-master-37" aria-hidden="true" tabindex="-1"></a>                         constraint_matrix_rbmp: np.array,</span>
+<span id="lst-base-class-master-38"><a href="#lst-base-class-master-38" aria-hidden="true" tabindex="-1"></a>                         right_hand_side_rbmp: np.array) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="lst-base-class-master-39"><a href="#lst-base-class-master-39" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""update the objective function for the dual subproblem.</span></span>
+<span id="lst-base-class-master-40"><a href="#lst-base-class-master-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="lst-base-class-master-41"><a href="#lst-base-class-master-41" aria-hidden="true" tabindex="-1"></a><span class="co">        Args:</span></span>
+<span id="lst-base-class-master-42"><a href="#lst-base-class-master-42" aria-hidden="true" tabindex="-1"></a><span class="co">            opt_sol_rbmp (Dict[int, float]): optimal solution of the </span></span>
+<span id="lst-base-class-master-43"><a href="#lst-base-class-master-43" aria-hidden="true" tabindex="-1"></a><span class="co">                restricted master problem</span></span>
+<span id="lst-base-class-master-44"><a href="#lst-base-class-master-44" aria-hidden="true" tabindex="-1"></a><span class="co">            constraint_matrix_rbmp (np.array): constraint matrix </span></span>
+<span id="lst-base-class-master-45"><a href="#lst-base-class-master-45" aria-hidden="true" tabindex="-1"></a><span class="co">                associated with the complicating variables in the </span></span>
+<span id="lst-base-class-master-46"><a href="#lst-base-class-master-46" aria-hidden="true" tabindex="-1"></a><span class="co">                master problem</span></span>
+<span id="lst-base-class-master-47"><a href="#lst-base-class-master-47" aria-hidden="true" tabindex="-1"></a><span class="co">            right_hand_side_rbmp (np.array): right-hand side of </span></span>
+<span id="lst-base-class-master-48"><a href="#lst-base-class-master-48" aria-hidden="true" tabindex="-1"></a><span class="co">                the original problem</span></span>
+<span id="lst-base-class-master-49"><a href="#lst-base-class-master-49" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
+<span id="lst-base-class-master-50"><a href="#lst-base-class-master-50" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">NotImplementedError</span></span>
+<span id="lst-base-class-master-51"><a href="#lst-base-class-master-51" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="lst-base-class-master-52"><a href="#lst-base-class-master-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="lst-base-class-master-53"><a href="#lst-base-class-master-53" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> opt_obj_val(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="lst-base-class-master-54"><a href="#lst-base-class-master-54" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""return the optimal objective value if exists</span></span>
+<span id="lst-base-class-master-55"><a href="#lst-base-class-master-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="lst-base-class-master-56"><a href="#lst-base-class-master-56" aria-hidden="true" tabindex="-1"></a><span class="co">        Returns:</span></span>
+<span id="lst-base-class-master-57"><a href="#lst-base-class-master-57" aria-hidden="true" tabindex="-1"></a><span class="co">            float: objective value</span></span>
+<span id="lst-base-class-master-58"><a href="#lst-base-class-master-58" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
+<span id="lst-base-class-master-59"><a href="#lst-base-class-master-59" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">NotImplementedError</span></span>
+<span id="lst-base-class-master-60"><a href="#lst-base-class-master-60" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="lst-base-class-master-61"><a href="#lst-base-class-master-61" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="lst-base-class-master-62"><a href="#lst-base-class-master-62" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> opt_sol(<span class="va">self</span>) <span class="op">-&gt;</span> Dict[<span class="bu">int</span>, <span class="bu">float</span>]:</span>
+<span id="lst-base-class-master-63"><a href="#lst-base-class-master-63" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""return the optimal solution values</span></span>
+<span id="lst-base-class-master-64"><a href="#lst-base-class-master-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="lst-base-class-master-65"><a href="#lst-base-class-master-65" aria-hidden="true" tabindex="-1"></a><span class="co">        Returns:</span></span>
+<span id="lst-base-class-master-66"><a href="#lst-base-class-master-66" aria-hidden="true" tabindex="-1"></a><span class="co">            Dict[int, float]: mapping between variable key and optimal value.</span></span>
+<span id="lst-base-class-master-67"><a href="#lst-base-class-master-67" aria-hidden="true" tabindex="-1"></a><span class="co">            For example, opt_sol = {</span></span>
+<span id="lst-base-class-master-68"><a href="#lst-base-class-master-68" aria-hidden="true" tabindex="-1"></a><span class="co">                0: 2.0,</span></span>
+<span id="lst-base-class-master-69"><a href="#lst-base-class-master-69" aria-hidden="true" tabindex="-1"></a><span class="co">                1: 4.0</span></span>
+<span id="lst-base-class-master-70"><a href="#lst-base-class-master-70" aria-hidden="true" tabindex="-1"></a><span class="co">            }</span></span>
+<span id="lst-base-class-master-71"><a href="#lst-base-class-master-71" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
+<span id="lst-base-class-master-72"><a href="#lst-base-class-master-72" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">NotImplementedError</span></span>
+<span id="lst-base-class-master-73"><a href="#lst-base-class-master-73" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="lst-base-class-master-74"><a href="#lst-base-class-master-74" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="lst-base-class-master-75"><a href="#lst-base-class-master-75" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> extreme_ray(<span class="va">self</span>) <span class="op">-&gt;</span> Dict[<span class="bu">int</span>, <span class="bu">float</span>]:</span>
+<span id="lst-base-class-master-76"><a href="#lst-base-class-master-76" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""return the identified extreme ray</span></span>
+<span id="lst-base-class-master-77"><a href="#lst-base-class-master-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="lst-base-class-master-78"><a href="#lst-base-class-master-78" aria-hidden="true" tabindex="-1"></a><span class="co">        Returns:</span></span>
+<span id="lst-base-class-master-79"><a href="#lst-base-class-master-79" aria-hidden="true" tabindex="-1"></a><span class="co">            Dict[int, float]: mapping between variable key and ray element.</span></span>
+<span id="lst-base-class-master-80"><a href="#lst-base-class-master-80" aria-hidden="true" tabindex="-1"></a><span class="co">            For example, extreme_ray = {</span></span>
+<span id="lst-base-class-master-81"><a href="#lst-base-class-master-81" aria-hidden="true" tabindex="-1"></a><span class="co">                0: 3.5,</span></span>
+<span id="lst-base-class-master-82"><a href="#lst-base-class-master-82" aria-hidden="true" tabindex="-1"></a><span class="co">                1: 6.0</span></span>
+<span id="lst-base-class-master-83"><a href="#lst-base-class-master-83" aria-hidden="true" tabindex="-1"></a><span class="co">            }</span></span>
+<span id="lst-base-class-master-84"><a href="#lst-base-class-master-84" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
+<span id="lst-base-class-master-85"><a href="#lst-base-class-master-85" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">NotImplementedError</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</figure>
+</div>
+</div>
+<div id="cell-98" class="cell" data-execution_count="9">
+<div id="lst-bd-console" class="python cell-code listing">
+<figure class="quarto-float quarto-float-lst figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-bd-console-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Listing&nbsp;4.22: Generic Benders decomposition for LP problems
+</figcaption>
+<div aria-describedby="lst-bd-console-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="sourceCode cell-code" id="lst-bd-console"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="lst-bd-console-1"><a href="#lst-bd-console-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> BendersOptimizerConsole:</span>
+<span id="lst-bd-console-2"><a href="#lst-bd-console-2" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="lst-bd-console-3"><a href="#lst-bd-console-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, master_optimizer: BendersMasterOptimizer, </span>
+<span id="lst-bd-console-4"><a href="#lst-bd-console-4" aria-hidden="true" tabindex="-1"></a>                 dsp_optimizer: BendersDspOptimizer):</span>
+<span id="lst-bd-console-5"><a href="#lst-bd-console-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._master_optimizer <span class="op">=</span> master_optimizer</span>
+<span id="lst-bd-console-6"><a href="#lst-bd-console-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._dsp_optimizer <span class="op">=</span> dsp_optimizer</span>
+<span id="lst-bd-console-7"><a href="#lst-bd-console-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="lst-bd-console-8"><a href="#lst-bd-console-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> optimize(<span class="va">self</span>, verbose<span class="op">=</span><span class="va">False</span>) <span class="op">-&gt;</span> OptStatus:</span>
+<span id="lst-bd-console-9"><a href="#lst-bd-console-9" aria-hidden="true" tabindex="-1"></a>        eps <span class="op">=</span> <span class="fl">1.0e-5</span></span>
+<span id="lst-bd-console-10"><a href="#lst-bd-console-10" aria-hidden="true" tabindex="-1"></a>        lb <span class="op">=</span> <span class="op">-</span>np.inf</span>
+<span id="lst-bd-console-11"><a href="#lst-bd-console-11" aria-hidden="true" tabindex="-1"></a>        ub <span class="op">=</span> np.inf</span>
+<span id="lst-bd-console-12"><a href="#lst-bd-console-12" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="lst-bd-console-13"><a href="#lst-bd-console-13" aria-hidden="true" tabindex="-1"></a>        <span class="bu">iter</span> <span class="op">=</span> <span class="dv">0</span></span>
+<span id="lst-bd-console-14"><a href="#lst-bd-console-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="lst-bd-console-15"><a href="#lst-bd-console-15" aria-hidden="true" tabindex="-1"></a>            <span class="bu">iter</span> <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="lst-bd-console-16"><a href="#lst-bd-console-16" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> verbose: </span>
+<span id="lst-bd-console-17"><a href="#lst-bd-console-17" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f'</span><span class="ch">\n</span><span class="ss">Iteration: </span><span class="sc">{</span><span class="bu">iter</span><span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="lst-bd-console-18"><a href="#lst-bd-console-18" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="lst-bd-console-19"><a href="#lst-bd-console-19" aria-hidden="true" tabindex="-1"></a>            <span class="co"># solve master problem</span></span>
+<span id="lst-bd-console-20"><a href="#lst-bd-console-20" aria-hidden="true" tabindex="-1"></a>            master_status <span class="op">=</span> <span class="va">self</span>._master_optimizer.solve()</span>
+<span id="lst-bd-console-21"><a href="#lst-bd-console-21" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> master_status <span class="op">==</span> OptStatus.INFEASIBLE:</span>
+<span id="lst-bd-console-22"><a href="#lst-bd-console-22" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> verbose:</span>
+<span id="lst-bd-console-23"><a href="#lst-bd-console-23" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">print</span>(<span class="ss">f'Model is infeasible!'</span>)</span>
+<span id="lst-bd-console-24"><a href="#lst-bd-console-24" aria-hidden="true" tabindex="-1"></a>                <span class="cf">return</span> OptStatus.INFEASIBLE</span>
+<span id="lst-bd-console-25"><a href="#lst-bd-console-25" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="lst-bd-console-26"><a href="#lst-bd-console-26" aria-hidden="true" tabindex="-1"></a>            <span class="co"># update lower bound</span></span>
+<span id="lst-bd-console-27"><a href="#lst-bd-console-27" aria-hidden="true" tabindex="-1"></a>            lb <span class="op">=</span> np.<span class="bu">max</span>([lb, <span class="va">self</span>._master_optimizer.opt_obj_val])</span>
+<span id="lst-bd-console-28"><a href="#lst-bd-console-28" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> verbose:</span>
+<span id="lst-bd-console-29"><a href="#lst-bd-console-29" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f'Bounds: lb=</span><span class="sc">{</span>lb<span class="sc">:.2f}</span><span class="ss">, ub=</span><span class="sc">{</span>ub<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="lst-bd-console-30"><a href="#lst-bd-console-30" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="lst-bd-console-31"><a href="#lst-bd-console-31" aria-hidden="true" tabindex="-1"></a>            <span class="co"># solve subproblem</span></span>
+<span id="lst-bd-console-32"><a href="#lst-bd-console-32" aria-hidden="true" tabindex="-1"></a>            opt_val_comp <span class="op">=</span> <span class="va">self</span>._master_optimizer.opt_val_for_complicating_vars</span>
+<span id="lst-bd-console-33"><a href="#lst-bd-console-33" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>._dsp_optimizer.update_objective(opt_val_comp)</span>
+<span id="lst-bd-console-34"><a href="#lst-bd-console-34" aria-hidden="true" tabindex="-1"></a>            dsp_status <span class="op">=</span> <span class="va">self</span>._dsp_optimizer.solve()</span>
+<span id="lst-bd-console-35"><a href="#lst-bd-console-35" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="lst-bd-console-36"><a href="#lst-bd-console-36" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> dsp_status <span class="op">==</span> OptStatus.OPTIMAL:</span>
+<span id="lst-bd-console-37"><a href="#lst-bd-console-37" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> verbose:</span>
+<span id="lst-bd-console-38"><a href="#lst-bd-console-38" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">print</span>(<span class="ss">f'DSP is optimal!'</span>)</span>
+<span id="lst-bd-console-39"><a href="#lst-bd-console-39" aria-hidden="true" tabindex="-1"></a>                <span class="co"># update upper bound</span></span>
+<span id="lst-bd-console-40"><a href="#lst-bd-console-40" aria-hidden="true" tabindex="-1"></a>                opt_obj <span class="op">=</span> <span class="va">self</span>._dsp_optimizer.opt_obj_val                </span>
+<span id="lst-bd-console-41"><a href="#lst-bd-console-41" aria-hidden="true" tabindex="-1"></a>                opt_obj_val_comp <span class="op">=</span> <span class="va">self</span>._master_optimizer.opt_obj_val_comp</span>
+<span id="lst-bd-console-42"><a href="#lst-bd-console-42" aria-hidden="true" tabindex="-1"></a>                ub <span class="op">=</span> np.<span class="bu">min</span>([ub, opt_obj_val_comp <span class="op">+</span> opt_obj])</span>
+<span id="lst-bd-console-43"><a href="#lst-bd-console-43" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> verbose:</span>
+<span id="lst-bd-console-44"><a href="#lst-bd-console-44" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">print</span>(<span class="ss">f'Bounds: lb=</span><span class="sc">{</span>lb<span class="sc">:.2f}</span><span class="ss">, ub=</span><span class="sc">{</span>ub<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="lst-bd-console-45"><a href="#lst-bd-console-45" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="lst-bd-console-46"><a href="#lst-bd-console-46" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> ub <span class="op">-</span> lb <span class="op">&lt;=</span> eps:</span>
+<span id="lst-bd-console-47"><a href="#lst-bd-console-47" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">return</span> OptStatus.OPTIMAL</span>
+<span id="lst-bd-console-48"><a href="#lst-bd-console-48" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="lst-bd-console-49"><a href="#lst-bd-console-49" aria-hidden="true" tabindex="-1"></a>                opt_sol <span class="op">=</span> <span class="va">self</span>._dsp_optimizer.opt_sol</span>
+<span id="lst-bd-console-50"><a href="#lst-bd-console-50" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>._master_optimizer.add_optimality_cut(opt_sol) </span>
+<span id="lst-bd-console-51"><a href="#lst-bd-console-51" aria-hidden="true" tabindex="-1"></a>            <span class="cf">elif</span> dsp_status <span class="op">==</span> OptStatus.UNBOUNDED:</span>
+<span id="lst-bd-console-52"><a href="#lst-bd-console-52" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> verbose:</span>
+<span id="lst-bd-console-53"><a href="#lst-bd-console-53" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">print</span>(<span class="ss">f'DSP is unbounded!!!'</span>)</span>
+<span id="lst-bd-console-54"><a href="#lst-bd-console-54" aria-hidden="true" tabindex="-1"></a>                extreme_ray <span class="op">=</span> <span class="va">self</span>._dsp_optimizer.extreme_ray</span>
+<span id="lst-bd-console-55"><a href="#lst-bd-console-55" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>._master_optimizer.add_feasibility_cut(extreme_ray)</span>
+<span id="lst-bd-console-56"><a href="#lst-bd-console-56" aria-hidden="true" tabindex="-1"></a>            <span class="cf">else</span>:</span>
+<span id="lst-bd-console-57"><a href="#lst-bd-console-57" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> verbose:</span>
+<span id="lst-bd-console-58"><a href="#lst-bd-console-58" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">print</span>(<span class="ss">f"DSP solve ERROR!!!"</span>)</span>
+<span id="lst-bd-console-59"><a href="#lst-bd-console-59" aria-hidden="true" tabindex="-1"></a>                <span class="cf">return</span> OptStatus.ERROR</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </figure>
 </div>
@@ -1349,15 +1596,15 @@ Listing&nbsp;4.20: Generic Benders decomposition for LP problems
 </section>
 <section id="master-and-subproblem-solvers-based-on-gurobi" class="level4" data-number="4.2.6.2">
 <h4 data-number="4.2.6.2" class="anchored" data-anchor-id="master-and-subproblem-solvers-based-on-gurobi"><span class="header-section-number">4.2.6.2</span> Master and subproblem solvers based on Gurobi</h4>
-<p><a href="#lst-generic-master-solver-gurobi" class="quarto-xref">Listing&nbsp;<span>4.21</span></a> implements a master problem solver class named <code>GenericMasterSolverGurobi</code> for (<strong>RBMP</strong>) characterized by the cost coefficient <code>f</code>, the constraint matrix <code>B</code> and right-hand side <code>b</code>. The constructor initializes the complicating variables <code>_y</code> and the dummy variable <code>_g</code>. The <code>solve()</code> function solves the problem and retrieves the optimal solution if exists. Moreover, the solver provides functions to add optimality and feasibility cuts to the existing model.</p>
-<div id="cell-97" class="cell" data-execution_count="10">
+<p><a href="#lst-generic-master-solver-gurobi" class="quarto-xref">Listing&nbsp;<span>4.23</span></a> implements a master problem solver class named <code>GenericMasterSolverGurobi</code> for (<strong>RBMP</strong>) characterized by the cost coefficient <code>f</code>, the constraint matrix <code>B</code> and right-hand side <code>b</code>. The constructor initializes the complicating variables <code>_y</code> and the dummy variable <code>_g</code>. The <code>solve()</code> function solves the problem and retrieves the optimal solution if exists. Moreover, the solver provides functions to add optimality and feasibility cuts to the existing model.</p>
+<div id="cell-101" class="cell" data-execution_count="10">
 <div id="lst-generic-master-solver-gurobi" class="python cell-code listing">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-generic-master-solver-gurobi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Listing&nbsp;4.21: Generic Benders master problem solver for LP problems
+Listing&nbsp;4.23: Generic Benders master problem solver for LP problems
 </figcaption>
 <div aria-describedby="lst-generic-master-solver-gurobi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="sourceCode cell-code" id="lst-generic-master-solver-gurobi"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="lst-generic-master-solver-gurobi-1"><a href="#lst-generic-master-solver-gurobi-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> GenericMasterSolverGurobi:</span>
+<div class="sourceCode cell-code" id="lst-generic-master-solver-gurobi"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="lst-generic-master-solver-gurobi-1"><a href="#lst-generic-master-solver-gurobi-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> BendersMasterOptimizerGurobi(BendersMasterOptimizer):</span>
 <span id="lst-generic-master-solver-gurobi-2"><a href="#lst-generic-master-solver-gurobi-2" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="lst-generic-master-solver-gurobi-3"><a href="#lst-generic-master-solver-gurobi-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, f: np.array, B: np.array, b: np.array):</span>
 <span id="lst-generic-master-solver-gurobi-4"><a href="#lst-generic-master-solver-gurobi-4" aria-hidden="true" tabindex="-1"></a>        <span class="co"># save data</span></span>
@@ -1486,12 +1733,12 @@ Listing&nbsp;4.21: Generic Benders master problem solver for LP problems
 </figure>
 </div>
 </div>
-<p><a href="#lst-generic-subprob-solver-gurobi" class="quarto-xref">Listing&nbsp;<span>4.22</span></a> presents a solver for (<strong>DSP</strong>) that’s defined by the objective function coefficient <code>c</code> and constraint matrix <code>A</code>. The model objective function could be updated by <code>update_objective()</code> with the latest value of <code>y</code>. Notice that, the optimal solution is saved to <code>_opt_u</code> if the underlying problem is optimal. Otherwise, an extreme ray is retrieved and stored in <code>_extreme_ray</code>.</p>
-<div id="cell-99" class="cell" data-execution_count="12">
+<p><a href="#lst-generic-subprob-solver-gurobi" class="quarto-xref">Listing&nbsp;<span>4.24</span></a> presents a solver for (<strong>DSP</strong>) that’s defined by the objective function coefficient <code>c</code> and constraint matrix <code>A</code>. The model objective function could be updated by <code>update_objective()</code> with the latest value of <code>y</code>. Notice that, the optimal solution is saved to <code>_opt_u</code> if the underlying problem is optimal. Otherwise, an extreme ray is retrieved and stored in <code>_extreme_ray</code>.</p>
+<div id="cell-103" class="cell" data-execution_count="12">
 <div id="lst-generic-subprob-solver-gurobi" class="python cell-code listing">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-generic-subprob-solver-gurobi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Listing&nbsp;4.22: Generic Benders dual subproblem solver for LP problems
+Listing&nbsp;4.24: Generic Benders dual subproblem solver for LP problems
 </figcaption>
 <div aria-describedby="lst-generic-subprob-solver-gurobi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="sourceCode cell-code" id="lst-generic-subprob-solver-gurobi"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="lst-generic-subprob-solver-gurobi-1"><a href="#lst-generic-subprob-solver-gurobi-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> GenericSubprobSolverGurobi:</span>
@@ -1598,12 +1845,12 @@ Listing&nbsp;4.22: Generic Benders dual subproblem solver for LP problems
 </figure>
 </div>
 </div>
-<p>In <a href="#lst-generic-benders-test-1" class="quarto-xref">Listing&nbsp;<span>4.24</span></a>, we utilize the freshly baked solver to tackle the serious LP problem presented in the previous sections. The output shows that the same optimal objective value of 1091.43 was obtained in the end.</p>
-<div id="cell-101" class="cell" data-execution_count="15">
+<p>In <a href="#lst-generic-benders-test-1" class="quarto-xref">Listing&nbsp;<span>4.26</span></a>, we utilize the freshly baked solver to tackle the serious LP problem presented in the previous sections. The output shows that the same optimal objective value of 1091.43 was obtained in the end.</p>
+<div id="cell-105" class="cell" data-execution_count="15">
 <div id="lst-generic-benders-test-1" class="python cell-code listing">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-generic-benders-test-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Listing&nbsp;4.23: Solving the LP problem using Benders decomposition
+Listing&nbsp;4.25: Solving the LP problem using Benders decomposition
 </figcaption>
 <div aria-describedby="lst-generic-benders-test-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="sourceCode cell-code" id="lst-generic-benders-test-1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="lst-generic-benders-test-1-1"><a href="#lst-generic-benders-test-1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -1695,7 +1942,7 @@ Bounds: lb=1091.43, ub=1091.43</code></pre>
 </section>
 <section id="master-and-subproblem-solvers-based-on-scip" class="level4" data-number="4.2.6.3">
 <h4 data-number="4.2.6.3" class="anchored" data-anchor-id="master-and-subproblem-solvers-based-on-scip"><span class="header-section-number">4.2.6.3</span> Master and subproblem solvers based on SCIP</h4>
-<div id="cell-103" class="cell" data-last-cap="A generic master problem solver based on SCIP" data-execution_count="30">
+<div id="cell-107" class="cell" data-last-cap="A generic master problem solver based on SCIP" data-execution_count="30">
 <div class="sourceCode cell-code" id="lst-generic-master-solver-scip"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="lst-generic-master-solver-scip-1"><a href="#lst-generic-master-solver-scip-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyscipopt</span>
 <span id="lst-generic-master-solver-scip-2"><a href="#lst-generic-master-solver-scip-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="lst-generic-master-solver-scip-3"><a href="#lst-generic-master-solver-scip-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> GenericMasterSolverSCIP:</span>
@@ -1817,7 +2064,7 @@ Bounds: lb=1091.43, ub=1091.43</code></pre>
 <span id="lst-generic-master-solver-scip-119"><a href="#lst-generic-master-solver-scip-119" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> opt_g(<span class="va">self</span>):</span>
 <span id="lst-generic-master-solver-scip-120"><a href="#lst-generic-master-solver-scip-120" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>._g</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-104" class="cell" data-last-cap="A generic subprob problem solver based on SCIP" data-execution_count="26">
+<div id="cell-108" class="cell" data-last-cap="A generic subprob problem solver based on SCIP" data-execution_count="26">
 <div class="sourceCode cell-code" id="lst-generic-subprob-solver-scip"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="lst-generic-subprob-solver-scip-1"><a href="#lst-generic-subprob-solver-scip-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyscipopt</span>
 <span id="lst-generic-subprob-solver-scip-2"><a href="#lst-generic-subprob-solver-scip-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="lst-generic-subprob-solver-scip-3"><a href="#lst-generic-subprob-solver-scip-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> GenericSubprobSolverSCIP:</span>
@@ -1917,12 +2164,12 @@ Bounds: lb=1091.43, ub=1091.43</code></pre>
 <span id="lst-generic-subprob-solver-scip-97"><a href="#lst-generic-subprob-solver-scip-97" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> ray_u(<span class="va">self</span>):</span>
 <span id="lst-generic-subprob-solver-scip-98"><a href="#lst-generic-subprob-solver-scip-98" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>._ray_u</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><a href="#lst-generic-benders-test-1" class="quarto-xref">Listing&nbsp;<span>4.24</span></a> solves same the LP problem that we have been tackling in the previous sections. The output confirms that the same optimal solution is identified as in the last section.</p>
-<div id="cell-106" class="cell" data-execution_count="31">
+<p><a href="#lst-generic-benders-test-1" class="quarto-xref">Listing&nbsp;<span>4.26</span></a> solves same the LP problem that we have been tackling in the previous sections. The output confirms that the same optimal solution is identified as in the last section.</p>
+<div id="cell-110" class="cell" data-execution_count="31">
 <div id="lst-generic-benders-test-1" class="python cell-code listing">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-generic-benders-test-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Listing&nbsp;4.24: Solving the LP problem using Benders decomposition
+Listing&nbsp;4.26: Solving the LP problem using Benders decomposition
 </figcaption>
 <div aria-describedby="lst-generic-benders-test-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="sourceCode cell-code" id="lst-generic-benders-test-1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="lst-generic-benders-test-1-1"><a href="#lst-generic-benders-test-1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -1977,7 +2224,7 @@ Gap                : 0.00 %</code></pre>
 </section>
 <section id="detect-infeasibility" class="level4" data-number="4.2.6.4">
 <h4 data-number="4.2.6.4" class="anchored" data-anchor-id="detect-infeasibility"><span class="header-section-number">4.2.6.4</span> Detect infeasibility</h4>
-<div id="cell-108" class="cell" data-execution_count="313">
+<div id="cell-112" class="cell" data-execution_count="313">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">142</span>)</span>
@@ -1991,7 +2238,7 @@ Gap                : 0.00 %</code></pre>
 <span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>constr_mat <span class="op">=</span> np.concatenate([A, B], axis<span class="op">=</span><span class="dv">1</span>)</span>
 <span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>rhs <span class="op">=</span> b</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-109" class="cell" data-execution_count="314">
+<div id="cell-113" class="cell" data-execution_count="314">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>gurobi_solver <span class="op">=</span> LpSolverGurobi(obj_coeff, constr_mat, rhs)</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>gurobi_solver.save_model(<span class="st">'problem2.lp'</span>)</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>gurobi_solver.optimize()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1999,14 +2246,14 @@ Gap                : 0.00 %</code></pre>
 <pre><code>Model is infeasible!</code></pre>
 </div>
 </div>
-<div id="cell-110" class="cell" data-execution_count="315">
+<div id="cell-114" class="cell" data-execution_count="315">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>scip_solver <span class="op">=</span> LpSolverSCIP(obj_coeff, constr_mat, rhs)</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>scip_solver.optimize()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Model is infeasible!</code></pre>
 </div>
 </div>
-<div id="cell-111" class="cell" data-execution_count="338">
+<div id="cell-115" class="cell" data-execution_count="338">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>master_solver <span class="op">=</span> GenericLpMasterSolver(f, B, b)</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>dual_subprob_solver <span class="op">=</span> GenericLpSubprobSolver(A, c, B, b)</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
