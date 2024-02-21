@@ -1,2 +1,10 @@
 # Preface {.unnumbered}
 
+Decomposition algorithms are powerful techniques in solving various large-scale optimization problems.
+This book tries to explain the theories behind various decomposition algorithms and illustrate their usage via a number of classical optimization problems.
+
+Out of the algorithms examined in this book, column generation is my favorite algorithm.
+I have used it to solve various large-scale optimization problem in my research and industry projects.
+Often times, the theories are straightforward for most Operations Research (OR) students, but the biggest challenge lies in being able to recognize the opportunity to apply one of the decomposition algorithms.
+
+As I apply these algorithms time and again in my career, this book aims to serve as my personal reference to save time and solve problems more efficiently.

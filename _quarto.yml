@@ -3,9 +3,9 @@ project:
 
 book:
   title: "Hands-on Large Scale Optimization in Python"
-  subtitle: "From Beginning to Giving Up"
+  # subtitle: "From Beginning to Giving Up"
   author: "Kunlei Lian"
-  date: "2/18/2023"
+  date: "2/18/2021"
   google-analytics: "G-XM4LXJY2KJ"
   favicon: logo.png
   twitter-card: true
@@ -22,30 +22,29 @@ book:
 
   chapters:
     - index.qmd
-    - preface.qmd
-    - intro.qmd
-    - env-setup.qmd
+    - introduction.qmd
+    # - env-setup.qmd
     - part: "Benders Decomposition"
       chapters: 
         - benders-theory.ipynb
-        # - benders-imrt.ipynb
-    # - part: "Lagrangian Relaxation"
-    #   chapters: 
-    #     - lagrange-theory.ipynb
-    #     - lagrange-assignment.ipynb
-    # - part: "Column Generation"
-    #   chapters: 
-    #     - cg-theory.ipynb
-    #     - cg-cutting-stock.ipynb
-    #     - cg-scheduling.ipynb
-    # - summary.qmd
-    # - references.qmd
+        - benders-linear-prog.ipynb
+    - part: "Lagrangian Relaxation"
+      chapters: 
+        - lagrange-theory.ipynb
+        - lagrange-assignment.ipynb
+    - part: "Column Generation"
+      chapters: 
+        - cg-theory.ipynb
+        - cg-cutting-stock.ipynb
+        - cg-scheduling.ipynb
+    - summary.qmd
+    - references.qmd
 
 bibliography: references.bib
 
 format:
   html:
-    theme: cosmo
+    theme: journal
     include-in-header: mathjax.html
     html-math-method: mathjax
   pdf:
