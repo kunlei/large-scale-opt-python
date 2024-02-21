@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Hands-on Large Scale Optimization in Python - 2&nbsp; Benders Decomposition Theories</title>
+<title>Hands-on Large Scale Optimization in Python - 6&nbsp; Column Generation Theories</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,8 +30,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./benders-linear-prog.html" rel="next">
-<link href="./introduction.html" rel="prev">
+<link href="./cg-cutting-stock.html" rel="next">
+<link href="./lagrange-assignment.html" rel="prev">
 <link href="./logo.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -93,15 +93,9 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
         }
     };
 </script>
-<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
-<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
-<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<meta name="twitter:title" content="Hands-on Large Scale Optimization in Python - 2&nbsp; Benders Decomposition Theories">
-<meta name="twitter:description" content="">
+<meta name="twitter:title" content="Hands-on Large Scale Optimization in Python - 6&nbsp; Column Generation Theories">
 <meta name="twitter:card" content="summary">
 </head>
 
@@ -114,7 +108,7 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./benders-theory.html">Benders Decomposition</a></li><li class="breadcrumb-item"><a href="./benders-theory.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Benders Decomposition Theories</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./cg-theory.html">Column Generation</a></li><li class="breadcrumb-item"><a href="./cg-theory.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Column Generation Theories</span></a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -165,7 +159,7 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./benders-theory.html" class="sidebar-item-text sidebar-link active">
+  <a href="./benders-theory.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Benders Decomposition Theories</span></span></a>
   </div>
 </li>
@@ -211,7 +205,7 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./cg-theory.html" class="sidebar-item-text sidebar-link">
+  <a href="./cg-theory.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Column Generation Theories</span></span></a>
   </div>
 </li>
@@ -247,20 +241,14 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
-   
-  <ul>
-  <li><a href="#the-decomposition-logic" id="toc-the-decomposition-logic" class="nav-link active" data-scroll-target="#the-decomposition-logic"><span class="header-section-number">2.1</span> The Decomposition Logic</a></li>
-  </ul>
-</nav>
+        
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./benders-theory.html">Benders Decomposition</a></li><li class="breadcrumb-item"><a href="./benders-theory.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Benders Decomposition Theories</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./cg-theory.html">Column Generation</a></li><li class="breadcrumb-item"><a href="./cg-theory.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Column Generation Theories</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Benders Decomposition Theories</span></h1>
+<h1 class="title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Column Generation Theories</span></h1>
 </div>
 
 
@@ -277,97 +265,8 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
 </header>
 
 
-<p>In this chapter, we will explain the theories behind Benders decomposition and demonstrate its usage on a trial linear programming problem. Keep in mind that Benders decomposition is not limited to solving linear programming problems. In fact, it is one of the most powerful techniques to solve some large-scale mixed-integer linear programming problems.</p>
-<p>In the following sections, we will go through the critical steps during the decomposition process when applying the algorithm on optimization problems represented in standard forms. This is important as it helps build up the intuition of when we should consider applying Benders decomposition to a problem at hand. Often times, recognizing the applicability of Benders decomposition is the most important and challenging step when solving an optimization problem. Once we know that the problem structure is suitable to solve via Benders decomposition, it is straightforward to follow the decomposition steps and put it into work.</p>
-<p>Generally speaking, Benders decomposition is a good solution candidate when the resulting problem is much easier to solve if some of the variables in the original problem are fixed. We will illustrate this point using an example in the following sections. In the optimization world, the first candidate that should come to mind when we say a problem is easy to solve is a linear programming formulation, which is indeed the case in Benders decomposition applications.</p>
-<section id="the-decomposition-logic" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="the-decomposition-logic"><span class="header-section-number">2.1</span> The Decomposition Logic</h2>
-<p>To explain the workings of Benders decomposition, let us look at the standard form of linear programming problems that involve two vector variables, <span class="math inline">\(\mathbf{x}\)</span> and <span class="math inline">\(\mathbf{y}\)</span>. Let <span class="math inline">\(p\)</span> and <span class="math inline">\(q\)</span> indicate the dimensions of <span class="math inline">\(\mathbf{x}\)</span> and <span class="math inline">\(\mathbf{y}\)</span>, respectively. Below is the original problem (<strong>P</strong>) we intend to solve.</p>
-<p><span class="math display">\[\begin{align}
-\text{min.} &amp;\quad \mathbf{c}^T \mathbf{x} + \mathbf{f}^T \mathbf{y} \\
-\text{s.t.} &amp;\quad \mathbf{A} \mathbf{x} + \mathbf{B} \mathbf{y} = \mathbf{b} \\
-&amp;\quad \mathbf{x} \geq 0, \mathbf{y} \geq 0
-\end{align}\]</span></p>
-<p>In this formulation, <span class="math inline">\(\mathbf{c}\)</span> and <span class="math inline">\(\mathbf{f}\)</span> in the objective function represent the cost coefficients associated with decision variables <span class="math inline">\(\mathbf{x}\)</span> and <span class="math inline">\(\mathbf{y}\)</span>, respectively. Both of them are column vectors of corresponding dimensions. In the constraints, matrix <span class="math inline">\(\mathbf{A}\)</span> is of dimension <span class="math inline">\(m \times p\)</span>, and matrix <span class="math inline">\(\mathbf{B}\)</span> is of dimension <span class="math inline">\(m \times q\)</span>. <span class="math inline">\(\mathbf{b}\)</span> is a column vector of dimension <span class="math inline">\(m\)</span>.</p>
-<p>Suppose the variable <span class="math inline">\(\mathbf{y}\)</span> is a complicating variable in the sense that the resulting problem is substantially easier to solve if the value of <span class="math inline">\(\mathbf{y}\)</span> is fixed. In this case, we could rewrite problem <span class="math inline">\(\mathbf{P}\)</span> as the following form:</p>
-<p><span class="math display">\[\begin{align}
-\text{min.} &amp;\quad \mathbf{f}^T \mathbf{y} + g(\mathbf{y}) \\
-\text{s.t.} &amp;\quad \mathbf{y} \geq 0
-\end{align}\]</span></p>
-<p>where <span class="math inline">\(g(\mathbf{y})\)</span> is a function of <span class="math inline">\(\mathbf{y}\)</span> and is defined as the subproblem <span class="math inline">\(\mathbf{SP}\)</span> of the form below:</p>
-<p><span class="math display">\[\begin{align}
-    \text{min.} &amp;\quad \mathbf{c}^T \mathbf{x} \\
-    \text{s.t.} &amp;\quad \mathbf{A} \mathbf{x}  = \mathbf{b} - \mathbf{B} \mathbf{y} \label{bd-cons1} \\
-    &amp;\quad \mathbf{x} \geq 0
-\end{align}\]</span></p>
-<p>Note that the <span class="math inline">\(\mathbf{y}\)</span> in constraint <span class="math inline">\(\eqref{bd-cons1}\)</span> takes on some known values when the problem is solved and the only decision variable in the above formulation is <span class="math inline">\(\mathbf{x}\)</span>. The dual problem of <span class="math inline">\(\mathbf{SP}\)</span>, <span class="math inline">\(\mathbf{DSP}\)</span>, is given below.</p>
-<p><span class="math display">\[\begin{align}
-    \text{max.} &amp;\quad (\mathbf{b} - \mathbf{B} \mathbf{y})^{T} \mathbf{u} \\
-    \text{s.t.} &amp;\quad \mathbf{A}^T \mathbf{u} \leq \mathbf{c} \label{bd-cons2} \\
-    &amp;\quad \mathbf{u}\  \text{unrestricted}
-\end{align}\]</span></p>
-<p>A key characteristic of the above <span class="math inline">\(\mathbf{DSP}\)</span> is that its solution space does not depend on the value of <span class="math inline">\(\mathbf{y}\)</span>, which only affects the objective function. According to the Minkowski’s representation theorem, any <span class="math inline">\(\bar{\mathbf{u}}\)</span> satisfying the constraints <span class="math inline">\(\eqref{bd-cons2}\)</span> can be expressed as</p>
-<p><span class="math display">\[\begin{align}
-\bar{\mathbf{u}} = \sum_{j \in \mathbf{J}} \lambda_j \mathbf{u}_{j}^{point} + \sum_{k \in \mathbf{K}} \mu_k \mathbf{u}_k^{ray}
-\end{align}\]</span></p>
-<p>where <span class="math inline">\(\mathbf{u}_j^{point}\)</span> and <span class="math inline">\(\mathbf{u}_k^{ray}\)</span> represent an extreme point and extreme ray, respectively. In addition, <span class="math inline">\(\lambda_j \geq 0\)</span> for all <span class="math inline">\(j \in \mathbf{J}\)</span> and <span class="math inline">\(\sum_{j \in \mathbf{J}}\lambda_j = 1\)</span>, and <span class="math inline">\(\mu_k \geq 0\)</span> for all <span class="math inline">\(k \in \mathbf{K}\)</span>. It follows that the <span class="math inline">\(\mathbf{DSP}\)</span> is equivalent to</p>
-<p><span class="math display">\[\begin{align}
-\text{max.} &amp;\quad (\mathbf{b} - \mathbf{B} \mathbf{y})^{T} (\sum_{j \in \mathbf{J}} \lambda_j \mathbf{u}_{j}^{point} + \sum_{k \in \mathbf{K}} \mu_k \mathbf{u}_k^{ray}) \\
-\text{s.t.} &amp;\quad \sum_{j \in \mathbf{J}}\lambda_j = 1 \\
-&amp;\quad \lambda_j \geq 0, \ \forall j \in \mathbf{J} \\
-&amp;\quad \mu_k \geq 0, \ \forall k \in \mathbf{K}
-\end{align}\]</span></p>
-<p>We can therefore conclude that</p>
-<ul>
-<li>The <span class="math inline">\(\mathbf{DSP}\)</span> becomes unbounded if any <span class="math inline">\(\mathbf{u}_k^{ray}\)</span> exists such that <span class="math inline">\((\mathbf{b} - \mathbf{B} \mathbf{y})^{T} \mathbf{u}_k^{ray} &gt; 0\)</span>. Note that an unbounded <span class="math inline">\(\mathbf{DSP}\)</span> implies an infeasible <span class="math inline">\(\mathbf{SP}\)</span> and to prevent this from happening, we have to ensure that <span class="math inline">\((\mathbf{b} - \mathbf{B} \mathbf{y})^{T} \mathbf{u}_k^{ray} \leq 0\)</span> for all <span class="math inline">\(k \in \mathbf{K}\)</span>.</li>
-<li>If an optimal solution to <span class="math inline">\(\mathbf{DSP}\)</span> exists, it must occur at one of the extreme points. Let <span class="math inline">\(g\)</span> denote the optimal objective value, it follows that <span class="math inline">\((\mathbf{b} - \mathbf{B} \mathbf{y})^{T} \mathbf{u}_j^{point} \leq g\)</span> for all <span class="math inline">\(j \in \mathbf{J}\)</span>.</li>
-</ul>
-<p>Based on this idea, the <span class="math inline">\(\mathbf{DSP}\)</span> can be reformulated as follows:</p>
-<p><span class="math display">\[\begin{align}
-\text{min.} &amp;\quad g \\
-\text{s.t.} &amp;\quad (\mathbf{b} - \mathbf{B} \mathbf{y})^{T} \mathbf{u}_k^{ray} \leq 0, \ \forall j \in \mathbf{J} \label{bd-feas} \\
-&amp;\quad (\mathbf{b} - \mathbf{B} \mathbf{y})^{T} \mathbf{u}_j^{point} \leq g, \ \forall k \in \mathbf{K} \label{bd-opt} \\
-&amp;\quad j \in \mathbf{J}, k \in \mathbf{K}
-\end{align}\]</span></p>
-<p>Constraints <span class="math inline">\(\eqref{bd-feas}\)</span> are called <strong>Benders feasibility cuts</strong>, while constraints <span class="math inline">\(\eqref{bd-opt}\)</span> are called <strong>Benders optimality cuts</strong>. Now we are ready to define the Benders Master Problem (<span class="math inline">\(\mathbf{BMP}\)</span>) as follows:</p>
-<p><span class="math display">\[\begin{align}
-    \text{min.} &amp;\quad \mathbf{f}^T \mathbf{y} + g \\
-    \text{s.t.} &amp;\quad (\mathbf{b} - \mathbf{B} \mathbf{y})^{T} \mathbf{u}_k^{ray} \leq 0, \ \forall j \in \mathbf{J} \\
-    &amp;\quad (\mathbf{b} - \mathbf{B} \mathbf{y})^{T} \mathbf{u}_j^{point} \leq g, \ \forall k \in \mathbf{K} \\
-    &amp;\quad j \in \mathbf{J}, k \in \mathbf{K}, \mathbf{y} \geq 0
-\end{align}\]</span></p>
-<p>Typically <span class="math inline">\(J\)</span> and <span class="math inline">\(K\)</span> are too large to enumerate upfront and we have to work with subsets of them, denoted by <span class="math inline">\(J_s\)</span> and <span class="math inline">\(K_s\)</span>, respectively. Hence we have the following Restricted Benders Master Problem (<span class="math inline">\(\mathbf{RBMP}\)</span>):</p>
-<p><span class="math display">\[\begin{align}
-    \text{min.} &amp;\quad \mathbf{f}^T \mathbf{y} + g \\
-    \text{s.t.} &amp;\quad (\mathbf{b} - \mathbf{B} \mathbf{y})^{T} \mathbf{u}_k^{ray} \leq 0, \ \forall j \in \mathbf{J}_s \\
-    &amp;\quad (\mathbf{b} - \mathbf{B} \mathbf{y})^{T} \mathbf{u}_j^{point} \leq g, \ \forall k \in \mathbf{K}_s \\
-    &amp;\quad j \in \mathbf{J}, k \in \mathbf{K}, \mathbf{y} \geq 0
-\end{align}\]</span></p>
-<div class="cell">
-<div class="cell-output-display">
-<div id="fig-benders-flowchart" class="quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-benders-flowchart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div>
-<pre class="mermaid mermaid-js" data-label="fig-benders-flowchart">flowchart LR
-   A[Start] --&gt; B{Is}
-    B --&gt;|Yes| C[OK]
-    C --&gt; D[Rethink]
-    D --&gt; B
-    B ----&gt;|No| E[End]
-</pre>
-</div>
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-benders-flowchart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2.1: Benders decomposition workflow
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -769,13 +668,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./introduction.html" class="pagination-link  aria-label=" &lt;span="">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span>
+      <a href="./lagrange-assignment.html" class="pagination-link  aria-label=" &lt;span="" optimization&lt;="" span&gt;"="">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Assignment Optimization</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./benders-linear-prog.html" class="pagination-link" aria-label="<span class='chapter-number'>3</span>&nbsp; <span class='chapter-title'>Solving Linear Programming Problems with Benders Decomposition</span>">
-        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Solving Linear Programming Problems with Benders Decomposition</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./cg-cutting-stock.html" class="pagination-link" aria-label="<span class='chapter-number'>7</span>&nbsp; <span class='chapter-title'>Cutting Stock Problem</span>">
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Cutting Stock Problem</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
