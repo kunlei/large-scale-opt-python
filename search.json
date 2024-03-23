@@ -20,11 +20,22 @@
     ]
   },
   {
+    "objectID": "benders-theory.html",
+    "href": "benders-theory.html",
+    "title": "2  Benders Decomposition Theories",
+    "section": "",
+    "text": "2.1 The Decomposition Logic\nTo explain the workings of Benders decomposition, let us look at the standard form of linear programming problems that involve two vector variables, \\(\\mathbf{x}\\) and \\(\\mathbf{y}\\). Let \\(p\\) and \\(q\\) indicate the dimensions of \\(\\mathbf{x}\\) and \\(\\mathbf{y}\\), respectively. Below is the original problem (P) we intend to solve.\n\\[\\begin{align}\n\\text{min.} &\\quad \\mathbf{c}^T \\mathbf{x} + \\mathbf{f}^T \\mathbf{y} \\\\\n\\text{s.t.} &\\quad \\mathbf{A} \\mathbf{x} + \\mathbf{B} \\mathbf{y} = \\mathbf{b} \\\\\n&\\quad \\mathbf{x} \\geq 0, \\mathbf{y} \\geq 0\n\\end{align}\\]\nIn this formulation, \\(\\mathbf{c}\\) and \\(\\mathbf{f}\\) in the objective function represent the cost coefficients associated with decision variables \\(\\mathbf{x}\\) and \\(\\mathbf{y}\\), respectively. Both of them are column vectors of corresponding dimensions. In the constraints, matrix \\(\\mathbf{A}\\) is of dimension \\(m \\times p\\), and matrix \\(\\mathbf{B}\\) is of dimension \\(m \\times q\\). \\(\\mathbf{b}\\) is a column vector of dimension \\(m\\).\nSuppose the variable \\(\\mathbf{y}\\) is a complicating variable in the sense that the resulting problem is substantially easier to solve if the value of \\(\\mathbf{y}\\) is fixed. In this case, we could rewrite problem \\(\\mathbf{P}\\) as the following form:\n\\[\\begin{align}\n\\text{min.} &\\quad \\mathbf{f}^T \\mathbf{y} + g(\\mathbf{y}) \\\\\n\\text{s.t.} &\\quad \\mathbf{y} \\geq 0\n\\end{align}\\]\nwhere \\(g(\\mathbf{y})\\) is a function of \\(\\mathbf{y}\\) and is defined as the subproblem \\(\\mathbf{SP}\\) of the form below:\n\\[\\begin{align}\n    \\text{min.} &\\quad \\mathbf{c}^T \\mathbf{x} \\\\\n    \\text{s.t.} &\\quad \\mathbf{A} \\mathbf{x}  = \\mathbf{b} - \\mathbf{B} \\mathbf{y} \\label{bd-cons1} \\\\\n    &\\quad \\mathbf{x} \\geq 0\n\\end{align}\\]\nNote that the \\(\\mathbf{y}\\) in constraint \\(\\eqref{bd-cons1}\\) takes on some known values when the problem is solved and the only decision variable in the above formulation is \\(\\mathbf{x}\\). The dual problem of \\(\\mathbf{SP}\\), \\(\\mathbf{DSP}\\), is given below.\n\\[\\begin{align}\n    \\text{max.} &\\quad (\\mathbf{b} - \\mathbf{B} \\mathbf{y})^{T} \\mathbf{u} \\\\\n    \\text{s.t.} &\\quad \\mathbf{A}^T \\mathbf{u} \\leq \\mathbf{c} \\label{bd-cons2} \\\\\n    &\\quad \\mathbf{u}\\  \\text{unrestricted}\n\\end{align}\\]\nA key characteristic of the above \\(\\mathbf{DSP}\\) is that its solution space does not depend on the value of \\(\\mathbf{y}\\), which only affects the objective function. According to the Minkowski’s representation theorem, any \\(\\bar{\\mathbf{u}}\\) satisfying the constraints \\(\\eqref{bd-cons2}\\) can be expressed as\n\\[\\begin{align}\n\\bar{\\mathbf{u}} = \\sum_{j \\in \\mathbf{J}} \\lambda_j \\mathbf{u}_{j}^{point} + \\sum_{k \\in \\mathbf{K}} \\mu_k \\mathbf{u}_k^{ray}\n\\end{align}\\]\nwhere \\(\\mathbf{u}_j^{point}\\) and \\(\\mathbf{u}_k^{ray}\\) represent an extreme point and extreme ray, respectively. In addition, \\(\\lambda_j \\geq 0\\) for all \\(j \\in \\mathbf{J}\\) and \\(\\sum_{j \\in \\mathbf{J}}\\lambda_j = 1\\), and \\(\\mu_k \\geq 0\\) for all \\(k \\in \\mathbf{K}\\). It follows that the \\(\\mathbf{DSP}\\) is equivalent to\n\\[\\begin{align}\n\\text{max.} &\\quad (\\mathbf{b} - \\mathbf{B} \\mathbf{y})^{T} (\\sum_{j \\in \\mathbf{J}} \\lambda_j \\mathbf{u}_{j}^{point} + \\sum_{k \\in \\mathbf{K}} \\mu_k \\mathbf{u}_k^{ray}) \\\\\n\\text{s.t.} &\\quad \\sum_{j \\in \\mathbf{J}}\\lambda_j = 1 \\\\\n&\\quad \\lambda_j \\geq 0, \\ \\forall j \\in \\mathbf{J} \\\\\n&\\quad \\mu_k \\geq 0, \\ \\forall k \\in \\mathbf{K}\n\\end{align}\\]\nWe can therefore conclude that\nBased on this idea, the \\(\\mathbf{DSP}\\) can be reformulated as follows:\n\\[\\begin{align}\n\\text{min.} &\\quad g \\\\\n\\text{s.t.} &\\quad (\\mathbf{b} - \\mathbf{B} \\mathbf{y})^{T} \\mathbf{u}_k^{ray} \\leq 0, \\ \\forall j \\in \\mathbf{J} \\label{bd-feas} \\\\\n&\\quad (\\mathbf{b} - \\mathbf{B} \\mathbf{y})^{T} \\mathbf{u}_j^{point} \\leq g, \\ \\forall k \\in \\mathbf{K} \\label{bd-opt} \\\\\n&\\quad j \\in \\mathbf{J}, k \\in \\mathbf{K}\n\\end{align}\\]\nConstraints \\(\\eqref{bd-feas}\\) are called Benders feasibility cuts, while constraints \\(\\eqref{bd-opt}\\) are called Benders optimality cuts. Now we are ready to define the Benders Master Problem (\\(\\mathbf{BMP}\\)) as follows:\n\\[\\begin{align}\n    \\text{min.} &\\quad \\mathbf{f}^T \\mathbf{y} + g \\\\\n    \\text{s.t.} &\\quad (\\mathbf{b} - \\mathbf{B} \\mathbf{y})^{T} \\mathbf{u}_k^{ray} \\leq 0, \\ \\forall j \\in \\mathbf{J} \\\\\n    &\\quad (\\mathbf{b} - \\mathbf{B} \\mathbf{y})^{T} \\mathbf{u}_j^{point} \\leq g, \\ \\forall k \\in \\mathbf{K} \\\\\n    &\\quad j \\in \\mathbf{J}, k \\in \\mathbf{K}, \\mathbf{y} \\geq 0\n\\end{align}\\]\nTypically \\(J\\) and \\(K\\) are too large to enumerate upfront and we have to work with subsets of them, denoted by \\(J_s\\) and \\(K_s\\), respectively. Hence we have the following Restricted Benders Master Problem (\\(\\mathbf{RBMP}\\)):\n\\[\\begin{align}\n    \\text{min.} &\\quad \\mathbf{f}^T \\mathbf{y} + g \\\\\n    \\text{s.t.} &\\quad (\\mathbf{b} - \\mathbf{B} \\mathbf{y})^{T} \\mathbf{u}_k^{ray} \\leq 0, \\ \\forall j \\in \\mathbf{J}_s \\\\\n    &\\quad (\\mathbf{b} - \\mathbf{B} \\mathbf{y})^{T} \\mathbf{u}_j^{point} \\leq g, \\ \\forall k \\in \\mathbf{K}_s \\\\\n    &\\quad j \\in \\mathbf{J}, k \\in \\mathbf{K}, \\mathbf{y} \\geq 0\n\\end{align}\\]\nflowchart LR\n   A[Start] --&gt; B{Is}\n    B --&gt;|Yes| C[OK]\n    C --&gt; D[Rethink]\n    D --&gt; B\n    B ----&gt;|No| E[End]\n\n\n\n\nFigure 2.1: Benders decomposition workflow",
+    "crumbs": [
+      "Benders Decomposition",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Benders Decomposition Theories</span>"
+    ]
+  },
+  {
     "objectID": "benders-theory.html#the-decomposition-logic",
     "href": "benders-theory.html#the-decomposition-logic",
     "title": "2  Benders Decomposition Theories",
-    "section": "2.1 The Decomposition Logic",
-    "text": "2.1 The Decomposition Logic\nTo explain the workings of Benders decomposition, let us look at the standard form of linear programming problems that involve two vector variables, \\(\\mathbf{x}\\) and \\(\\mathbf{y}\\). Let \\(p\\) and \\(q\\) indicate the dimensions of \\(\\mathbf{x}\\) and \\(\\mathbf{y}\\), respectively. Below is the original problem (P) we intend to solve.\n\\[\\begin{align}\n\\text{min.} &\\quad \\mathbf{c}^T \\mathbf{x} + \\mathbf{f}^T \\mathbf{y} \\\\\n\\text{s.t.} &\\quad \\mathbf{A} \\mathbf{x} + \\mathbf{B} \\mathbf{y} = \\mathbf{b} \\\\\n&\\quad \\mathbf{x} \\geq 0, \\mathbf{y} \\geq 0\n\\end{align}\\]\nIn this formulation, \\(\\mathbf{c}\\) and \\(\\mathbf{f}\\) in the objective function represent the cost coefficients associated with decision variables \\(\\mathbf{x}\\) and \\(\\mathbf{y}\\), respectively. Both of them are column vectors of corresponding dimensions. In the constraints, matrix \\(\\mathbf{A}\\) is of dimension \\(m \\times p\\), and matrix \\(\\mathbf{B}\\) is of dimension \\(m \\times q\\). \\(\\mathbf{b}\\) is a column vector of dimension \\(m\\).\nSuppose the variable \\(\\mathbf{y}\\) is a complicating variable in the sense that the resulting problem is substantially easier to solve if the value of \\(\\mathbf{y}\\) is fixed. In this case, we could rewrite problem \\(\\mathbf{P}\\) as the following form:\n\\[\\begin{align}\n\\text{min.} &\\quad \\mathbf{f}^T \\mathbf{y} + g(\\mathbf{y}) \\\\\n\\text{s.t.} &\\quad \\mathbf{y} \\geq 0\n\\end{align}\\]\nwhere \\(g(\\mathbf{y})\\) is a function of \\(\\mathbf{y}\\) and is defined as the subproblem \\(\\mathbf{SP}\\) of the form below:\n\\[\\begin{align}\n    \\text{min.} &\\quad \\mathbf{c}^T \\mathbf{x} \\\\\n    \\text{s.t.} &\\quad \\mathbf{A} \\mathbf{x}  = \\mathbf{b} - \\mathbf{B} \\mathbf{y} \\label{bd-cons1} \\\\\n    &\\quad \\mathbf{x} \\geq 0\n\\end{align}\\]\nNote that the \\(\\mathbf{y}\\) in constraint \\(\\eqref{bd-cons1}\\) takes on some known values when the problem is solved and the only decision variable in the above formulation is \\(\\mathbf{x}\\). The dual problem of \\(\\mathbf{SP}\\), \\(\\mathbf{DSP}\\), is given below.\n\\[\\begin{align}\n    \\text{max.} &\\quad (\\mathbf{b} - \\mathbf{B} \\mathbf{y})^{T} \\mathbf{u} \\\\\n    \\text{s.t.} &\\quad \\mathbf{A}^T \\mathbf{u} \\leq \\mathbf{c} \\label{bd-cons2} \\\\\n    &\\quad \\mathbf{u}\\  \\text{unrestricted}\n\\end{align}\\]\nA key characteristic of the above \\(\\mathbf{DSP}\\) is that its solution space does not depend on the value of \\(\\mathbf{y}\\), which only affects the objective function. According to the Minkowski’s representation theorem, any \\(\\bar{\\mathbf{u}}\\) satisfying the constraints \\(\\eqref{bd-cons2}\\) can be expressed as\n\\[\\begin{align}\n\\bar{\\mathbf{u}} = \\sum_{j \\in \\mathbf{J}} \\lambda_j \\mathbf{u}_{j}^{point} + \\sum_{k \\in \\mathbf{K}} \\mu_k \\mathbf{u}_k^{ray}\n\\end{align}\\]\nwhere \\(\\mathbf{u}_j^{point}\\) and \\(\\mathbf{u}_k^{ray}\\) represent an extreme point and extreme ray, respectively. In addition, \\(\\lambda_j \\geq 0\\) for all \\(j \\in \\mathbf{J}\\) and \\(\\sum_{j \\in \\mathbf{J}}\\lambda_j = 1\\), and \\(\\mu_k \\geq 0\\) for all \\(k \\in \\mathbf{K}\\). It follows that the \\(\\mathbf{DSP}\\) is equivalent to\n\\[\\begin{align}\n\\text{max.} &\\quad (\\mathbf{b} - \\mathbf{B} \\mathbf{y})^{T} (\\sum_{j \\in \\mathbf{J}} \\lambda_j \\mathbf{u}_{j}^{point} + \\sum_{k \\in \\mathbf{K}} \\mu_k \\mathbf{u}_k^{ray}) \\\\\n\\text{s.t.} &\\quad \\sum_{j \\in \\mathbf{J}}\\lambda_j = 1 \\\\\n&\\quad \\lambda_j \\geq 0, \\ \\forall j \\in \\mathbf{J} \\\\\n&\\quad \\mu_k \\geq 0, \\ \\forall k \\in \\mathbf{K}\n\\end{align}\\]\nWe can therefore conclude that\n\nThe \\(\\mathbf{DSP}\\) becomes unbounded if any \\(\\mathbf{u}_k^{ray}\\) exists such that \\((\\mathbf{b} - \\mathbf{B} \\mathbf{y})^{T} \\mathbf{u}_k^{ray} &gt; 0\\). Note that an unbounded \\(\\mathbf{DSP}\\) implies an infeasible \\(\\mathbf{SP}\\) and to prevent this from happening, we have to ensure that \\((\\mathbf{b} - \\mathbf{B} \\mathbf{y})^{T} \\mathbf{u}_k^{ray} \\leq 0\\) for all \\(k \\in \\mathbf{K}\\).\nIf an optimal solution to \\(\\mathbf{DSP}\\) exists, it must occur at one of the extreme points. Let \\(g\\) denote the optimal objective value, it follows that \\((\\mathbf{b} - \\mathbf{B} \\mathbf{y})^{T} \\mathbf{u}_j^{point} \\leq g\\) for all \\(j \\in \\mathbf{J}\\).\n\nBased on this idea, the \\(\\mathbf{DSP}\\) can be reformulated as follows:\n\\[\\begin{align}\n\\text{min.} &\\quad g \\\\\n\\text{s.t.} &\\quad (\\mathbf{b} - \\mathbf{B} \\mathbf{y})^{T} \\mathbf{u}_k^{ray} \\leq 0, \\ \\forall j \\in \\mathbf{J} \\label{bd-feas} \\\\\n&\\quad (\\mathbf{b} - \\mathbf{B} \\mathbf{y})^{T} \\mathbf{u}_j^{point} \\leq g, \\ \\forall k \\in \\mathbf{K} \\label{bd-opt} \\\\\n&\\quad j \\in \\mathbf{J}, k \\in \\mathbf{K}\n\\end{align}\\]\nConstraints \\(\\eqref{bd-feas}\\) are called Benders feasibility cuts, while constraints \\(\\eqref{bd-opt}\\) are called Benders optimality cuts. Now we are ready to define the Benders Master Problem (\\(\\mathbf{BMP}\\)) as follows:\n\\[\\begin{align}\n    \\text{min.} &\\quad \\mathbf{f}^T \\mathbf{y} + g \\\\\n    \\text{s.t.} &\\quad (\\mathbf{b} - \\mathbf{B} \\mathbf{y})^{T} \\mathbf{u}_k^{ray} \\leq 0, \\ \\forall j \\in \\mathbf{J} \\\\\n    &\\quad (\\mathbf{b} - \\mathbf{B} \\mathbf{y})^{T} \\mathbf{u}_j^{point} \\leq g, \\ \\forall k \\in \\mathbf{K} \\\\\n    &\\quad j \\in \\mathbf{J}, k \\in \\mathbf{K}, \\mathbf{y} \\geq 0\n\\end{align}\\]\nTypically \\(J\\) and \\(K\\) are too large to enumerate upfront and we have to work with subsets of them, denoted by \\(J_s\\) and \\(K_s\\), respectively. Hence we have the following Restricted Benders Master Problem (\\(\\mathbf{RBMP}\\)):\n\\[\\begin{align}\n    \\text{min.} &\\quad \\mathbf{f}^T \\mathbf{y} + g \\\\\n    \\text{s.t.} &\\quad (\\mathbf{b} - \\mathbf{B} \\mathbf{y})^{T} \\mathbf{u}_k^{ray} \\leq 0, \\ \\forall j \\in \\mathbf{J}_s \\\\\n    &\\quad (\\mathbf{b} - \\mathbf{B} \\mathbf{y})^{T} \\mathbf{u}_j^{point} \\leq g, \\ \\forall k \\in \\mathbf{K}_s \\\\\n    &\\quad j \\in \\mathbf{J}, k \\in \\mathbf{K}, \\mathbf{y} \\geq 0\n\\end{align}\\]\n\n\n\n\n\n\nflowchart LR\n   A[Start] --&gt; B{Is}\n    B --&gt;|Yes| C[OK]\n    C --&gt; D[Rethink]\n    D --&gt; B\n    B ----&gt;|No| E[End]\n\n\n\n\nFigure 2.1: Benders decomposition workflow",
+    "section": "",
+    "text": "The \\(\\mathbf{DSP}\\) becomes unbounded if any \\(\\mathbf{u}_k^{ray}\\) exists such that \\((\\mathbf{b} - \\mathbf{B} \\mathbf{y})^{T} \\mathbf{u}_k^{ray} &gt; 0\\). Note that an unbounded \\(\\mathbf{DSP}\\) implies an infeasible \\(\\mathbf{SP}\\) and to prevent this from happening, we have to ensure that \\((\\mathbf{b} - \\mathbf{B} \\mathbf{y})^{T} \\mathbf{u}_k^{ray} \\leq 0\\) for all \\(k \\in \\mathbf{K}\\).\nIf an optimal solution to \\(\\mathbf{DSP}\\) exists, it must occur at one of the extreme points. Let \\(g\\) denote the optimal objective value, it follows that \\((\\mathbf{b} - \\mathbf{B} \\mathbf{y})^{T} \\mathbf{u}_j^{point} \\leq g\\) for all \\(j \\in \\mathbf{J}\\).",
     "crumbs": [
       "Benders Decomposition",
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Benders Decomposition Theories</span>"
@@ -42,13 +53,101 @@
     ]
   },
   {
+    "objectID": "lagrange-theory.html",
+    "href": "lagrange-theory.html",
+    "title": "4  Lagrangian Relaxation Theories",
+    "section": "",
+    "text": "4.1 Lagrangian Relaxation Reformulation\nAs with the case of applying other decomposition algorithm, the first step in utilizing Lagrangian Relaxation is to transform our problem at hand into a suitable format. This involves two critical steps:\nArguably, the first step is more challenging when facing a new optimization problem. The second step is often straightforward to do once one recognize the required structure is present in the model formulation. My experience in using the Lagrangian Relaxation is through problem solving. It is natural to build up intuition once one solves more optimization problem with this powerful algorithm. In this chapter and following chapter, we will use Lagrangian Relaxation to solve a number of classical optimization problems. Hopefully, the exercise will help us gain enough sense of recognizing when Lagrangian Relaxation is applicable.\nRegarding the second point, we will see that sometimes one original problem formulation invites multiple forms of Lagrangian relaxations and some are better than others in terms of providing tighter bounds.",
+    "crumbs": [
+      "Lagrangian Relaxation",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Lagrangian Relaxation Theories</span>"
+    ]
+  },
+  {
+    "objectID": "lagrange-theory.html#lagrangian-relaxation-reformulation",
+    "href": "lagrange-theory.html#lagrangian-relaxation-reformulation",
+    "title": "4  Lagrangian Relaxation Theories",
+    "section": "",
+    "text": "Recognizing the applicability of the Lagrangian Relaxation algorithm.\nModel reformulation.",
+    "crumbs": [
+      "Lagrangian Relaxation",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Lagrangian Relaxation Theories</span>"
+    ]
+  },
+  {
+    "objectID": "lagrange-theory.html#subgradient-search",
+    "href": "lagrange-theory.html#subgradient-search",
+    "title": "4  Lagrangian Relaxation Theories",
+    "section": "4.2 Subgradient Search",
+    "text": "4.2 Subgradient Search\nThe essential component of Lagrangian relaxation is the use of Lagrange multipliers to penalize the violation of constraints that we choose to put in the objective function. The determination of the values of Lagrange multipliers is through the subgradient search algorithm, which is outlined in this section and illustrated in following chapters through concrete examples.",
+    "crumbs": [
+      "Lagrangian Relaxation",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Lagrangian Relaxation Theories</span>"
+    ]
+  },
+  {
+    "objectID": "lagrange-assignment.html",
+    "href": "lagrange-assignment.html",
+    "title": "5  Generalized Assignment Problem",
+    "section": "",
+    "text": "5.1 Formulation\nFormally, the Generalized Assignment Problem can be defined as follows:\nGiven:\nThe goal is to find an assignment of tasks to agents that minimizes the total cost or maximizes the total profit, while ensuring that each task is assigned to one or more agents, and the total resource requirement of each agent does not exceed its capacity.\nMathematically, the GAP can be formulated as an integer linear programming problem. One possible formulation is as follows:\n\\[\n\\begin{align}\n\\text{min.} &\\quad \\sum_{i=1}^{n} \\sum_{j=1}^{m} c_{ij} x_{ij} \\\\\n\\text{s.t.} &\\quad \\sum_{j=1}^{m} x_{ij} = 1, \\ \\forall i = 1, 2, ..., n \\\\\n&\\quad \\sum_{i=1}^{n} r_{ij} x_{ij} \\leq b_j, \\  \\forall j = 1, 2, ..., m \\\\\n&\\quad x_{ij} \\in \\{0, 1\\}, \\ \\forall i = 1, 2, ..., n, j = 1, 2, ..., m\n\\end{align}\n\\]\nwhere \\(x_{ij}\\) is a binary decision variable that equals 1 if task \\(i\\) is assigned to agent \\(j\\), and 0 otherwise.\nThe first set of constraints ensures that each task is assigned to exactly one agent, and the second set of constraints ensures that the total resource requirement of each agent does not exceed its capacity.\nSolving the GAP can be computationally challenging, especially for large instances, as it is a generalization of the classic assignment problem, which is known to be polynomial-time solvable. Various algorithms and heuristics, such as branch and bound, dynamic programming, and approximation algorithms, can be employed to find feasible or optimal solutions to the GAP.",
+    "crumbs": [
+      "Lagrangian Relaxation",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Generalized Assignment Problem</span>"
+    ]
+  },
+  {
+    "objectID": "lagrange-assignment.html#formulation",
+    "href": "lagrange-assignment.html#formulation",
+    "title": "5  Generalized Assignment Problem",
+    "section": "",
+    "text": "A set of tasks, \\(T = \\{1, 2, ..., n\\}\\)\nA set of agents, \\(A = \\{1, 2, ..., m\\}\\)\nFor each task \\(i\\) and agent \\(j\\), a cost or profit \\(c_{ij}\\) associated with assigning task \\(i\\) to agent \\(j\\)\nFor each task \\(i\\) and agent \\(j\\), a resource requirement \\(r_{ij}\\) specifying the amount of resource needed from agent \\(j\\) to complete task \\(i\\)\nFor each agent \\(j\\), a capacity \\(b_j\\) specifying the maximum amount of resource that agent \\(j\\) can contribute",
+    "crumbs": [
+      "Lagrangian Relaxation",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Generalized Assignment Problem</span>"
+    ]
+  },
+  {
+    "objectID": "lagrange-assignment.html#lagrangian-relaxation",
+    "href": "lagrange-assignment.html#lagrangian-relaxation",
+    "title": "5  Generalized Assignment Problem",
+    "section": "5.2 Lagrangian Relaxation",
+    "text": "5.2 Lagrangian Relaxation\n\n5.2.1 Formulation 1\n\n\n5.2.2 Formulation 2",
+    "crumbs": [
+      "Lagrangian Relaxation",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Generalized Assignment Problem</span>"
+    ]
+  },
+  {
+    "objectID": "lagrange-assignment.html#implementation",
+    "href": "lagrange-assignment.html#implementation",
+    "title": "5  Generalized Assignment Problem",
+    "section": "5.3 Implementation",
+    "text": "5.3 Implementation",
+    "crumbs": [
+      "Lagrangian Relaxation",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Generalized Assignment Problem</span>"
+    ]
+  },
+  {
+    "objectID": "cg-theory.html",
+    "href": "cg-theory.html",
+    "title": "8  Column Generation Theories",
+    "section": "",
+    "text": "If I have to choose my favorite decomposition algorithm, column generation is the one!\nI have used column generation in several industry projects and it never failed to meet my needs. Unlike Benders decomposition or Lagrangian relaxation which transforms the original formulation in certain smart ways, column generation is more of a new modeling philosophy. It requires one to approach a problem through a different mindset and rise with a new formulation that enables efficient problem solving.",
+    "crumbs": [
+      "Column Generation",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Column Generation Theories</span>"
+    ]
+  },
+  {
     "objectID": "summary.html",
     "href": "summary.html",
-    "title": "9  Summary",
+    "title": "11  Summary",
     "section": "",
     "text": "In summary, this book has no content whatsoever.",
     "crumbs": [
-      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Summary</span>"
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Summary</span>"
     ]
   }
 ]

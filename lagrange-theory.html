@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.526">
+<meta name="generator" content="quarto-1.4.550">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Hands-on Large Scale Optimization in Python - 4&nbsp; Lagrange Relaxation Theories</title>
+<title>Hands-on Large Scale Optimization in Python - 4&nbsp; Lagrangian Relaxation Theories</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -95,7 +95,8 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
 </script>
 
 
-<meta name="twitter:title" content="Hands-on Large Scale Optimization in Python - 4&nbsp; Lagrange Relaxation Theories">
+<meta name="twitter:title" content="Hands-on Large Scale Optimization in Python - 4&nbsp; Lagrangian Relaxation Theories">
+<meta name="twitter:description" content="">
 <meta name="twitter:card" content="summary">
 </head>
 
@@ -108,7 +109,7 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./lagrange-theory.html">Lagrangian Relaxation</a></li><li class="breadcrumb-item"><a href="./lagrange-theory.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Lagrange Relaxation Theories</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./lagrange-theory.html">Lagrangian Relaxation</a></li><li class="breadcrumb-item"><a href="./lagrange-theory.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Lagrangian Relaxation Theories</span></a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -183,13 +184,25 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./lagrange-theory.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Lagrange Relaxation Theories</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Lagrangian Relaxation Theories</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./lagrange-assignment.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Assignment Optimization</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Generalized Assignment Problem</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lagrange-constrained-shortest-path.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Constrained Shortest Path Problem</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lagrange-tsp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Traveling Salesman Problem</span></span></a>
   </div>
 </li>
       </ul>
@@ -206,19 +219,19 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./cg-theory.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Column Generation Theories</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Column Generation Theories</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./cg-cutting-stock.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Cutting Stock Problem</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Cutting Stock Problem</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./cg-scheduling.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Scheduling Optimization</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Scheduling Optimization</span></span></a>
   </div>
 </li>
       </ul>
@@ -226,7 +239,7 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./summary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -241,14 +254,21 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#lagrangian-relaxation-reformulation" id="toc-lagrangian-relaxation-reformulation" class="nav-link active" data-scroll-target="#lagrangian-relaxation-reformulation"><span class="header-section-number">4.1</span> Lagrangian Relaxation Reformulation</a></li>
+  <li><a href="#subgradient-search" id="toc-subgradient-search" class="nav-link" data-scroll-target="#subgradient-search"><span class="header-section-number">4.2</span> Subgradient Search</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./lagrange-theory.html">Lagrangian Relaxation</a></li><li class="breadcrumb-item"><a href="./lagrange-theory.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Lagrange Relaxation Theories</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./lagrange-theory.html">Lagrangian Relaxation</a></li><li class="breadcrumb-item"><a href="./lagrange-theory.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Lagrangian Relaxation Theories</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Lagrange Relaxation Theories</span></h1>
+<h1 class="title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Lagrangian Relaxation Theories</span></h1>
 </div>
 
 
@@ -265,8 +285,25 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
 </header>
 
 
+<p>When it comes to solving integer programming (IP) problems, linear programming relaxation is often used to obtain the lower bound of a minimization problem or upper bound of a maximization problem. The effectiveness of the bounding algorithm plays a vital role in the overall performance of branch and bound algorithms. Sometimes, we might not be interested in solving the optimization problem at hand to its optimality at all, instead, we could be happy with deriving a feasible solution from the optimal solution of the relaxed formulation. This is particularly common in industry application where proving optimality might not be as important as obtaining a near-optimal solution in reasonable computational time.</p>
+<p>Aside from resorting to linear programming relaxation to help solve IP problem, there is another powerful decomposition algorithm, Lagrangian Relaxation, that can help obtain tight bound though another form of relaxation of the original problem. I have used this algorithm to solve some very interesting optimization problems in industry and I believe mastering the essence and intricacies of Lagrangian Relaxation could be very beneficial to the success of solving optimization problems in practice.</p>
+<p>In the following sections, we will examine the two key components of applying Lagrangian Relaxation, namely, reformulation and problem solving through subgradient search.</p>
+<section id="lagrangian-relaxation-reformulation" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="lagrangian-relaxation-reformulation"><span class="header-section-number">4.1</span> Lagrangian Relaxation Reformulation</h2>
+<p>As with the case of applying other decomposition algorithm, the first step in utilizing Lagrangian Relaxation is to transform our problem at hand into a suitable format. This involves two critical steps:</p>
+<ul>
+<li>Recognizing the applicability of the Lagrangian Relaxation algorithm.</li>
+<li>Model reformulation.</li>
+</ul>
+<p>Arguably, the first step is more challenging when facing a new optimization problem. The second step is often straightforward to do once one recognize the required structure is present in the model formulation. My experience in using the Lagrangian Relaxation is through problem solving. It is natural to build up intuition once one solves more optimization problem with this powerful algorithm. In this chapter and following chapter, we will use Lagrangian Relaxation to solve a number of classical optimization problems. Hopefully, the exercise will help us gain enough sense of recognizing when Lagrangian Relaxation is applicable.</p>
+<p>Regarding the second point, we will see that sometimes one original problem formulation invites multiple forms of Lagrangian relaxations and some are better than others in terms of providing tighter bounds.</p>
+</section>
+<section id="subgradient-search" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="subgradient-search"><span class="header-section-number">4.2</span> Subgradient Search</h2>
+<p>The essential component of Lagrangian relaxation is the use of Lagrange multipliers to penalize the violation of constraints that we choose to put in the objective function. The determination of the values of Lagrange multipliers is through the subgradient search algorithm, which is outlined in this section and illustrated in following chapters through concrete examples.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -397,27 +434,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       }
     }
     stripColumnClz(note)
-    const typesetMath = (el) => {
-      if (window.MathJax) {
-        // MathJax Typeset
-        window.MathJax.typeset([el]);
-      } else if (window.katex) {
-        // KaTeX Render
-        var mathElements = el.getElementsByClassName("math");
-        var macros = [];
-        for (var i = 0; i < mathElements.length; i++) {
-          var texText = mathElements[i].firstChild;
-          if (mathElements[i].tagName == "SPAN") {
-            window.katex.render(texText.data, mathElements[i], {
-              displayMode: mathElements[i].classList.contains('display'),
-              throwOnError: false,
-              macros: macros,
-              fleqn: false
-            });
-          }
-        }
-      }
-    }
     if (id === null || id.startsWith('sec-')) {
       // Special case sections, only their first couple elements
       const container = document.createElement("div");
@@ -432,10 +448,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             break;
           }
         }
-        typesetMath(container);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
         return container.innerHTML
       } else {
-        typesetMath(note);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
         return note.innerHTML;
       }
     } else {
@@ -444,8 +464,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (anchorLink) {
         anchorLink.remove();
       }
-      typesetMath(note);
-      return note.innerHTML;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
     }
   }
   for (var i=0; i<xrefs.length; i++) {
@@ -668,13 +695,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./benders-linear-prog.html" class="pagination-link  aria-label=" &lt;span="" linear="" programming="" problems="" with="" benders="" decomposition&lt;="" span&gt;"="">
+      <a href="./benders-linear-prog.html" class="pagination-link" aria-label="Solving Linear Programming Problems with Benders Decomposition">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Solving Linear Programming Problems with Benders Decomposition</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./lagrange-assignment.html" class="pagination-link" aria-label="<span class='chapter-number'>5</span>&nbsp; <span class='chapter-title'>Assignment Optimization</span>">
-        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Assignment Optimization</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./lagrange-assignment.html" class="pagination-link" aria-label="Generalized Assignment Problem">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Generalized Assignment Problem</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

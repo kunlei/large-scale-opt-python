@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.526">
+<meta name="generator" content="quarto-1.4.550">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -131,6 +131,33 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
 <meta name="twitter:title" content="Hands-on Large Scale Optimization in Python - 3&nbsp; Solving Linear Programming Problems with Benders Decomposition">
 <meta name="twitter:description" content="">
 <meta name="twitter:card" content="summary">
@@ -220,13 +247,25 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./lagrange-theory.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Lagrange Relaxation Theories</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Lagrangian Relaxation Theories</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./lagrange-assignment.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Assignment Optimization</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Generalized Assignment Problem</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lagrange-constrained-shortest-path.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Constrained Shortest Path Problem</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lagrange-tsp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Traveling Salesman Problem</span></span></a>
   </div>
 </li>
       </ul>
@@ -243,19 +282,19 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./cg-theory.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Column Generation Theories</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Column Generation Theories</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./cg-cutting-stock.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Cutting Stock Problem</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Cutting Stock Problem</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./cg-scheduling.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Scheduling Optimization</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Scheduling Optimization</span></span></a>
   </div>
 </li>
       </ul>
@@ -263,7 +302,7 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./summary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -343,7 +382,7 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
 </ul>
 <p>Inside the constructor <code>__init__()</code>, a solver environment <code>_env</code> is first created and then used to initialize a model object <code>_model</code>. The input parameters are then used to create decision variables <code>_vars</code>, constraints <code>_constrs</code> and objective function respectively. The <code>optimize()</code> function simply solves the problem and shows the solving status. Finally, the <code>clean_up()</code> function frees up the computing resources.</p>
 <div id="cell-8" class="cell" data-execution_count="211">
-<div id="lst-solver-gurobi" class="python cell-code listing" data-code-line-numbers="true">
+<div id="lst-solver-gurobi" class="python cell-code listing quarto-float" data-code-line-numbers="true">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-solver-gurobi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Listing&nbsp;3.1: A LP solver based on Gurobi
@@ -410,7 +449,7 @@ Listing&nbsp;3.1: A LP solver based on Gurobi
 </div>
 <p><a href="#lst-solver-scip" class="quarto-xref">Listing&nbsp;<span>3.2</span></a> presents an LP solver implementation in class <code>LpSolverSCIP</code> using SCIP. The constructor requires the same of parameters as defined in <code>LpSolverGurobi</code>. The model building process is similar with minor changes when required to create decision variables, constraints and the objective function.</p>
 <div id="cell-10" class="cell" data-execution_count="205">
-<div id="lst-solver-scip" class="python cell-code listing">
+<div id="lst-solver-scip" class="python cell-code listing quarto-float">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-solver-scip-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Listing&nbsp;3.2: A LP solver based on SCIP
@@ -465,7 +504,7 @@ Listing&nbsp;3.2: A LP solver based on SCIP
 </div>
 <p><a href="#lst-lp-exp1" class="quarto-xref">Listing&nbsp;<span>3.3</span></a> generates a LP problem with 20 decision variables and 5 constraints.</p>
 <div id="cell-12" class="cell" data-execution_count="106">
-<div id="lst-lp-exp1" class="python cell-code listing">
+<div id="lst-lp-exp1" class="python cell-code listing quarto-float">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-lp-exp1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Listing&nbsp;3.3: A randomly generated LP problem
@@ -483,7 +522,7 @@ Listing&nbsp;3.3: A randomly generated LP problem
 </div>
 <p><a href="#lst-lp-solver-gurobi-test1" class="quarto-xref">Listing&nbsp;<span>3.4</span></a> solves the generated LP using <code>LpSolverGurobi</code> and the solver output shows that an optimal solution was found with objective value of 36.90.</p>
 <div id="cell-14" class="cell" data-execution_count="107">
-<div id="lst-lp-solver-gurobi-test1" class="python cell-code listing">
+<div id="lst-lp-solver-gurobi-test1" class="python cell-code listing quarto-float">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-lp-solver-gurobi-test1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Listing&nbsp;3.4: Solving the generated LP with Gurobi
@@ -501,7 +540,7 @@ Optimal objective = 36.90</code></pre>
 </div>
 <p><a href="#lst-lp-solver-scip-test1" class="quarto-xref">Listing&nbsp;<span>3.5</span></a> solves the same LP problem using SCIP and not surprisingly, the same optimal objective value was found. This is not exciting, as it only indicates that the two solvers agree on the optimal solution on such a small LP problem as expected. However, they will become more useful in the following sections when we use them to validate our Benders decomposition results.</p>
 <div id="cell-16" class="cell" data-execution_count="108">
-<div id="lst-lp-solver-scip-test1" class="python cell-code listing">
+<div id="lst-lp-solver-scip-test1" class="python cell-code listing quarto-float">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-lp-solver-scip-test1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Listing&nbsp;3.5: Solving the generated LP with SCIP
@@ -544,7 +583,7 @@ Optimal objective = 36.90</code></pre>
 \end{equation*}\]</span></p>
 <p><a href="#lst-lp2" class="quarto-xref">Listing&nbsp;<span>3.6</span></a> solves the LP problem using the two solvers define above. Both solvers confirm the optimal objective value is 1091.43. With this information in mind, we will apply Benders decomposition to see if the same optimal solution could be identified or not.</p>
 <div id="cell-23" class="cell" data-execution_count="282">
-<div id="lst-lp2" class="python cell-code listing">
+<div id="lst-lp2" class="python cell-code listing quarto-float">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-lp2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Listing&nbsp;3.6: Solve the LP problem with Gurobi and SCIP
@@ -609,7 +648,7 @@ Optimal objective = 1091.43</code></pre>
 <p>Benders decomposition defines a problem solving process in which the restricted Benders master problem and the dual subproblem interact iteratively to identify the optimal solution or conclude infeasibility/unboundedness. To facilitate our understanding of the process, we demonstrate in this section the workings of Benders decomposition by solving the target LP problem step by step.</p>
 <p><a href="#lst-bd-rbmp" class="quarto-xref">Listing&nbsp;<span>3.7</span></a> shows the codes that initialize the lower bound <code>lb</code>, upper bound <code>ub</code> and threshold value <code>eps</code>. Furthermore, the restricted Benders master problem <code>rbmp</code> is created with three variables and a minimizing objective function. Note that no constraints are yet included in the model at this moment.</p>
 <div id="cell-34" class="cell" data-execution_count="283">
-<div id="lst-bd-rbmp" class="python cell-code listing">
+<div id="lst-bd-rbmp" class="python cell-code listing quarto-float">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-bd-rbmp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Listing&nbsp;3.7: Gurobi solver setup and restricted master problem initialization
@@ -643,7 +682,7 @@ Listing&nbsp;3.7: Gurobi solver setup and restricted master problem initializati
 </div>
 <p><a href="#lst-bd-dsp" class="quarto-xref">Listing&nbsp;<span>3.8</span></a> initializes the Benders subproblem with two decision variables and three constraints.</p>
 <div id="cell-36" class="cell" data-execution_count="286">
-<div id="lst-bd-dsp" class="python cell-code listing">
+<div id="lst-bd-dsp" class="python cell-code listing quarto-float">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-bd-dsp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Listing&nbsp;3.8: Dual subproblem initialization
@@ -677,7 +716,7 @@ Listing&nbsp;3.8: Dual subproblem initialization
 </div>
 <p>In <a href="#lst-bd-iter1-rbmp" class="quarto-xref">Listing&nbsp;<span>3.9</span></a>, we solve the (<strong>RBMP</strong>) for the first time. It has an optimal solution with <span class="math inline">\((\bar{y_1}, \bar{y_2}, \bar{g}) = (0, 0, 0)\)</span> and optimal objective value of 0. This is expected as all the variables assume their minimal possible values in order to minimize the objective function. This objective value also serves as the new lower bound.</p>
 <div id="cell-38" class="cell" data-execution_count="287">
-<div id="lst-bd-iter1-rbmp" class="python cell-code listing">
+<div id="lst-bd-iter1-rbmp" class="python cell-code listing quarto-float">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-bd-iter1-rbmp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Listing&nbsp;3.9: Iteration 1 - solving the restricted Benders master problem
@@ -706,7 +745,7 @@ lb=0.0, ub=1e+100</code></pre>
 </div>
 <p>Given that <span class="math inline">\((\bar{y_1}, \bar{y_2}, \bar{g}) = (0, 0, 0)\)</span>, we now feed the values of <span class="math inline">\(\bar{y_1}\)</span> and <span class="math inline">\(\bar{y_2}\)</span> into the Benders dual subproblem <strong>(DSP)</strong> by updating its objective function, as shown in <a href="#lst-bd-iter1-dsp" class="quarto-xref">Listing&nbsp;<span>3.10</span></a>:</p>
 <div id="cell-40" class="cell" data-execution_count="288">
-<div id="lst-bd-iter1-dsp" class="python cell-code listing">
+<div id="lst-bd-iter1-dsp" class="python cell-code listing quarto-float">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-bd-iter1-dsp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Listing&nbsp;3.10: Iteration 1 - solving the dual subproblem
@@ -738,7 +777,7 @@ lb=0.0, ub=1200.0</code></pre>
 <p>We see that the dual subproblem has an optimal solution. The upper bound <code>ub</code> is also updated. Since the optimal objective value of the subproblem turns out to be 1200 and is greater than <span class="math inline">\(\bar{g} = 0\)</span>, which implies that an optimality cut is needed to make sure that the variable <span class="math inline">\(g\)</span> in the restricted Benders master problem reflects this newly obtained information from the subproblem.</p>
 <p>In <a href="#lst-bd-iter2-rbmp" class="quarto-xref">Listing&nbsp;<span>3.11</span></a>, the new optimality cut is added to the (<strong>RBMP</strong>), which is then solved to optimality.</p>
 <div id="cell-43" class="cell" data-execution_count="289">
-<div id="lst-bd-iter2-rbmp" class="python cell-code listing">
+<div id="lst-bd-iter2-rbmp" class="python cell-code listing quarto-float">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-bd-iter2-rbmp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Listing&nbsp;3.11: Iteration 2 - solving the restricted Benders master problem
@@ -772,7 +811,7 @@ lb=1080.0, ub=1200.0</code></pre>
 </div>
 <p>Armed with the optimal solution <span class="math inline">\((\bar{y_1}, \bar{y_2}, \bar{g}) = (0, 60, 0)\)</span>, <a href="#lst-bd-iter2-dsp" class="quarto-xref">Listing&nbsp;<span>3.12</span></a> updates the objective function of the (<strong>DSP</strong>) and obtains its optimal solution.</p>
 <div id="cell-45" class="cell" data-execution_count="293">
-<div id="lst-bd-iter2-dsp" class="python cell-code listing">
+<div id="lst-bd-iter2-dsp" class="python cell-code listing quarto-float">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-bd-iter2-dsp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Listing&nbsp;3.12: Iteration 2 - solving the dual subproblem
@@ -809,7 +848,7 @@ retrieve extreme ray (u1, u2) = (-2.0, 1.0)</code></pre>
 </div>
 <p>Since the dual subproblem is unbounded, a feasibility cut is further needed. In <a href="#lst-bd-iter3-rbmp" class="quarto-xref">Listing&nbsp;<span>3.13</span></a>, we add the new cut and solve the restricted Benders master problem again.</p>
 <div id="cell-47" class="cell" data-execution_count="294">
-<div id="lst-bd-iter3-rbmp" class="python cell-code listing">
+<div id="lst-bd-iter3-rbmp" class="python cell-code listing quarto-float">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-bd-iter3-rbmp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Listing&nbsp;3.13: Iteration 3 - solving the restricted Benders master problem
@@ -843,7 +882,7 @@ lb=1091.43, ub=1200.00</code></pre>
 </div>
 <p>Note that a new lower bound is obtained after solving the master problem. Since there is still a large gap between the lower bound and upper bound, we continue solving the subproblem in <a href="#lst-bd-iter3-dsp" class="quarto-xref">Listing&nbsp;<span>3.14</span></a>.</p>
 <div id="cell-49" class="cell" data-execution_count="295">
-<div id="lst-bd-iter3-dsp" class="python cell-code listing">
+<div id="lst-bd-iter3-dsp" class="python cell-code listing quarto-float">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-bd-iter3-dsp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Listing&nbsp;3.14: Iteration 3 - solving the dual subproblem
@@ -885,7 +924,7 @@ lb=1091.43, ub=1091.43</code></pre>
 <p>It typically takes Benders decomposition many iterations to reach optimality or conclude infeasibility/unboundedness. In this section, we put everything we have learned from the manual approach above into an automatic workflow.</p>
 <p><a href="#lst-bd-whole-status" class="quarto-xref">Listing&nbsp;<span>3.15</span></a> defines an <code>Enum</code> class that specifies four possible optimization statuses. The meanings of these statuses are self-explanatory from their corresponding names and further explanations are omitted here.</p>
 <div id="cell-55" class="cell" data-execution_count="2">
-<div id="lst-bd-whole-status" class="python cell-code listing">
+<div id="lst-bd-whole-status" class="python cell-code listing quarto-float">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-bd-whole-status-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Listing&nbsp;3.15: Optimization status
@@ -907,7 +946,7 @@ Listing&nbsp;3.15: Optimization status
 </div>
 <p><a href="#lst-bd-whole-master" class="quarto-xref">Listing&nbsp;<span>3.16</span></a> defines a <code>ManualBendersMasterSolver</code> class that models the (<strong>RBMP</strong>). Its constructor contains the variable and objective function definitions. The ability to take in either feasibility or optimality cuts is implemented in separate functions <code>add_feasibility_cut()</code> and <code>add_optimality_cut()</code>, respectively. The <code>solve()</code> function is responsible for optimizing the model and retrieve the optimal solution if any.</p>
 <div id="cell-57" class="cell" data-execution_count="3">
-<div id="lst-bd-whole-master" class="python cell-code listing">
+<div id="lst-bd-whole-master" class="python cell-code listing quarto-float">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-bd-whole-master-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Listing&nbsp;3.16: Restricted Benders master model
@@ -998,7 +1037,7 @@ Listing&nbsp;3.16: Restricted Benders master model
 </div>
 <p><a href="#lst-bd-whole-dsp" class="quarto-xref">Listing&nbsp;<span>3.17</span></a> defines the Benders dual subproblem in a similar fashion. Notice that the <code>update_objective()</code> function is used to set an updated objective function based on the optimal solution identified in the restricted Benders master problem.</p>
 <div id="cell-59" class="cell" data-execution_count="4">
-<div id="lst-bd-whole-dsp" class="python cell-code listing">
+<div id="lst-bd-whole-dsp" class="python cell-code listing quarto-float">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-bd-whole-dsp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Listing&nbsp;3.17: Dual subproblem model
@@ -1095,7 +1134,7 @@ Listing&nbsp;3.17: Dual subproblem model
 </div>
 <p><a href="#lst-bd-whole-workflow" class="quarto-xref">Listing&nbsp;<span>3.18</span></a> shows the control flow of Benders decomposition. The main logic is stated as a <code>while</code> loop, in which the master problem and dual subproblem are solved sequentially within each iteration. Depending on whether the subproblem is optimal or unbounded, an optimality or feasibility cut is added to the master problem. The process continues until the gap between the lower bound and the upper bound is within a certain threshold.</p>
 <div id="cell-61" class="cell" data-execution_count="5">
-<div id="lst-bd-whole-workflow" class="python cell-code listing">
+<div id="lst-bd-whole-workflow" class="python cell-code listing quarto-float">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-bd-whole-workflow-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Listing&nbsp;3.18: Benders decomposition control flow
@@ -1156,7 +1195,7 @@ Listing&nbsp;3.18: Benders decomposition control flow
 </div>
 <p><a href="#lst-bd-whole-exp-1" class="quarto-xref">Listing&nbsp;<span>3.19</span></a> solves the LP problem using the wholesome Benders solver. The optimal solution agrees with the solution obtained in the manual approach.</p>
 <div id="cell-63" class="cell" data-execution_count="6">
-<div id="lst-bd-whole-exp-1" class="python cell-code listing">
+<div id="lst-bd-whole-exp-1" class="python cell-code listing quarto-float">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-bd-whole-exp-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Listing&nbsp;3.19: Solving the LP problem using Benders decomposition
@@ -1262,7 +1301,7 @@ Bounds: lb=1091.43, ub=1091.43</code></pre>
 <li><code>opt_val_for_surrogate_var()</code>: this function returns the optimal value of the surrogate variable.</li>
 </ul>
 <div id="cell-69" class="cell" data-execution_count="41">
-<div id="lst-base-class-master" class="python cell-code listing">
+<div id="lst-base-class-master" class="python cell-code listing quarto-float">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-base-class-master-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Listing&nbsp;3.20: Base class for restricted master problem implementations
@@ -1389,7 +1428,7 @@ Listing&nbsp;3.20: Base class for restricted master problem implementations
 <li><code>extreme_ray()</code>: this function returns the extreme ray identified by the optimizer.</li>
 </ul>
 <div id="cell-71" class="cell" data-execution_count="40">
-<div id="lst-base-class-master" class="python cell-code listing">
+<div id="lst-base-class-master" class="python cell-code listing quarto-float">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-base-class-master-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Listing&nbsp;3.21: Base class for restricted master problem implementations
@@ -1485,7 +1524,7 @@ Listing&nbsp;3.21: Base class for restricted master problem implementations
 </div>
 </div>
 <div id="cell-73" class="cell" data-execution_count="9">
-<div id="lst-bd-console" class="python cell-code listing">
+<div id="lst-bd-console" class="python cell-code listing quarto-float">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-bd-console-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Listing&nbsp;3.22: Generic Benders decomposition for LP problems
@@ -1559,7 +1598,7 @@ Listing&nbsp;3.22: Generic Benders decomposition for LP problems
 <h4 data-number="3.0.6.2" class="anchored" data-anchor-id="master-and-subproblem-solvers-based-on-gurobi"><span class="header-section-number">3.0.6.2</span> Master and subproblem solvers based on Gurobi</h4>
 <p><a href="#lst-generic-master-solver-gurobi" class="quarto-xref">Listing&nbsp;<span>3.23</span></a> implements a master problem solver class named <code>GenericMasterSolverGurobi</code> for (<strong>RBMP</strong>) characterized by the cost coefficient <code>f</code>, the constraint matrix <code>B</code> and right-hand side <code>b</code>. The constructor initializes the complicating variables <code>_y</code> and the dummy variable <code>_g</code>. The <code>solve()</code> function solves the problem and retrieves the optimal solution if exists. Moreover, the solver provides functions to add optimality and feasibility cuts to the existing model.</p>
 <div id="cell-76" class="cell" data-execution_count="10">
-<div id="lst-generic-master-solver-gurobi" class="python cell-code listing">
+<div id="lst-generic-master-solver-gurobi" class="python cell-code listing quarto-float">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-generic-master-solver-gurobi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Listing&nbsp;3.23: Generic Benders master problem solver for LP problems
@@ -1696,7 +1735,7 @@ Listing&nbsp;3.23: Generic Benders master problem solver for LP problems
 </div>
 <p><a href="#lst-generic-subprob-solver-gurobi" class="quarto-xref">Listing&nbsp;<span>3.24</span></a> presents a solver for (<strong>DSP</strong>) that’s defined by the objective function coefficient <code>c</code> and constraint matrix <code>A</code>. The model objective function could be updated by <code>update_objective()</code> with the latest value of <code>y</code>. Notice that, the optimal solution is saved to <code>_opt_u</code> if the underlying problem is optimal. Otherwise, an extreme ray is retrieved and stored in <code>_extreme_ray</code>.</p>
 <div id="cell-78" class="cell" data-execution_count="12">
-<div id="lst-generic-subprob-solver-gurobi" class="python cell-code listing">
+<div id="lst-generic-subprob-solver-gurobi" class="python cell-code listing quarto-float">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-generic-subprob-solver-gurobi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Listing&nbsp;3.24: Generic Benders dual subproblem solver for LP problems
@@ -1808,7 +1847,7 @@ Listing&nbsp;3.24: Generic Benders dual subproblem solver for LP problems
 </div>
 <p>In <a href="#lst-generic-benders-test-1" class="quarto-xref">Listing&nbsp;<span>3.26</span></a>, we utilize the freshly baked solver to tackle the serious LP problem presented in the previous sections. The output shows that the same optimal objective value of 1091.43 was obtained in the end.</p>
 <div id="cell-80" class="cell" data-execution_count="15">
-<div id="lst-generic-benders-test-1" class="python cell-code listing">
+<div id="lst-generic-benders-test-1" class="python cell-code listing quarto-float">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-generic-benders-test-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Listing&nbsp;3.25: Solving the LP problem using Benders decomposition
@@ -2127,7 +2166,7 @@ Bounds: lb=1091.43, ub=1091.43</code></pre>
 </div>
 <p><a href="#lst-generic-benders-test-1" class="quarto-xref">Listing&nbsp;<span>3.26</span></a> solves same the LP problem that we have been tackling in the previous sections. The output confirms that the same optimal solution is identified as in the last section.</p>
 <div id="cell-85" class="cell" data-execution_count="31">
-<div id="lst-generic-benders-test-1" class="python cell-code listing">
+<div id="lst-generic-benders-test-1" class="python cell-code listing quarto-float">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-generic-benders-test-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Listing&nbsp;3.26: Solving the LP problem using Benders decomposition
@@ -2430,27 +2469,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       }
     }
     stripColumnClz(note)
-    const typesetMath = (el) => {
-      if (window.MathJax) {
-        // MathJax Typeset
-        window.MathJax.typeset([el]);
-      } else if (window.katex) {
-        // KaTeX Render
-        var mathElements = el.getElementsByClassName("math");
-        var macros = [];
-        for (var i = 0; i < mathElements.length; i++) {
-          var texText = mathElements[i].firstChild;
-          if (mathElements[i].tagName == "SPAN") {
-            window.katex.render(texText.data, mathElements[i], {
-              displayMode: mathElements[i].classList.contains('display'),
-              throwOnError: false,
-              macros: macros,
-              fleqn: false
-            });
-          }
-        }
-      }
-    }
     if (id === null || id.startsWith('sec-')) {
       // Special case sections, only their first couple elements
       const container = document.createElement("div");
@@ -2465,10 +2483,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             break;
           }
         }
-        typesetMath(container);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
         return container.innerHTML
       } else {
-        typesetMath(note);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
         return note.innerHTML;
       }
     } else {
@@ -2477,8 +2499,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (anchorLink) {
         anchorLink.remove();
       }
-      typesetMath(note);
-      return note.innerHTML;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
     }
   }
   for (var i=0; i<xrefs.length; i++) {
@@ -2701,13 +2730,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./benders-theory.html" class="pagination-link  aria-label=" &lt;span="" decomposition="" theories&lt;="" span&gt;"="">
+      <a href="./benders-theory.html" class="pagination-link" aria-label="Benders Decomposition Theories">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Benders Decomposition Theories</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./lagrange-theory.html" class="pagination-link" aria-label="<span class='chapter-number'>4</span>&nbsp; <span class='chapter-title'>Lagrange Relaxation Theories</span>">
-        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Lagrange Relaxation Theories</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./lagrange-theory.html" class="pagination-link" aria-label="Lagrangian Relaxation Theories">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Lagrangian Relaxation Theories</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
