@@ -322,10 +322,7 @@ window.Quarto = {
    
   <ul>
   <li><a href="#formulation" id="toc-formulation" class="nav-link active" data-scroll-target="#formulation"><span class="header-section-number">5.1</span> Formulation</a></li>
-  <li><a href="#lagrangian-relaxation" id="toc-lagrangian-relaxation" class="nav-link" data-scroll-target="#lagrangian-relaxation"><span class="header-section-number">5.2</span> Lagrangian Relaxation</a>
-  <ul class="collapse">
-  <li><a href="#formulation-1" id="toc-formulation-1" class="nav-link" data-scroll-target="#formulation-1"><span class="header-section-number">5.2.1</span> Formulation 1</a></li>
-  </ul></li>
+  <li><a href="#lagrangian-relaxation" id="toc-lagrangian-relaxation" class="nav-link" data-scroll-target="#lagrangian-relaxation"><span class="header-section-number">5.2</span> Lagrangian Relaxation</a></li>
   <li><a href="#implementation" id="toc-implementation" class="nav-link" data-scroll-target="#implementation"><span class="header-section-number">5.3</span> Implementation</a>
   <ul class="collapse">
   <li><a href="#benchmarking-instances" id="toc-benchmarking-instances" class="nav-link" data-scroll-target="#benchmarking-instances"><span class="header-section-number">5.3.1</span> Benchmarking instances</a></li>
@@ -374,10 +371,10 @@ window.Quarto = {
 <p>Mathematically, the GAP can be formulated as an integer linear programming problem. One possible formulation is as follows:</p>
 <p><span class="math display">\[
 \begin{align}
-\text{min.} &amp;\quad \sum_{i=1}^{n} \sum_{j=1}^{m} c_{ij} x_{ij} \\
-\text{s.t.} &amp;\quad \sum_{j=1}^{m} x_{ij} = 1, \ \forall i = 1, 2, ..., n \\
-&amp;\quad \sum_{i=1}^{n} r_{ij} x_{ij} \leq b_j, \  \forall j = 1, 2, ..., m \\
-&amp;\quad x_{ij} \in \{0, 1\}, \ \forall i = 1, 2, ..., n, j = 1, 2, ..., m
+\text{min.} &amp;\quad \sum_{i=1}^{n} \sum_{j=1}^{m} c_{ij} x_{ij} \label{gap-obj}\\
+\text{s.t.} &amp;\quad \sum_{j=1}^{m} x_{ij} = 1, \ \forall i = 1, 2, ..., n \label{gap-cons1}\\
+&amp;\quad \sum_{i=1}^{n} r_{ij} x_{ij} \leq b_j, \  \forall j = 1, 2, ..., m \label{gap-cons2}\\
+&amp;\quad x_{ij} \in \{0, 1\}, \ \forall i = 1, 2, ..., n, j = 1, 2, ..., m \label{gap-cons3}
 \end{align}
 \]</span></p>
 <p>where <span class="math inline">\(x_{ij}\)</span> is a binary decision variable that equals 1 if task <span class="math inline">\(i\)</span> is assigned to agent <span class="math inline">\(j\)</span>, and 0 otherwise.</p>
@@ -386,9 +383,15 @@ window.Quarto = {
 </section>
 <section id="lagrangian-relaxation" class="level2" data-number="5.2">
 <h2 data-number="5.2" class="anchored" data-anchor-id="lagrangian-relaxation"><span class="header-section-number">5.2</span> Lagrangian Relaxation</h2>
-<section id="formulation-1" class="level3" data-number="5.2.1">
-<h3 data-number="5.2.1" class="anchored" data-anchor-id="formulation-1"><span class="header-section-number">5.2.1</span> Formulation 1</h3>
-</section>
+<p>The essence of Lagrangian relaxation is to choose some ‘hard’ constraints in the original model formulation and put them into the objective function. In the meantime, Lagrange multipliers are used to penalize the violations of these constraints. In the GAP formulation, we could choose the constraints <span class="math inline">\(\eqref{gap-cons1}\)</span> and put them into the objective function, which gives us the corresponding Lagrangian relaxation:</p>
+<p><span class="math display">\[
+\begin{align}
+LR(v): \text{min.} &amp;\quad \sum_{i=1}^{n} \sum_{j=1}^{m} c_{ij} x_{ij} + \sum_{i=1}^{n} v_i (\sum_{j=1}^{m} x_{ij} - 1) \label{gap-lr-obj}\\
+\text{s.t.} &amp;\quad \sum_{i=1}^{n} r_{ij} x_{ij} \leq b_j, \  \forall j = 1, 2, ..., m \label{gap-lr-cons1}\\
+&amp;\quad x_{ij} \in \{0, 1\}, \ \forall i = 1, 2, ..., n, j = 1, 2, ..., m \label{gap-lr-cons2}
+\end{align}
+\]</span></p>
+<p>In the above formulation, <span class="math inline">\(v_i\)</span> is the Lagrange multiplier associated with each task <span class="math inline">\(i\)</span>. Note that the optimal objective value of <span class="math inline">\(LR(v)\)</span> for a given <span class="math inline">\(v\)</span> serves as a lower bound of the original problem. Our goal is then to find the best value of <span class="math inline">\(v\)</span> such that the best lower bound is obtained for the original problem.</p>
 </section>
 <section id="implementation" class="level2" data-number="5.3">
 <h2 data-number="5.3" class="anchored" data-anchor-id="implementation"><span class="header-section-number">5.3</span> Implementation</h2>
@@ -536,9 +539,9 @@ num_agents: 5
 num_tasks: 15</code></pre>
 </div>
 </div>
-<div id="cell-21" class="cell" data-execution_count="31">
+<div id="cell-21" class="cell" data-execution_count="37">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>instance[<span class="st">'costs'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="31">
+<div class="cell-output cell-output-display" data-execution_count="37">
 <pre><code>[[17, 21, 22, 18, 24, 15, 20, 18, 19, 18, 16, 22, 24, 24, 16],
  [23, 16, 21, 16, 17, 16, 19, 25, 18, 21, 17, 15, 25, 17, 24],
  [16, 20, 16, 25, 24, 16, 17, 19, 19, 18, 20, 16, 17, 21, 24],
@@ -565,9 +568,174 @@ num_tasks: 15</code></pre>
 </section>
 <section id="solve-the-original-problem" class="level3" data-number="5.3.2">
 <h3 data-number="5.3.2" class="anchored" data-anchor-id="solve-the-original-problem"><span class="header-section-number">5.3.2</span> Solve the original problem</h3>
+<p>In this section, we use SCIP to solve the original formulation of the GAP, which is given in <a href="#lst-scip-gap" class="quarto-xref">Listing&nbsp;<span>5.3</span></a>.</p>
+<div id="cell-26" class="cell" data-execution_count="48">
+<div id="lst-scip-gap" class="python cell-code listing quarto-float">
+<figure class="quarto-float quarto-float-lst figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-scip-gap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Listing&nbsp;5.2: SCIP solver for GAP
+</figcaption>
+<div aria-describedby="lst-scip-gap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="sourceCode cell-code" id="lst-scip-gap"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="lst-scip-gap-1"><a href="#lst-scip-gap-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyscipopt <span class="im">as</span> scip</span>
+<span id="lst-scip-gap-2"><a href="#lst-scip-gap-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyscipopt <span class="im">import</span> SCIP_PARAMSETTING</span>
+<span id="lst-scip-gap-3"><a href="#lst-scip-gap-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="lst-scip-gap-4"><a href="#lst-scip-gap-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ScipGapSolver:</span>
+<span id="lst-scip-gap-5"><a href="#lst-scip-gap-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="lst-scip-gap-6"><a href="#lst-scip-gap-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, instance):</span>
+<span id="lst-scip-gap-7"><a href="#lst-scip-gap-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._instance <span class="op">=</span> instance</span>
+<span id="lst-scip-gap-8"><a href="#lst-scip-gap-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._model <span class="op">=</span> scip.Model(<span class="st">"GAP solver"</span>)</span>
+<span id="lst-scip-gap-9"><a href="#lst-scip-gap-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._vars <span class="op">=</span> <span class="va">None</span></span>
+<span id="lst-scip-gap-10"><a href="#lst-scip-gap-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="lst-scip-gap-11"><a href="#lst-scip-gap-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> build_model(<span class="va">self</span>):</span>
+<span id="lst-scip-gap-12"><a href="#lst-scip-gap-12" aria-hidden="true" tabindex="-1"></a>        <span class="co"># create decision variables</span></span>
+<span id="lst-scip-gap-13"><a href="#lst-scip-gap-13" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._vars <span class="op">=</span> {</span>
+<span id="lst-scip-gap-14"><a href="#lst-scip-gap-14" aria-hidden="true" tabindex="-1"></a>            (i, j): <span class="va">self</span>._model.addVar(<span class="ss">f"x_</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">,</span><span class="sc">{</span>j<span class="sc">}</span><span class="ss">"</span>, vtype<span class="op">=</span><span class="st">'BINARY'</span>)</span>
+<span id="lst-scip-gap-15"><a href="#lst-scip-gap-15" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>._instance[<span class="st">'num_tasks'</span>])</span>
+<span id="lst-scip-gap-16"><a href="#lst-scip-gap-16" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>._instance[<span class="st">'num_agents'</span>])</span>
+<span id="lst-scip-gap-17"><a href="#lst-scip-gap-17" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="lst-scip-gap-18"><a href="#lst-scip-gap-18" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="lst-scip-gap-19"><a href="#lst-scip-gap-19" aria-hidden="true" tabindex="-1"></a>        <span class="co"># create objective</span></span>
+<span id="lst-scip-gap-20"><a href="#lst-scip-gap-20" aria-hidden="true" tabindex="-1"></a>        obj_expr <span class="op">=</span> [</span>
+<span id="lst-scip-gap-21"><a href="#lst-scip-gap-21" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>._instance[<span class="st">'costs'</span>][j][i] <span class="op">*</span> <span class="va">self</span>._vars[(i, j)]</span>
+<span id="lst-scip-gap-22"><a href="#lst-scip-gap-22" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>._instance[<span class="st">'num_tasks'</span>])</span>
+<span id="lst-scip-gap-23"><a href="#lst-scip-gap-23" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>._instance[<span class="st">'num_agents'</span>])</span>
+<span id="lst-scip-gap-24"><a href="#lst-scip-gap-24" aria-hidden="true" tabindex="-1"></a>        ]</span>
+<span id="lst-scip-gap-25"><a href="#lst-scip-gap-25" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._model.setObjective(scip.quicksum(obj_expr), <span class="st">"minimize"</span>)</span>
+<span id="lst-scip-gap-26"><a href="#lst-scip-gap-26" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="lst-scip-gap-27"><a href="#lst-scip-gap-27" aria-hidden="true" tabindex="-1"></a>        <span class="co"># create constraints</span></span>
+<span id="lst-scip-gap-28"><a href="#lst-scip-gap-28" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>._instance[<span class="st">'num_tasks'</span>]):</span>
+<span id="lst-scip-gap-29"><a href="#lst-scip-gap-29" aria-hidden="true" tabindex="-1"></a>            expr <span class="op">=</span> [</span>
+<span id="lst-scip-gap-30"><a href="#lst-scip-gap-30" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>._vars[(i, j)]</span>
+<span id="lst-scip-gap-31"><a href="#lst-scip-gap-31" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>._instance[<span class="st">'num_agents'</span>])</span>
+<span id="lst-scip-gap-32"><a href="#lst-scip-gap-32" aria-hidden="true" tabindex="-1"></a>            ]</span>
+<span id="lst-scip-gap-33"><a href="#lst-scip-gap-33" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>._model.addCons(scip.quicksum(expr) <span class="op">==</span> <span class="dv">1</span>)</span>
+<span id="lst-scip-gap-34"><a href="#lst-scip-gap-34" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="lst-scip-gap-35"><a href="#lst-scip-gap-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>._instance[<span class="st">'num_agents'</span>]):</span>
+<span id="lst-scip-gap-36"><a href="#lst-scip-gap-36" aria-hidden="true" tabindex="-1"></a>            expr <span class="op">=</span> [</span>
+<span id="lst-scip-gap-37"><a href="#lst-scip-gap-37" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>._instance[<span class="st">'resources'</span>][j][i] <span class="op">*</span> <span class="va">self</span>._vars[(i, j)]</span>
+<span id="lst-scip-gap-38"><a href="#lst-scip-gap-38" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>._instance[<span class="st">'num_tasks'</span>])</span>
+<span id="lst-scip-gap-39"><a href="#lst-scip-gap-39" aria-hidden="true" tabindex="-1"></a>            ]</span>
+<span id="lst-scip-gap-40"><a href="#lst-scip-gap-40" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>._model.addCons(scip.quicksum(expr) <span class="op">&lt;=</span> <span class="va">self</span>._instance[<span class="st">'capacities'</span>][j])</span>
+<span id="lst-scip-gap-41"><a href="#lst-scip-gap-41" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="lst-scip-gap-42"><a href="#lst-scip-gap-42" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> solve(<span class="va">self</span>):</span>
+<span id="lst-scip-gap-43"><a href="#lst-scip-gap-43" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._model.hideOutput()</span>
+<span id="lst-scip-gap-44"><a href="#lst-scip-gap-44" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._model.optimize()</span>
+<span id="lst-scip-gap-45"><a href="#lst-scip-gap-45" aria-hidden="true" tabindex="-1"></a>        status <span class="op">=</span> <span class="va">self</span>._model.getStatus()</span>
+<span id="lst-scip-gap-46"><a href="#lst-scip-gap-46" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> status <span class="op">==</span> <span class="st">"optimal"</span>:</span>
+<span id="lst-scip-gap-47"><a href="#lst-scip-gap-47" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f'Optimal solution found!'</span>)</span>
+<span id="lst-scip-gap-48"><a href="#lst-scip-gap-48" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f'Optimal objective = </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>_model<span class="sc">.</span>getObjVal()<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="lst-scip-gap-49"><a href="#lst-scip-gap-49" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> status <span class="op">==</span> <span class="st">"unbounded"</span>:</span>
+<span id="lst-scip-gap-50"><a href="#lst-scip-gap-50" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f'Model is unbounded!'</span>)</span>
+<span id="lst-scip-gap-51"><a href="#lst-scip-gap-51" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> status <span class="op">==</span> <span class="st">"infeasible"</span>:</span>
+<span id="lst-scip-gap-52"><a href="#lst-scip-gap-52" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f'Model is infeasible!'</span>)</span>
+<span id="lst-scip-gap-53"><a href="#lst-scip-gap-53" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="lst-scip-gap-54"><a href="#lst-scip-gap-54" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f'Unknown error occurred!'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</figure>
+</div>
+</div>
+<div id="cell-27" class="cell" data-execution_count="49">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>scip_gap_solver <span class="op">=</span> ScipGapSolver(instance<span class="op">=</span>instances[<span class="dv">0</span>])</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>scip_gap_solver.build_model()</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>scip_gap_solver.solve()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Optimal solution found!
+Optimal objective = 261.00</code></pre>
+</div>
+</div>
 </section>
 <section id="solve-the-lagrangian-relaxation" class="level3" data-number="5.3.3">
 <h3 data-number="5.3.3" class="anchored" data-anchor-id="solve-the-lagrangian-relaxation"><span class="header-section-number">5.3.3</span> Solve the Lagrangian Relaxation</h3>
+<div id="cell-30" class="cell" data-execution_count="51">
+<div id="lst-scip-gap" class="python cell-code listing quarto-float">
+<figure class="quarto-float quarto-float-lst figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-scip-gap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Listing&nbsp;5.3: SCIP solver for GAP
+</figcaption>
+<div aria-describedby="lst-scip-gap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="sourceCode cell-code" id="lst-scip-gap"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="lst-scip-gap-1"><a href="#lst-scip-gap-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyscipopt <span class="im">as</span> scip</span>
+<span id="lst-scip-gap-2"><a href="#lst-scip-gap-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyscipopt <span class="im">import</span> quicksum, SCIP_PARAMSETTING</span>
+<span id="lst-scip-gap-3"><a href="#lst-scip-gap-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="lst-scip-gap-4"><a href="#lst-scip-gap-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ScipGapLRSolver:</span>
+<span id="lst-scip-gap-5"><a href="#lst-scip-gap-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="lst-scip-gap-6"><a href="#lst-scip-gap-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, instance, lagrange_multipliers):</span>
+<span id="lst-scip-gap-7"><a href="#lst-scip-gap-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._instance <span class="op">=</span> instance</span>
+<span id="lst-scip-gap-8"><a href="#lst-scip-gap-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._lagrange_multipliers <span class="op">=</span> lagrange_multipliers</span>
+<span id="lst-scip-gap-9"><a href="#lst-scip-gap-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._model <span class="op">=</span> scip.Model(<span class="st">"GAP solver"</span>)</span>
+<span id="lst-scip-gap-10"><a href="#lst-scip-gap-10" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._vars <span class="op">=</span> <span class="va">None</span></span>
+<span id="lst-scip-gap-11"><a href="#lst-scip-gap-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="lst-scip-gap-12"><a href="#lst-scip-gap-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> build_model(<span class="va">self</span>):</span>
+<span id="lst-scip-gap-13"><a href="#lst-scip-gap-13" aria-hidden="true" tabindex="-1"></a>        <span class="co"># create decision variables</span></span>
+<span id="lst-scip-gap-14"><a href="#lst-scip-gap-14" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._vars <span class="op">=</span> {</span>
+<span id="lst-scip-gap-15"><a href="#lst-scip-gap-15" aria-hidden="true" tabindex="-1"></a>            (i, j): <span class="va">self</span>._model.addVar(<span class="ss">f"x_</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">,</span><span class="sc">{</span>j<span class="sc">}</span><span class="ss">"</span>, vtype<span class="op">=</span><span class="st">'BINARY'</span>)</span>
+<span id="lst-scip-gap-16"><a href="#lst-scip-gap-16" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>._instance[<span class="st">'num_tasks'</span>])</span>
+<span id="lst-scip-gap-17"><a href="#lst-scip-gap-17" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>._instance[<span class="st">'num_agents'</span>])</span>
+<span id="lst-scip-gap-18"><a href="#lst-scip-gap-18" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="lst-scip-gap-19"><a href="#lst-scip-gap-19" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="lst-scip-gap-20"><a href="#lst-scip-gap-20" aria-hidden="true" tabindex="-1"></a>        <span class="co"># create objective</span></span>
+<span id="lst-scip-gap-21"><a href="#lst-scip-gap-21" aria-hidden="true" tabindex="-1"></a>        obj_expr <span class="op">=</span> [</span>
+<span id="lst-scip-gap-22"><a href="#lst-scip-gap-22" aria-hidden="true" tabindex="-1"></a>            (<span class="va">self</span>._instance[<span class="st">'costs'</span>][j][i] <span class="op">-</span> <span class="va">self</span>._lagrange_multipliers[i]) <span class="op">*</span> <span class="va">self</span>._vars[(i, j)]</span>
+<span id="lst-scip-gap-23"><a href="#lst-scip-gap-23" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>._instance[<span class="st">'num_tasks'</span>])</span>
+<span id="lst-scip-gap-24"><a href="#lst-scip-gap-24" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>._instance[<span class="st">'num_agents'</span>])</span>
+<span id="lst-scip-gap-25"><a href="#lst-scip-gap-25" aria-hidden="true" tabindex="-1"></a>        ]</span>
+<span id="lst-scip-gap-26"><a href="#lst-scip-gap-26" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._model.setObjective(quicksum(obj_expr) <span class="op">-</span> quicksum(<span class="va">self</span>._lagrange_multipliers), <span class="st">"minimize"</span>)</span>
+<span id="lst-scip-gap-27"><a href="#lst-scip-gap-27" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="lst-scip-gap-28"><a href="#lst-scip-gap-28" aria-hidden="true" tabindex="-1"></a>        <span class="co"># create constraints        </span></span>
+<span id="lst-scip-gap-29"><a href="#lst-scip-gap-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>._instance[<span class="st">'num_agents'</span>]):</span>
+<span id="lst-scip-gap-30"><a href="#lst-scip-gap-30" aria-hidden="true" tabindex="-1"></a>            expr <span class="op">=</span> [</span>
+<span id="lst-scip-gap-31"><a href="#lst-scip-gap-31" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>._instance[<span class="st">'resources'</span>][j][i] <span class="op">*</span> <span class="va">self</span>._vars[(i, j)]</span>
+<span id="lst-scip-gap-32"><a href="#lst-scip-gap-32" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>._instance[<span class="st">'num_tasks'</span>])</span>
+<span id="lst-scip-gap-33"><a href="#lst-scip-gap-33" aria-hidden="true" tabindex="-1"></a>            ]</span>
+<span id="lst-scip-gap-34"><a href="#lst-scip-gap-34" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>._model.addCons(quicksum(expr) <span class="op">&lt;=</span> <span class="va">self</span>._instance[<span class="st">'capacities'</span>][j])</span>
+<span id="lst-scip-gap-35"><a href="#lst-scip-gap-35" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="lst-scip-gap-36"><a href="#lst-scip-gap-36" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> solve(<span class="va">self</span>):</span>
+<span id="lst-scip-gap-37"><a href="#lst-scip-gap-37" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._model.hideOutput()</span>
+<span id="lst-scip-gap-38"><a href="#lst-scip-gap-38" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._model.optimize()</span>
+<span id="lst-scip-gap-39"><a href="#lst-scip-gap-39" aria-hidden="true" tabindex="-1"></a>        status <span class="op">=</span> <span class="va">self</span>._model.getStatus()</span>
+<span id="lst-scip-gap-40"><a href="#lst-scip-gap-40" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> status <span class="op">==</span> <span class="st">"optimal"</span>:</span>
+<span id="lst-scip-gap-41"><a href="#lst-scip-gap-41" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f'Optimal solution found!'</span>)</span>
+<span id="lst-scip-gap-42"><a href="#lst-scip-gap-42" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f'Optimal objective = </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>_model<span class="sc">.</span>getObjVal()<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="lst-scip-gap-43"><a href="#lst-scip-gap-43" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> status <span class="op">==</span> <span class="st">"unbounded"</span>:</span>
+<span id="lst-scip-gap-44"><a href="#lst-scip-gap-44" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f'Model is unbounded!'</span>)</span>
+<span id="lst-scip-gap-45"><a href="#lst-scip-gap-45" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> status <span class="op">==</span> <span class="st">"infeasible"</span>:</span>
+<span id="lst-scip-gap-46"><a href="#lst-scip-gap-46" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f'Model is infeasible!'</span>)</span>
+<span id="lst-scip-gap-47"><a href="#lst-scip-gap-47" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="lst-scip-gap-48"><a href="#lst-scip-gap-48" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f'Unknown error occurred!'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</figure>
+</div>
+</div>
+<div id="cell-31" class="cell" data-execution_count="54">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>lagrange_multipliers <span class="op">=</span> [<span class="dv">0</span>] <span class="op">*</span> instances[<span class="dv">0</span>][<span class="st">'num_tasks'</span>]</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>scip_gap_lr_solver <span class="op">=</span> ScipGapLRSolver(instances[<span class="dv">0</span>], lagrange_multipliers)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>scip_gap_lr_solver.build_model()</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>scip_gap_lr_solver.solve()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Optimal solution found!
+Optimal objective = 0.00</code></pre>
+</div>
+</div>
+<div id="cell-32" class="cell" data-execution_count="55">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-33" class="cell" data-execution_count="70">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>lagrange_multipliers <span class="op">=</span> np.random.rand(instances[<span class="dv">0</span>][<span class="st">'num_tasks'</span>])</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>scip_gap_lr_solver <span class="op">=</span> ScipGapLRSolver(instances[<span class="dv">0</span>], lagrange_multipliers)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>scip_gap_lr_solver.build_model()</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>scip_gap_lr_solver.solve()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Optimal solution found!
+Optimal objective = -9.29</code></pre>
+</div>
+</div>
+<div id="cell-34" class="cell" data-execution_count="59">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>lagrange_multipliers</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="59">
+<pre><code>array([0.47146687, 0.96853811, 0.90275591, 0.51126453, 0.83845353,
+       0.19500186, 0.53723237, 0.09189246, 0.95288872, 0.97725043,
+       0.69829966, 0.13501853, 0.91139516, 0.686012  , 0.74499205])</code></pre>
+</div>
+</div>
 
 
 </section>
