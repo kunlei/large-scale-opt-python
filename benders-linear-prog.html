@@ -375,11 +375,13 @@ window.Quarto = {
 <section id="lp-solvers-based-on-gurobi-and-scip" class="level3" data-number="3.0.1">
 <h3 data-number="3.0.1" class="anchored" data-anchor-id="lp-solvers-based-on-gurobi-and-scip"><span class="header-section-number">3.0.1</span> LP solvers based on Gurobi and SCIP</h3>
 <p>We aim to use Benders decomposition to solve several linear programming problems in the following sections. To do that, we intentionally decompose the LP problem under consideration into two sets, one set of <em>complicating</em> variables and the other set containing the remaining variables. In order to validate the correctness of the results obtained by Benders decomposition, we implement two additional ways of solving the target linear programming problems directly. The first option is based on the Gurobi API in python and the other is based on the open source solve SCIP. The two implementations defined here assume the LP problems under consideration follow the below standard form:</p>
-<p><span class="math display">\[\begin{align}
+<p><span class="math display">\[
+\begin{aligned}
     \text{min.} &amp;\quad \mathbf{c}^T \mathbf{x} \\
     \text{s.t.} &amp;\quad \mathbf{A} \mathbf{x} = \mathbf{b} \\
     &amp;\quad \mathbf{x} \geq 0
-\end{align}\]</span></p>
+\end{aligned}
+\]</span></p>
 <p><a href="#lst-solver-gurobi" class="quarto-xref">Listing&nbsp;<span>3.1</span></a> defines a solver for LP problems using Gurobi. It takes three constructor parameters:</p>
 <ul>
 <li><code>obj_coeff</code>: this corresponds to the objective coefficients <span class="math inline">\(\mathbf{c}\)</span>.</li>
@@ -566,13 +568,15 @@ Optimal objective = 36.90</code></pre>
 <section id="a-serious-lp-problem-that-cannot-wait-to-be-decomposed" class="level3" data-number="3.0.2">
 <h3 data-number="3.0.2" class="anchored" data-anchor-id="a-serious-lp-problem-that-cannot-wait-to-be-decomposed"><span class="header-section-number">3.0.2</span> A serious LP problem that cannot wait to be decomposed!</h3>
 <p>With the validation tools available for use, we are ready to solve some serious LP problems using Benders decomposition! What we have below is a LP problem with five decision variables, three of which are denoted by <span class="math inline">\(\mathbf{x} = (x_1, x_2, x_3)\)</span> and the remaining two variables are denoted by <span class="math inline">\(\mathbf{y} = (y_1, y_2)\)</span>. We assume that <span class="math inline">\(\mathbf{y}\)</span> are the complicating variables.</p>
-<p><span class="math display">\[\begin{align*}
+<p><span class="math display">\[
+\begin{aligned*}
     \text{min.} &amp;\quad 8x_1 + 12x_2 +10x_3 + 15y_1 + 18y_2 \\
     \text{s.t.} &amp;\quad 2x_1 + 3x_2 + 2x_3 + 4y_1 + 5y_2 = 300 \\
     &amp;\quad 4x_1 + 2x_2 + 3x_3 + 2y_1 + 3y_2 = 220 \\
     &amp;\quad x_i \geq 0, \ \forall i = 1, \cdots, 3 \\
     &amp;\quad y_i \geq 0, \ \forall j = 1, 2
-\end{align*}\]</span></p>
+\end{aligned*}
+\]</span></p>
 <p>According to the standard LP form presented in the previous section, <span class="math inline">\(\mathbf{c}^T = (8, 12, 10)\)</span>, <span class="math inline">\(\mathbf{f}^T = (15, 18)\)</span> and <span class="math inline">\(\mathbf{b}^T = (300, 220)\)</span>. In addition,</p>
 <p><span class="math display">\[\begin{equation*}
 \mathbf{A} =
@@ -628,26 +632,32 @@ Optimal objective = 1091.43</code></pre>
 <section id="benders-decomposition-formulations" class="level3" data-number="3.0.3">
 <h3 data-number="3.0.3" class="anchored" data-anchor-id="benders-decomposition-formulations"><span class="header-section-number">3.0.3</span> Benders decomposition formulations</h3>
 <p>With <span class="math inline">\(\mathbf{y}\)</span> being the complicating variable, we state the Benders subproblem (<strong>SP</strong>) below for the <span class="math inline">\(\mathbf{y}\)</span> assuming fixed values <span class="math inline">\(\mathbf{\bar{y}} = (\bar{y_1}, \bar{y_2})\)</span>:</p>
-<p><span class="math display">\[\begin{align*}
+<p><span class="math display">\[
+\begin{aligned*}
     \text{min.} &amp;\quad 8x_1 + 12x_2 +10x_3 \\
     \text{s.t.} &amp;\quad 2x_1 + 3x_2 + 2x_3 = 300 - 4\bar{y_1} - 5\bar{y_2} \\
     &amp;\quad 4x_1 + 2x_2 + 3x_3 = 220 - 2\bar{y_1} - 3\bar{y_2} \\
     &amp;\quad x_i \geq 0, \ \forall i = 1, \cdots, 3
-\end{align*}\]</span></p>
+\end{aligned*}
+\]</span></p>
 <p>We define the dual variable <span class="math inline">\(\mathbf{u} = (u_1, u_2)\)</span> to associate with the constraints in the (<strong>SP</strong>). The dual subproblem (<strong>DSP</strong>) could then be stated as follows:</p>
-<p><span class="math display">\[\begin{align*}
+<p><span class="math display">\[
+\begin{aligned*}
     \text{max.} &amp;\quad (300 - 4\bar{y_1} - 5\bar{y_2}) u_1 + (220 - 2\bar{y_1} - 3\bar{y_2}) u_2 \\
     \text{s.t.} &amp;\quad 2u_1 + 4u_2 \leq 8\\
     &amp;\quad 3u_1 + 2u_2 \leq 12 \\
     &amp;\quad 2u_1 + 3u_2 \leq 10 \\
     &amp;\quad u_1, u_2\  \text{unrestricted}
-\end{align*}\]</span></p>
+\end{aligned*}
+\]</span></p>
 <p>The (<strong>RBMP</strong>) can be stated as below. Note that <span class="math inline">\(\mathbf{u} = (0, 0)\)</span> is a feasible solution to (<strong>DSP</strong>) and the corresponding objective value is 0, which is the reason we restrict the variable <span class="math inline">\(g\)</span> to be nonnegative.</p>
-<p><span class="math display">\[\begin{align*}
+<p><span class="math display">\[
+\begin{aligned*}
     \text{min.} &amp;\quad 15 y_1 + 18 y_2 + g \\
     \text{s.t.} &amp;\quad  y_1, y_2 \geq 0 \\
     &amp;\quad g \geq 0
-\end{align*}\]</span></p>
+\end{aligned*}
+\]</span></p>
 </section>
 <section id="benders-decomposition-step-by-step" class="level3" data-number="3.0.4">
 <h3 data-number="3.0.4" class="anchored" data-anchor-id="benders-decomposition-step-by-step"><span class="header-section-number">3.0.4</span> Benders decomposition step by step</h3>
