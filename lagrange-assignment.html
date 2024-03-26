@@ -493,7 +493,7 @@ LR(v): \text{min.} &amp;\quad \sum_{i=1}^{n} \sum_{j=1}^{m} c_{ij} x_{ij} + \sum
 <span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a> 40 38 38 35 34</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><a href="#lst-gap-reader" class="quarto-xref">Listing&nbsp;<span>5.1</span></a> shows the python code that reads in all the instances from a data file and saves them into a Python list.</p>
-<div id="cell-18" class="cell" data-execution_count="13">
+<div id="cell-18" class="cell" data-execution_count="3">
 <div id="lst-gap-reader" class="python cell-code listing quarto-float">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-gap-reader-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -534,7 +534,7 @@ Listing&nbsp;5.1: File reading function
 </div>
 </div>
 <p>Below we read the data file ‘gap1.txt’ and display the first instance.</p>
-<div id="cell-20" class="cell" data-execution_count="14">
+<div id="cell-20" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage:</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>file_path <span class="op">=</span> <span class="st">'/Users/klian/dev/books/large-scale-opt-python/data/gap/gap1.txt'</span>  <span class="co"># Replace with the actual file path</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>num_instances, instances <span class="op">=</span> read_instance_file(file_path)</span>
@@ -548,9 +548,9 @@ num_agents: 5
 num_tasks: 15</code></pre>
 </div>
 </div>
-<div id="cell-21" class="cell" data-execution_count="15">
+<div id="cell-21" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>instance[<span class="st">'costs'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="15">
+<div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>[[17, 21, 22, 18, 24, 15, 20, 18, 19, 18, 16, 22, 24, 24, 16],
  [23, 16, 21, 16, 17, 16, 19, 25, 18, 21, 17, 15, 25, 17, 24],
  [16, 20, 16, 25, 24, 16, 17, 19, 19, 18, 20, 16, 17, 21, 24],
@@ -558,9 +558,9 @@ num_tasks: 15</code></pre>
  [18, 19, 15, 15, 21, 25, 16, 16, 23, 15, 22, 17, 19, 22, 24]]</code></pre>
 </div>
 </div>
-<div id="cell-22" class="cell" data-execution_count="32">
+<div id="cell-22" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>instance[<span class="st">'resources'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="32">
+<div class="cell-output cell-output-display" data-execution_count="6">
 <pre><code>[[8, 15, 14, 23, 8, 16, 8, 25, 9, 17, 25, 15, 10, 8, 24],
  [15, 7, 23, 22, 11, 11, 12, 10, 17, 16, 7, 16, 10, 18, 22],
  [21, 20, 6, 22, 24, 10, 24, 9, 21, 14, 11, 14, 11, 19, 16],
@@ -568,9 +568,9 @@ num_tasks: 15</code></pre>
  [8, 13, 13, 13, 10, 20, 25, 16, 16, 17, 10, 10, 5, 12, 23]]</code></pre>
 </div>
 </div>
-<div id="cell-23" class="cell" data-execution_count="33">
+<div id="cell-23" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>instance[<span class="st">'capacities'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="33">
+<div class="cell-output cell-output-display" data-execution_count="7">
 <pre><code>[36, 34, 38, 27, 33]</code></pre>
 </div>
 </div>
@@ -578,7 +578,7 @@ num_tasks: 15</code></pre>
 <section id="solve-the-original-problem" class="level3" data-number="5.3.2">
 <h3 data-number="5.3.2" class="anchored" data-anchor-id="solve-the-original-problem"><span class="header-section-number">5.3.2</span> Solve the original problem</h3>
 <p>In this section, we use SCIP to solve the original formulation of the GAP, which is given in <a href="#lst-scip-gap" class="quarto-xref">Listing&nbsp;<span>5.3</span></a>.</p>
-<div id="cell-26" class="cell" data-execution_count="142">
+<div id="cell-26" class="cell" data-execution_count="24">
 <div id="lst-scip-gap" class="python cell-code listing quarto-float">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-scip-gap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -594,68 +594,79 @@ Listing&nbsp;5.2: SCIP solver for GAP
 <span id="lst-scip-gap-7"><a href="#lst-scip-gap-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._instance <span class="op">=</span> instance</span>
 <span id="lst-scip-gap-8"><a href="#lst-scip-gap-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._model <span class="op">=</span> scip.Model(<span class="st">"GAP solver"</span>)</span>
 <span id="lst-scip-gap-9"><a href="#lst-scip-gap-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._vars <span class="op">=</span> <span class="va">None</span></span>
-<span id="lst-scip-gap-10"><a href="#lst-scip-gap-10" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="lst-scip-gap-11"><a href="#lst-scip-gap-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> build_model(<span class="va">self</span>):</span>
-<span id="lst-scip-gap-12"><a href="#lst-scip-gap-12" aria-hidden="true" tabindex="-1"></a>        <span class="co"># create decision variables</span></span>
-<span id="lst-scip-gap-13"><a href="#lst-scip-gap-13" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._vars <span class="op">=</span> {</span>
-<span id="lst-scip-gap-14"><a href="#lst-scip-gap-14" aria-hidden="true" tabindex="-1"></a>            (i, j): <span class="va">self</span>._model.addVar(<span class="ss">f"x_</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">,</span><span class="sc">{</span>j<span class="sc">}</span><span class="ss">"</span>, vtype<span class="op">=</span><span class="st">'B'</span>)</span>
-<span id="lst-scip-gap-15"><a href="#lst-scip-gap-15" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>._instance[<span class="st">'num_tasks'</span>])</span>
-<span id="lst-scip-gap-16"><a href="#lst-scip-gap-16" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>._instance[<span class="st">'num_agents'</span>])</span>
-<span id="lst-scip-gap-17"><a href="#lst-scip-gap-17" aria-hidden="true" tabindex="-1"></a>        }</span>
-<span id="lst-scip-gap-18"><a href="#lst-scip-gap-18" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="lst-scip-gap-19"><a href="#lst-scip-gap-19" aria-hidden="true" tabindex="-1"></a>        <span class="co"># create objective</span></span>
-<span id="lst-scip-gap-20"><a href="#lst-scip-gap-20" aria-hidden="true" tabindex="-1"></a>        obj_expr <span class="op">=</span> [</span>
-<span id="lst-scip-gap-21"><a href="#lst-scip-gap-21" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>._instance[<span class="st">'costs'</span>][j][i] <span class="op">*</span> <span class="va">self</span>._vars[(i, j)]</span>
-<span id="lst-scip-gap-22"><a href="#lst-scip-gap-22" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>._instance[<span class="st">'num_tasks'</span>])</span>
-<span id="lst-scip-gap-23"><a href="#lst-scip-gap-23" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>._instance[<span class="st">'num_agents'</span>])</span>
-<span id="lst-scip-gap-24"><a href="#lst-scip-gap-24" aria-hidden="true" tabindex="-1"></a>        ]</span>
-<span id="lst-scip-gap-25"><a href="#lst-scip-gap-25" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._model.setObjective(scip.quicksum(obj_expr), <span class="st">"minimize"</span>)</span>
-<span id="lst-scip-gap-26"><a href="#lst-scip-gap-26" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="lst-scip-gap-27"><a href="#lst-scip-gap-27" aria-hidden="true" tabindex="-1"></a>        <span class="co"># create constraints</span></span>
-<span id="lst-scip-gap-28"><a href="#lst-scip-gap-28" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>._instance[<span class="st">'num_tasks'</span>]):</span>
-<span id="lst-scip-gap-29"><a href="#lst-scip-gap-29" aria-hidden="true" tabindex="-1"></a>            expr <span class="op">=</span> [</span>
-<span id="lst-scip-gap-30"><a href="#lst-scip-gap-30" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>._vars[(i, j)]</span>
-<span id="lst-scip-gap-31"><a href="#lst-scip-gap-31" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>._instance[<span class="st">'num_agents'</span>])</span>
-<span id="lst-scip-gap-32"><a href="#lst-scip-gap-32" aria-hidden="true" tabindex="-1"></a>            ]</span>
-<span id="lst-scip-gap-33"><a href="#lst-scip-gap-33" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>._model.addCons(scip.quicksum(expr) <span class="op">==</span> <span class="dv">1</span>)</span>
-<span id="lst-scip-gap-34"><a href="#lst-scip-gap-34" aria-hidden="true" tabindex="-1"></a>            </span>
-<span id="lst-scip-gap-35"><a href="#lst-scip-gap-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>._instance[<span class="st">'num_agents'</span>]):</span>
-<span id="lst-scip-gap-36"><a href="#lst-scip-gap-36" aria-hidden="true" tabindex="-1"></a>            expr <span class="op">=</span> [</span>
-<span id="lst-scip-gap-37"><a href="#lst-scip-gap-37" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>._instance[<span class="st">'resources'</span>][j][i] <span class="op">*</span> <span class="va">self</span>._vars[(i, j)]</span>
-<span id="lst-scip-gap-38"><a href="#lst-scip-gap-38" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>._instance[<span class="st">'num_tasks'</span>])</span>
-<span id="lst-scip-gap-39"><a href="#lst-scip-gap-39" aria-hidden="true" tabindex="-1"></a>            ]</span>
-<span id="lst-scip-gap-40"><a href="#lst-scip-gap-40" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>._model.addCons(scip.quicksum(expr) <span class="op">&lt;=</span> <span class="va">self</span>._instance[<span class="st">'capacities'</span>][j])</span>
-<span id="lst-scip-gap-41"><a href="#lst-scip-gap-41" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="lst-scip-gap-42"><a href="#lst-scip-gap-42" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> solve(<span class="va">self</span>):</span>
-<span id="lst-scip-gap-43"><a href="#lst-scip-gap-43" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._model.hideOutput()</span>
-<span id="lst-scip-gap-44"><a href="#lst-scip-gap-44" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._model.optimize()</span>
-<span id="lst-scip-gap-45"><a href="#lst-scip-gap-45" aria-hidden="true" tabindex="-1"></a>        status <span class="op">=</span> <span class="va">self</span>._model.getStatus()</span>
-<span id="lst-scip-gap-46"><a href="#lst-scip-gap-46" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> status <span class="op">==</span> <span class="st">"optimal"</span>:</span>
-<span id="lst-scip-gap-47"><a href="#lst-scip-gap-47" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f'Optimal solution found!'</span>)</span>
-<span id="lst-scip-gap-48"><a href="#lst-scip-gap-48" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f'Optimal objective = </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>_model<span class="sc">.</span>getObjVal()<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
-<span id="lst-scip-gap-49"><a href="#lst-scip-gap-49" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> status <span class="op">==</span> <span class="st">"unbounded"</span>:</span>
-<span id="lst-scip-gap-50"><a href="#lst-scip-gap-50" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f'Model is unbounded!'</span>)</span>
-<span id="lst-scip-gap-51"><a href="#lst-scip-gap-51" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> status <span class="op">==</span> <span class="st">"infeasible"</span>:</span>
-<span id="lst-scip-gap-52"><a href="#lst-scip-gap-52" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f'Model is infeasible!'</span>)</span>
-<span id="lst-scip-gap-53"><a href="#lst-scip-gap-53" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
-<span id="lst-scip-gap-54"><a href="#lst-scip-gap-54" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f'Unknown error occurred!'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="lst-scip-gap-10"><a href="#lst-scip-gap-10" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="lst-scip-gap-11"><a href="#lst-scip-gap-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._opt_obj <span class="op">=</span> <span class="va">None</span></span>
+<span id="lst-scip-gap-12"><a href="#lst-scip-gap-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="lst-scip-gap-13"><a href="#lst-scip-gap-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> build_model(<span class="va">self</span>):</span>
+<span id="lst-scip-gap-14"><a href="#lst-scip-gap-14" aria-hidden="true" tabindex="-1"></a>        <span class="co"># create decision variables</span></span>
+<span id="lst-scip-gap-15"><a href="#lst-scip-gap-15" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._vars <span class="op">=</span> {</span>
+<span id="lst-scip-gap-16"><a href="#lst-scip-gap-16" aria-hidden="true" tabindex="-1"></a>            (i, j): <span class="va">self</span>._model.addVar(<span class="ss">f"x_</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">,</span><span class="sc">{</span>j<span class="sc">}</span><span class="ss">"</span>, vtype<span class="op">=</span><span class="st">'B'</span>)</span>
+<span id="lst-scip-gap-17"><a href="#lst-scip-gap-17" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>._instance[<span class="st">'num_tasks'</span>])</span>
+<span id="lst-scip-gap-18"><a href="#lst-scip-gap-18" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>._instance[<span class="st">'num_agents'</span>])</span>
+<span id="lst-scip-gap-19"><a href="#lst-scip-gap-19" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="lst-scip-gap-20"><a href="#lst-scip-gap-20" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="lst-scip-gap-21"><a href="#lst-scip-gap-21" aria-hidden="true" tabindex="-1"></a>        <span class="co"># create objective</span></span>
+<span id="lst-scip-gap-22"><a href="#lst-scip-gap-22" aria-hidden="true" tabindex="-1"></a>        obj_expr <span class="op">=</span> [</span>
+<span id="lst-scip-gap-23"><a href="#lst-scip-gap-23" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>._instance[<span class="st">'costs'</span>][j][i] <span class="op">*</span> <span class="va">self</span>._vars[(i, j)]</span>
+<span id="lst-scip-gap-24"><a href="#lst-scip-gap-24" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>._instance[<span class="st">'num_tasks'</span>])</span>
+<span id="lst-scip-gap-25"><a href="#lst-scip-gap-25" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>._instance[<span class="st">'num_agents'</span>])</span>
+<span id="lst-scip-gap-26"><a href="#lst-scip-gap-26" aria-hidden="true" tabindex="-1"></a>        ]</span>
+<span id="lst-scip-gap-27"><a href="#lst-scip-gap-27" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._model.setObjective(scip.quicksum(obj_expr), <span class="st">"minimize"</span>)</span>
+<span id="lst-scip-gap-28"><a href="#lst-scip-gap-28" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="lst-scip-gap-29"><a href="#lst-scip-gap-29" aria-hidden="true" tabindex="-1"></a>        <span class="co"># create constraints</span></span>
+<span id="lst-scip-gap-30"><a href="#lst-scip-gap-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>._instance[<span class="st">'num_tasks'</span>]):</span>
+<span id="lst-scip-gap-31"><a href="#lst-scip-gap-31" aria-hidden="true" tabindex="-1"></a>            expr <span class="op">=</span> [</span>
+<span id="lst-scip-gap-32"><a href="#lst-scip-gap-32" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>._vars[(i, j)]</span>
+<span id="lst-scip-gap-33"><a href="#lst-scip-gap-33" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>._instance[<span class="st">'num_agents'</span>])</span>
+<span id="lst-scip-gap-34"><a href="#lst-scip-gap-34" aria-hidden="true" tabindex="-1"></a>            ]</span>
+<span id="lst-scip-gap-35"><a href="#lst-scip-gap-35" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>._model.addCons(scip.quicksum(expr) <span class="op">==</span> <span class="dv">1</span>)</span>
+<span id="lst-scip-gap-36"><a href="#lst-scip-gap-36" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="lst-scip-gap-37"><a href="#lst-scip-gap-37" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>._instance[<span class="st">'num_agents'</span>]):</span>
+<span id="lst-scip-gap-38"><a href="#lst-scip-gap-38" aria-hidden="true" tabindex="-1"></a>            expr <span class="op">=</span> [</span>
+<span id="lst-scip-gap-39"><a href="#lst-scip-gap-39" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>._instance[<span class="st">'resources'</span>][j][i] <span class="op">*</span> <span class="va">self</span>._vars[(i, j)]</span>
+<span id="lst-scip-gap-40"><a href="#lst-scip-gap-40" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>._instance[<span class="st">'num_tasks'</span>])</span>
+<span id="lst-scip-gap-41"><a href="#lst-scip-gap-41" aria-hidden="true" tabindex="-1"></a>            ]</span>
+<span id="lst-scip-gap-42"><a href="#lst-scip-gap-42" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>._model.addCons(scip.quicksum(expr) <span class="op">&lt;=</span> <span class="va">self</span>._instance[<span class="st">'capacities'</span>][j])</span>
+<span id="lst-scip-gap-43"><a href="#lst-scip-gap-43" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="lst-scip-gap-44"><a href="#lst-scip-gap-44" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> solve(<span class="va">self</span>, verbose<span class="op">=</span><span class="va">False</span>):</span>
+<span id="lst-scip-gap-45"><a href="#lst-scip-gap-45" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._model.hideOutput()</span>
+<span id="lst-scip-gap-46"><a href="#lst-scip-gap-46" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._model.optimize()</span>
+<span id="lst-scip-gap-47"><a href="#lst-scip-gap-47" aria-hidden="true" tabindex="-1"></a>        status <span class="op">=</span> <span class="va">self</span>._model.getStatus()</span>
+<span id="lst-scip-gap-48"><a href="#lst-scip-gap-48" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> status <span class="op">==</span> <span class="st">"optimal"</span>:</span>
+<span id="lst-scip-gap-49"><a href="#lst-scip-gap-49" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> verbose:</span>
+<span id="lst-scip-gap-50"><a href="#lst-scip-gap-50" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f'Optimal solution found!'</span>)</span>
+<span id="lst-scip-gap-51"><a href="#lst-scip-gap-51" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f'Optimal objective = </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>_model<span class="sc">.</span>getObjVal()<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="lst-scip-gap-52"><a href="#lst-scip-gap-52" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>._opt_obj <span class="op">=</span> <span class="va">self</span>._model.getObjVal()</span>
+<span id="lst-scip-gap-53"><a href="#lst-scip-gap-53" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> status <span class="op">==</span> <span class="st">"unbounded"</span>:</span>
+<span id="lst-scip-gap-54"><a href="#lst-scip-gap-54" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> verbose:</span>
+<span id="lst-scip-gap-55"><a href="#lst-scip-gap-55" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f'Model is unbounded!'</span>)</span>
+<span id="lst-scip-gap-56"><a href="#lst-scip-gap-56" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> status <span class="op">==</span> <span class="st">"infeasible"</span>:</span>
+<span id="lst-scip-gap-57"><a href="#lst-scip-gap-57" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> verbose:</span>
+<span id="lst-scip-gap-58"><a href="#lst-scip-gap-58" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f'Model is infeasible!'</span>)</span>
+<span id="lst-scip-gap-59"><a href="#lst-scip-gap-59" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="lst-scip-gap-60"><a href="#lst-scip-gap-60" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> verbose:</span>
+<span id="lst-scip-gap-61"><a href="#lst-scip-gap-61" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f'Unknown error occurred!'</span>)</span>
+<span id="lst-scip-gap-62"><a href="#lst-scip-gap-62" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="lst-scip-gap-63"><a href="#lst-scip-gap-63" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
+<span id="lst-scip-gap-64"><a href="#lst-scip-gap-64" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> opt_obj(<span class="va">self</span>):</span>
+<span id="lst-scip-gap-65"><a href="#lst-scip-gap-65" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>._opt_obj</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </figure>
 </div>
 </div>
-<div id="cell-27" class="cell" data-execution_count="141">
+<div id="cell-27" class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>scip_gap_solver <span class="op">=</span> ScipGapSolver(instance<span class="op">=</span>instances[<span class="dv">0</span>])</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>scip_gap_solver.build_model()</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>scip_gap_solver.solve()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>scip_gap_solver.solve(<span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Optimal solution found!
-Optimal objective = 254.36</code></pre>
+Optimal objective = 261.00</code></pre>
 </div>
 </div>
 </section>
 <section id="solve-the-lagrangian-relaxation-with-fixed-multipliers" class="level3" data-number="5.3.3">
 <h3 data-number="5.3.3" class="anchored" data-anchor-id="solve-the-lagrangian-relaxation-with-fixed-multipliers"><span class="header-section-number">5.3.3</span> Solve the Lagrangian relaxation with fixed multipliers</h3>
-<div id="cell-30" class="cell" data-execution_count="16">
+<div id="cell-30" class="cell" data-execution_count="20">
 <div id="lst-scip-gap" class="python cell-code listing quarto-float">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-scip-gap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -708,8 +719,8 @@ Listing&nbsp;5.3: SCIP solver for GAP
 <span id="lst-scip-gap-44"><a href="#lst-scip-gap-44" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._model.optimize()</span>
 <span id="lst-scip-gap-45"><a href="#lst-scip-gap-45" aria-hidden="true" tabindex="-1"></a>        status <span class="op">=</span> <span class="va">self</span>._model.getStatus()</span>
 <span id="lst-scip-gap-46"><a href="#lst-scip-gap-46" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> status <span class="op">==</span> <span class="st">"optimal"</span>:</span>
-<span id="lst-scip-gap-47"><a href="#lst-scip-gap-47" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f'Optimal solution found!'</span>)</span>
-<span id="lst-scip-gap-48"><a href="#lst-scip-gap-48" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f'Optimal objective = </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>_model<span class="sc">.</span>getObjVal()<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="lst-scip-gap-47"><a href="#lst-scip-gap-47" aria-hidden="true" tabindex="-1"></a>            <span class="co"># print(f'Optimal solution found!')</span></span>
+<span id="lst-scip-gap-48"><a href="#lst-scip-gap-48" aria-hidden="true" tabindex="-1"></a>            <span class="co"># print(f'Optimal objective = {self._model.getObjVal():.2f}')</span></span>
 <span id="lst-scip-gap-49"><a href="#lst-scip-gap-49" aria-hidden="true" tabindex="-1"></a>            </span>
 <span id="lst-scip-gap-50"><a href="#lst-scip-gap-50" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>._opt_vals <span class="op">=</span> {</span>
 <span id="lst-scip-gap-51"><a href="#lst-scip-gap-51" aria-hidden="true" tabindex="-1"></a>                (i, j): <span class="bu">int</span>(<span class="va">self</span>._model.getVal(<span class="va">self</span>._vars[(i, j)]))</span>
@@ -773,7 +784,7 @@ Listing&nbsp;5.3: SCIP solver for GAP
 </figure>
 </div>
 </div>
-<div id="cell-31" class="cell" data-execution_count="17">
+<div id="cell-31" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>lagrange_multipliers <span class="op">=</span> [<span class="dv">0</span>] <span class="op">*</span> instances[<span class="dv">0</span>][<span class="st">'num_tasks'</span>]</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>scip_gap_lr_solver <span class="op">=</span> ScipGapLRSolver(instances[<span class="dv">0</span>])</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>scip_gap_lr_solver.build_model(lagrange_multipliers)</span>
@@ -783,22 +794,22 @@ Listing&nbsp;5.3: SCIP solver for GAP
 Optimal objective = 0.00</code></pre>
 </div>
 </div>
-<div id="cell-32" class="cell" data-execution_count="18">
+<div id="cell-32" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>lagrange_multipliers <span class="op">=</span> np.random.uniform(<span class="op">-</span><span class="dv">5</span>, <span class="dv">0</span>, instances[<span class="dv">0</span>][<span class="st">'num_tasks'</span>])</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>scip_gap_lr_solver <span class="op">=</span> ScipGapLRSolver(instances[<span class="dv">0</span>])</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>scip_gap_lr_solver.build_model(lagrange_multipliers)</span>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>scip_gap_lr_solver.solve()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Optimal solution found!
-Optimal objective = 44.68</code></pre>
+Optimal objective = 36.43</code></pre>
 </div>
 </div>
-<div id="cell-33" class="cell" data-execution_count="20">
+<div id="cell-33" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>lagrange_multipliers</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="20">
-<pre><code>array([-3.79087264, -4.10340655, -4.45735867, -2.4412109 , -0.67257968,
-       -4.03323389, -3.72884933, -3.15312868, -2.76355069, -3.53444953,
-       -3.46946741, -0.51239749, -3.86990811, -1.03888481, -3.1140349 ])</code></pre>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<pre><code>array([-0.17007182, -3.94871019, -0.36710205, -1.8633616 , -4.09109043,
+       -3.53643355, -3.51083883, -2.08736108, -3.64585478, -1.0379109 ,
+       -3.94447795, -3.74243486, -0.61145116, -1.25320861, -2.61552727])</code></pre>
 </div>
 </div>
 </section>
@@ -806,7 +817,7 @@ Optimal objective = 44.68</code></pre>
 <h3 data-number="5.3.4" class="anchored" data-anchor-id="approximating-the-best-lagrange-multipliers"><span class="header-section-number">5.3.4</span> Approximating the best Lagrange multipliers</h3>
 <section id="subgradient-search" class="level4" data-number="5.3.4.1">
 <h4 data-number="5.3.4.1" class="anchored" data-anchor-id="subgradient-search"><span class="header-section-number">5.3.4.1</span> Subgradient Search</h4>
-<div id="cell-37" class="cell" data-execution_count="38">
+<div id="cell-37" class="cell" data-execution_count="36">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ScipGapSubgradientSearch:</span>
@@ -815,1720 +826,103 @@ Optimal objective = 44.68</code></pre>
 <span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._instance <span class="op">=</span> instance</span>
 <span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._lr_solver <span class="op">=</span> <span class="va">None</span></span>
 <span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> solve(<span class="va">self</span>):</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> solve(<span class="va">self</span>, maxIter<span class="op">=</span><span class="dv">100</span>, verbose<span class="op">=</span><span class="va">False</span>):</span>
 <span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">iter</span> <span class="op">=</span> <span class="dv">0</span></span>
 <span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>        lb <span class="op">=</span> <span class="op">-</span>np.inf</span>
 <span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>        ub <span class="op">=</span> np.inf</span>
 <span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>        eps <span class="op">=</span> <span class="fl">1.0e-4</span></span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>        maxIter <span class="op">=</span> <span class="dv">200</span></span>
-<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>        best_bound <span class="op">=</span> <span class="fl">254.36</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>        maxIter <span class="op">=</span> <span class="dv">100</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>        maxIterLbNoImprove <span class="op">=</span> <span class="dv">10</span></span>
 <span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>        gamma <span class="op">=</span> <span class="fl">0.9</span></span>
 <span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>        num_tasks <span class="op">=</span> <span class="va">self</span>._instance[<span class="st">'num_tasks'</span>]</span>
-<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>        <span class="co"># multipliers = np.random.uniform(-30, -10, num_tasks)</span></span>
-<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>        multipliers <span class="op">=</span> np.zeros(num_tasks)</span>
-<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="va">True</span>:</span>
-<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f'iter: </span><span class="sc">{</span><span class="bu">iter</span><span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f'multipliers: </span><span class="sc">{</span>multipliers<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>            <span class="co"># solve relaxation with given multipliers</span></span>
-<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>._lr_solver <span class="op">=</span> ScipGapLRSolver(<span class="va">self</span>._instance)</span>
-<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>._lr_solver.build_model(multipliers)</span>
-<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>._lr_solver.solve()</span>
-<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>            </span>
-<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>            <span class="co"># update bounds</span></span>
-<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>            opt_obj <span class="op">=</span> <span class="va">self</span>._lr_solver.opt_obj</span>
-<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> opt_obj <span class="op">&gt;</span> lb:</span>
-<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>                lb <span class="op">=</span> opt_obj</span>
-<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f'lb updated, new lb: </span><span class="sc">{</span>lb<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>                </span>
-<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a>            constraints_violated <span class="op">=</span> <span class="va">self</span>._lr_solver.are_relaxed_constraints_violated()</span>
-<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f'constraints violation: </span><span class="sc">{</span>constraints_violated<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="kw">not</span> constraints_violated:</span>
-<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a>                orig_obj <span class="op">=</span> <span class="va">self</span>._lr_solver.get_original_obj_val()</span>
-<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> orig_obj <span class="op">&lt;</span> ub:</span>
-<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a>                    ub <span class="op">=</span> orig_obj</span>
-<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">print</span>(<span class="ss">f'ub updated, new ub: </span><span class="sc">{</span>ub<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a>                </span>
-<span id="cb18-44"><a href="#cb18-44" aria-hidden="true" tabindex="-1"></a>            </span>
-<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a>            <span class="co"># check stopping criteria</span></span>
-<span id="cb18-46"><a href="#cb18-46" aria-hidden="true" tabindex="-1"></a>            slackness <span class="op">=</span> <span class="va">self</span>._lr_solver.get_slackness()</span>
-<span id="cb18-47"><a href="#cb18-47" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f'slack: </span><span class="sc">{</span>slackness<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb18-48"><a href="#cb18-48" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="kw">not</span> constraints_violated:</span>
-<span id="cb18-49"><a href="#cb18-49" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> np.<span class="bu">sum</span>(slackness) <span class="op">&lt;</span> eps:</span>
-<span id="cb18-50"><a href="#cb18-50" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">break</span></span>
-<span id="cb18-51"><a href="#cb18-51" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="bu">iter</span> <span class="op">&gt;=</span> maxIter:</span>
-<span id="cb18-52"><a href="#cb18-52" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span></span>
-<span id="cb18-53"><a href="#cb18-53" aria-hidden="true" tabindex="-1"></a>            </span>
-<span id="cb18-54"><a href="#cb18-54" aria-hidden="true" tabindex="-1"></a>            <span class="co"># update multipliers</span></span>
-<span id="cb18-55"><a href="#cb18-55" aria-hidden="true" tabindex="-1"></a>            violations <span class="op">=</span> <span class="va">self</span>._lr_solver.get_constraint_violations()</span>
-<span id="cb18-56"><a href="#cb18-56" aria-hidden="true" tabindex="-1"></a>            relaxed_obj <span class="op">=</span> <span class="va">self</span>._lr_solver.opt_obj</span>
-<span id="cb18-57"><a href="#cb18-57" aria-hidden="true" tabindex="-1"></a>            step_size <span class="op">=</span> gamma <span class="op">*</span> (best_bound <span class="op">-</span> relaxed_obj) <span class="op">/</span> (np.linalg.norm(violations))<span class="op">**</span><span class="dv">2</span></span>
-<span id="cb18-58"><a href="#cb18-58" aria-hidden="true" tabindex="-1"></a>            multipliers <span class="op">+=</span> step_size <span class="op">*</span> np.array(violations)</span>
-<span id="cb18-59"><a href="#cb18-59" aria-hidden="true" tabindex="-1"></a>            </span>
-<span id="cb18-60"><a href="#cb18-60" aria-hidden="true" tabindex="-1"></a>            <span class="bu">iter</span> <span class="op">+=</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>        <span class="co"># obtain best bound</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>        scip_gap_solver <span class="op">=</span> ScipGapSolver(instance<span class="op">=</span><span class="va">self</span>._instance)</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>        scip_gap_solver.build_model()</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>        scip_gap_solver.solve(verbose)</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>        best_bound <span class="op">=</span> scip_gap_solver.opt_obj</span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>        num_tasks <span class="op">=</span> <span class="va">self</span>._instance[<span class="st">'num_tasks'</span>]</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>        multipliers <span class="op">=</span> np.zeros(num_tasks)</span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>        iterations <span class="op">=</span> []</span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>        lower_bounds <span class="op">=</span> []</span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>        iterLbNoImprove <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> verbose: <span class="bu">print</span>(<span class="ss">f'</span><span class="ch">\n</span><span class="ss">iter: </span><span class="sc">{</span><span class="bu">iter</span><span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>            <span class="co"># solve relaxation with given multipliers</span></span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>._lr_solver <span class="op">=</span> ScipGapLRSolver(<span class="va">self</span>._instance)</span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>._lr_solver.build_model(multipliers)</span>
+<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>._lr_solver.solve()</span>
+<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>            <span class="co"># update bounds</span></span>
+<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a>            opt_obj <span class="op">=</span> <span class="va">self</span>._lr_solver.opt_obj</span>
+<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> opt_obj <span class="op">&gt;</span> lb:</span>
+<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a>                lb <span class="op">=</span> opt_obj</span>
+<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a>                iterLbNoImprove <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> verbose: <span class="bu">print</span>(<span class="ss">f'lb updated, new lb: </span><span class="sc">{</span>lb<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a>            <span class="cf">else</span>:</span>
+<span id="cb18-44"><a href="#cb18-44" aria-hidden="true" tabindex="-1"></a>                iterLbNoImprove <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb18-46"><a href="#cb18-46" aria-hidden="true" tabindex="-1"></a>            iterations.append(<span class="bu">iter</span>)</span>
+<span id="cb18-47"><a href="#cb18-47" aria-hidden="true" tabindex="-1"></a>            lower_bounds.append(lb)</span>
+<span id="cb18-48"><a href="#cb18-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-49"><a href="#cb18-49" aria-hidden="true" tabindex="-1"></a>            constraints_violated <span class="op">=</span> <span class="va">self</span>._lr_solver.are_relaxed_constraints_violated()</span>
+<span id="cb18-50"><a href="#cb18-50" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> verbose: <span class="bu">print</span>(<span class="ss">f'constraints violation: </span><span class="sc">{</span>constraints_violated<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb18-51"><a href="#cb18-51" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="kw">not</span> constraints_violated:</span>
+<span id="cb18-52"><a href="#cb18-52" aria-hidden="true" tabindex="-1"></a>                orig_obj <span class="op">=</span> <span class="va">self</span>._lr_solver.get_original_obj_val()</span>
+<span id="cb18-53"><a href="#cb18-53" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> orig_obj <span class="op">&lt;</span> ub:</span>
+<span id="cb18-54"><a href="#cb18-54" aria-hidden="true" tabindex="-1"></a>                    ub <span class="op">=</span> orig_obj</span>
+<span id="cb18-55"><a href="#cb18-55" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">if</span> verbose: <span class="bu">print</span>(<span class="ss">f'ub updated, new ub: </span><span class="sc">{</span>ub<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb18-56"><a href="#cb18-56" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb18-57"><a href="#cb18-57" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb18-58"><a href="#cb18-58" aria-hidden="true" tabindex="-1"></a>            <span class="co"># check stopping criteria</span></span>
+<span id="cb18-59"><a href="#cb18-59" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> iterLbNoImprove <span class="op">&gt;=</span> maxIterLbNoImprove:</span>
+<span id="cb18-60"><a href="#cb18-60" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span></span>
+<span id="cb18-61"><a href="#cb18-61" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb18-62"><a href="#cb18-62" aria-hidden="true" tabindex="-1"></a>            slackness <span class="op">=</span> <span class="va">self</span>._lr_solver.get_slackness()</span>
+<span id="cb18-63"><a href="#cb18-63" aria-hidden="true" tabindex="-1"></a>            <span class="co"># print(f'slack: {slackness}')</span></span>
+<span id="cb18-64"><a href="#cb18-64" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="kw">not</span> constraints_violated:</span>
+<span id="cb18-65"><a href="#cb18-65" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> np.<span class="bu">sum</span>(slackness) <span class="op">&lt;</span> eps:</span>
+<span id="cb18-66"><a href="#cb18-66" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">break</span></span>
+<span id="cb18-67"><a href="#cb18-67" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="bu">iter</span> <span class="op">&gt;=</span> maxIter:</span>
+<span id="cb18-68"><a href="#cb18-68" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span></span>
+<span id="cb18-69"><a href="#cb18-69" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb18-70"><a href="#cb18-70" aria-hidden="true" tabindex="-1"></a>            <span class="co"># update multipliers</span></span>
+<span id="cb18-71"><a href="#cb18-71" aria-hidden="true" tabindex="-1"></a>            violations <span class="op">=</span> <span class="va">self</span>._lr_solver.get_constraint_violations()</span>
+<span id="cb18-72"><a href="#cb18-72" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> verbose: <span class="bu">print</span>(<span class="ss">f'violations: </span><span class="sc">{</span>violations<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb18-73"><a href="#cb18-73" aria-hidden="true" tabindex="-1"></a>            relaxed_obj <span class="op">=</span> <span class="va">self</span>._lr_solver.opt_obj</span>
+<span id="cb18-74"><a href="#cb18-74" aria-hidden="true" tabindex="-1"></a>            step_size <span class="op">=</span> gamma <span class="op">*</span> (best_bound <span class="op">-</span> relaxed_obj) <span class="op">/</span> (np.linalg.norm(violations))<span class="op">**</span><span class="dv">2</span></span>
+<span id="cb18-75"><a href="#cb18-75" aria-hidden="true" tabindex="-1"></a>            multipliers <span class="op">+=</span> step_size <span class="op">*</span> np.array(violations)</span>
+<span id="cb18-76"><a href="#cb18-76" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb18-77"><a href="#cb18-77" aria-hidden="true" tabindex="-1"></a>            <span class="bu">iter</span> <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb18-78"><a href="#cb18-78" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb18-79"><a href="#cb18-79" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> lb, iterations, lower_bounds</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-38" class="cell" data-execution_count="39">
+<div id="cell-38" class="cell" data-execution_count="50">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>approximator <span class="op">=</span> ScipGapSubgradientSearch(instances[<span class="dv">0</span>])</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>approximator.solve()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>iter: 0
-multipliers: [0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
-Optimal solution found!
-Optimal objective = 0.00
-lb updated, new lb: 0.0
-constraints violation: True
-slack: 0.0
-iter: 1
-multipliers: [-15.2616 -15.2616 -15.2616 -15.2616 -15.2616 -15.2616 -15.2616 -15.2616
- -15.2616 -15.2616 -15.2616 -15.2616 -15.2616 -15.2616 -15.2616]
-Optimal solution found!
-Optimal objective = 227.88
-lb updated, new lb: 227.87759999999997
-constraints violation: True
-slack: 167.87759999999997
-iter: 2
-multipliers: [-17.42834182 -17.42834182 -15.2616     -15.2616     -17.42834182
- -15.2616     -17.42834182 -17.42834182 -17.42834182 -17.42834182
- -17.42834182 -15.2616     -17.42834182 -17.42834182 -17.42834182]
-Optimal solution found!
-Optimal objective = 242.47
-lb updated, new lb: 242.47474181818183
-constraints violation: True
-slack: 78.47474181818181
-iter: 3
-multipliers: [-16.239816   -17.42834182 -16.45012582 -16.45012582 -17.42834182
- -16.45012582 -18.61686764 -16.239816   -18.61686764 -17.42834182
- -17.42834182 -16.45012582 -17.42834182 -18.61686764 -17.42834182]
-Optimal solution found!
-Optimal objective = 247.38
-lb updated, new lb: 247.38152509090907
-constraints violation: True
-slack: 119.83165090909092
-iter: 4
-multipliers: [-16.93766349 -17.42834182 -16.45012582 -17.14797331 -18.12618931
- -15.75227833 -18.61686764 -16.93766349 -19.31471513 -17.42834182
- -17.42834182 -17.14797331 -18.12618931 -18.61686764 -18.12618931]
-Optimal solution found!
-Optimal objective = 249.10
-lb updated, new lb: 249.10115658181823
-constraints violation: True
-slack: 103.10115658181819
-iter: 5
-multipliers: [-17.52928338 -17.42834182 -17.0417457  -17.14797331 -18.12618931
- -16.34389821 -18.61686764 -17.52928338 -19.31471513 -17.42834182
- -18.0199617  -16.55635342 -18.71780919 -19.20848752 -18.12618931]
-Optimal solution found!
-Optimal objective = 250.08
-lb updated, new lb: 250.08484212181824
-constraints violation: True
-slack: 55.0848421218182
-iter: 6
-multipliers: [-16.75975496 -17.42834182 -17.0417457  -17.14797331 -18.89571773
- -16.34389821 -19.38639605 -17.52928338 -20.08424355 -17.42834182
- -18.0199617  -17.32588184 -18.71780919 -19.20848752 -18.12618931]
-Optimal solution found!
-Optimal objective = 250.99
-lb updated, new lb: 250.98745204112734
-constraints violation: True
-slack: 67.98745204112727
-iter: 7
-multipliers: [-17.26563715 -17.42834182 -17.5476279  -17.14797331 -18.89571773
- -16.84978041 -18.88051386 -17.52928338 -20.08424355 -17.42834182
- -18.5258439  -17.32588184 -18.71780919 -19.71436971 -18.12618931]
-Optimal solution found!
-Optimal objective = 251.16
-lb updated, new lb: 251.16367152718738
-constraints violation: True
-slack: 91.38527109696912
-iter: 8
-multipliers: [-17.58527    -17.74797467 -17.22799505 -17.46760616 -19.21535057
- -16.84978041 -19.20014671 -17.52928338 -20.08424355 -17.42834182
- -18.20621105 -17.32588184 -18.71780919 -20.03400256 -18.44582216]
-Optimal solution found!
-Optimal objective = 252.44
-lb updated, new lb: 252.44036031918495
-constraints violation: True
-slack: 57.44036031918489
-iter: 9
-multipliers: [-17.58527    -17.74797467 -17.22799505 -17.46760616 -19.21535057
- -16.84978041 -19.77603861 -17.52928338 -20.08424355 -17.42834182
- -18.78210295 -17.32588184 -18.71780919 -20.60989447 -18.44582216]
-Optimal solution found!
-Optimal objective = 252.73
-lb updated, new lb: 252.73423499536844
-constraints violation: True
-slack: 53.73423499536837
-iter: 10
-multipliers: [-17.58527    -17.74797467 -17.22799505 -17.46760616 -19.50798828
- -16.84978041 -19.77603861 -17.82192108 -20.08424355 -17.42834182
- -18.48946525 -17.61851954 -18.71780919 -20.60989447 -18.73845986]
-Optimal solution found!
-Optimal objective = 253.84
-lb updated, new lb: 253.84214878612696
-constraints violation: True
-slack: 76.0701438354038
-iter: 11
-multipliers: [-17.66294768 -17.74797467 -17.30567273 -17.46760616 -19.50798828
- -16.84978041 -19.85371629 -17.82192108 -20.08424355 -17.42834182
- -18.56714293 -17.54084186 -18.71780919 -20.68757215 -18.73845986]
-Optimal solution found!
-Optimal objective = 253.87
-lb updated, new lb: 253.87075121293768
-constraints violation: True
-slack: 54.87075121293772
-iter: 12
-multipliers: [-17.66294768 -17.74797467 -17.30567273 -17.46760616 -19.65476291
- -16.84978041 -19.85371629 -17.96869571 -20.08424355 -17.42834182
- -18.56714293 -17.6876165  -18.71780919 -20.68757215 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.08
-lb updated, new lb: 254.07982667184987
-constraints violation: True
-slack: 56.07982667184986
-iter: 13
-multipliers: [-17.71337888 -17.74797467 -17.30567273 -17.46760616 -19.65476291
- -16.9002116  -19.85371629 -17.96869571 -20.08424355 -17.42834182
- -18.61757413 -17.6371853  -18.71780919 -20.73800335 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.15
-lb updated, new lb: 254.1456645040321
-constraints violation: True
-slack: 57.14566450403207
-iter: 14
-multipliers: [-17.71337888 -17.74797467 -17.30567273 -17.46760616 -19.71906356
- -16.9002116  -19.91801694 -17.96869571 -20.08424355 -17.42834182
- -18.61757413 -17.70148595 -18.71780919 -20.73800335 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.26
-lb updated, new lb: 254.25578908596557
-constraints violation: True
-slack: 93.72282731161633
-iter: 15
-multipliers: [-17.71337888 -17.76673263 -17.30567273 -17.46760616 -19.73782152
- -16.91896957 -19.91801694 -17.96869571 -20.08424355 -17.42834182
- -18.6363321  -17.70148595 -18.71780919 -20.75676131 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.31
-lb updated, new lb: 254.31111035330443
-constraints violation: True
-slack: 59.31111035330446
-iter: 16
-multipliers: [-17.71337888 -17.76673263 -17.30567273 -17.46760616 -19.73782152
- -16.91896957 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65099899 -17.70148595 -18.71780919 -20.77142821 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.34
-lb updated, new lb: 254.3413967675614
-constraints violation: True
-slack: 93.84595092226466
-iter: 17
-multipliers: [-17.71337888 -17.77008121 -17.30567273 -17.46760616 -19.74117011
- -16.92231815 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65434757 -17.70148595 -18.71780919 -20.77477679 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.35
-lb updated, new lb: 254.35144251307835
-constraints violation: True
-slack: 93.86269383145941
-iter: 18
-multipliers: [-17.71337888 -17.77162156 -17.30567273 -17.46760616 -19.74271045
- -16.9238585  -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65588792 -17.70148595 -18.71780919 -20.77631714 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.35606355601604
-constraints violation: True
-slack: 93.87039556968891
-iter: 19
-multipliers: [-17.71337888 -17.77233012 -17.30567273 -17.46760616 -19.74341901
- -16.92456706 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65659648 -17.70148595 -18.71780919 -20.7770257  -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.3581892357673
-constraints violation: True
-slack: 93.87393836927448
-iter: 20
-multipliers: [-17.71337888 -17.77265606 -17.30567273 -17.46760616 -19.74374495
- -16.924893   -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65692242 -17.70148595 -18.71780919 -20.77735163 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.3591670484531
-constraints violation: True
-slack: 93.87556805708394
-iter: 21
-multipliers: [-17.71337888 -17.77280599 -17.30567273 -17.46760616 -19.74389488
- -16.92504293 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65707235 -17.70148595 -18.71780919 -20.77750156 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.35961684228832
-constraints violation: True
-slack: 93.87631771347617
-iter: 22
-multipliers: [-17.71337888 -17.77287496 -17.30567273 -17.46760616 -19.74396385
- -16.9251119  -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65714132 -17.70148595 -18.71780919 -20.77757053 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.35982374745274
-constraints violation: True
-slack: 93.87666255541671
-iter: 23
-multipliers: [-17.71337888 -17.77290668 -17.30567273 -17.46760616 -19.74399558
- -16.92514362 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65717304 -17.70148595 -18.71780919 -20.77760226 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.3599189238282
-constraints violation: True
-slack: 93.87682118270925
-iter: 24
-multipliers: [-17.71337888 -17.77292128 -17.30567273 -17.46760616 -19.74401017
- -16.92515822 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65718764 -17.70148595 -18.71780919 -20.77761685 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.35996270496096
-constraints violation: True
-slack: 93.8768941512639
-iter: 25
-multipliers: [-17.71337888 -17.77292799 -17.30567273 -17.46760616 -19.74401688
- -16.92516493 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65719435 -17.70148595 -18.71780919 -20.77762356 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.35998284428214
-constraints violation: True
-slack: 93.87692771679906
-iter: 26
-multipliers: [-17.71337888 -17.77293108 -17.30567273 -17.46760616 -19.74401997
- -16.92516802 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65719744 -17.70148595 -18.71780919 -20.77762665 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.3599921083697
-constraints violation: True
-slack: 93.87694315694515
-iter: 27
-multipliers: [-17.71337888 -17.7729325  -17.30567273 -17.46760616 -19.74402139
- -16.92516944 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65719886 -17.70148595 -18.71780919 -20.77762807 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.3599963698501
-constraints violation: True
-slack: 93.87695025941241
-iter: 28
-multipliers: [-17.71337888 -17.77293315 -17.30567273 -17.46760616 -19.74402205
- -16.92517009 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65719951 -17.70148595 -18.71780919 -20.77762873 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.3599983301311
-constraints violation: True
-slack: 93.87695352654733
-iter: 29
-multipliers: [-17.71337888 -17.77293345 -17.30567273 -17.46760616 -19.74402235
- -16.92517039 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65719981 -17.70148595 -18.71780919 -20.77762903 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.35999923186031
-constraints violation: True
-slack: 93.87695502942934
-iter: 30
-multipliers: [-17.71337888 -17.77293359 -17.30567273 -17.46760616 -19.74402248
- -16.92517053 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65719995 -17.70148595 -18.71780919 -20.77762917 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.35999964665572
-constraints violation: True
-slack: 93.87695572075508
-iter: 31
-multipliers: [-17.71337888 -17.77293365 -17.30567273 -17.46760616 -19.74402255
- -16.92517059 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720002 -17.70148595 -18.71780919 -20.77762923 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.35999983746163
-constraints violation: True
-slack: 93.87695603876494
-iter: 32
-multipliers: [-17.71337888 -17.77293368 -17.30567273 -17.46760616 -19.74402258
- -16.92517062 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720004 -17.70148595 -18.71780919 -20.77762926 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.35999992523236
-constraints violation: True
-slack: 93.8769561850495
-iter: 33
-multipliers: [-17.71337888 -17.7729337  -17.30567273 -17.46760616 -19.74402259
- -16.92517064 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720006 -17.70148595 -18.71780919 -20.77762927 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.35999996560687
-constraints violation: True
-slack: 93.87695625234038
-iter: 34
-multipliers: [-17.71337888 -17.7729337  -17.30567273 -17.46760616 -19.7440226
- -16.92517064 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720006 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.35999998417915
-constraints violation: True
-slack: 93.87695628329419
-iter: 35
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517064 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.3599999927225
-constraints violation: True
-slack: 93.87695629753297
-iter: 36
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.3599999966523
-constraints violation: True
-slack: 93.87695630408274
-iter: 37
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.35999999846004
-constraints violation: True
-slack: 93.87695630709567
-iter: 38
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.35999999929172
-constraints violation: True
-slack: 93.87695630848165
-iter: 39
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.35999999967416
-constraints violation: True
-slack: 93.87695630911911
-iter: 40
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.35999999985015
-constraints violation: True
-slack: 93.87695630941239
-iter: 41
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.35999999993098
-constraints violation: True
-slack: 93.87695630954727
-iter: 42
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.35999999996832
-constraints violation: True
-slack: 93.87695630960941
-iter: 43
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.35999999998538
-constraints violation: True
-slack: 93.87695630963793
-iter: 44
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.35999999999333
-constraints violation: True
-slack: 93.87695630965112
-iter: 45
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.35999999999697
-constraints violation: True
-slack: 93.87695630965712
-iter: 46
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.3599999999985
-constraints violation: True
-slack: 93.87695630965986
-iter: 47
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.35999999999936
-constraints violation: True
-slack: 93.87695630966121
-iter: 48
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.3599999999997
-constraints violation: True
-slack: 93.8769563096618
-iter: 49
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.35999999999987
-constraints violation: True
-slack: 93.87695630966208
-iter: 50
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.35999999999999
-constraints violation: True
-slack: 93.8769563096622
-iter: 51
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-lb updated, new lb: 254.36000000000004
-constraints violation: True
-slack: 93.87695630966222
-iter: 52
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 53
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 54
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 55
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 56
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 57
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 58
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 59
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 60
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 61
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 62
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 63
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 64
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 65
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 66
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 67
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 68
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 69
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 70
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 71
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 72
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 73
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 74
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 75
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 76
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 77
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 78
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 79
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 80
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 81
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 82
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 83
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 84
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 85
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 86
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 87
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 88
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 89
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 90
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 91
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 92
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 93
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 94
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 95
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 96
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 97
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 98
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 99
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 100
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 101
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 102
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 103
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 104
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 105
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 106
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 107
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 108
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 109
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 110
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 111
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 112
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 113
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 114
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 115
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 116
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 117
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 118
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 119
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 120
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 121
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 122
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 123
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 124
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 125
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 126
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 127
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 128
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 129
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 130
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 131
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 132
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 133
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 134
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 135
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 136
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 137
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 138
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 139
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 140
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 141
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 142
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 143
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 144
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 145
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 146
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 147
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 148
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 149
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 150
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 151
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 152
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 153
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 154
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 155
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 156
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 157
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 158
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 159
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 160
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 161
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 162
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 163
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 164
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 165
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 166
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 167
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 168
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 169
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 170
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 171
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 172
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 173
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 174
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 175
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 176
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 177
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 178
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 179
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 180
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 181
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 182
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 183
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 184
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 185
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 186
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 187
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 188
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 189
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 190
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 191
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 192
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 193
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 194
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 195
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 196
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 197
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 198
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622
-iter: 199
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.87695630966222
-iter: 200
-multipliers: [-17.71337888 -17.77293371 -17.30567273 -17.46760616 -19.7440226
- -16.92517065 -19.93268384 -17.96869571 -20.08424355 -17.42834182
- -18.65720007 -17.70148595 -18.71780919 -20.77762928 -18.73845986]
-Optimal solution found!
-Optimal objective = 254.36
-constraints violation: True
-slack: 93.8769563096622</code></pre>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>best_bound, iterations, lower_bounds <span class="op">=</span> approximator.solve()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-39" class="cell" data-execution_count="51">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>best_bound</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="51">
+<pre><code>259.78218207806015</code></pre>
+</div>
+</div>
+<div id="cell-40" class="cell" data-execution_count="54">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>fit, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">4</span>))</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>ax.plot(iterations, np.ones(<span class="bu">len</span>(iterations))<span class="op">*</span><span class="dv">261</span>, <span class="st">'r--'</span>, label<span class="op">=</span><span class="st">'Optimal Value'</span>)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>ax.plot(iterations, lower_bounds, <span class="st">'b--'</span>, label<span class="op">=</span><span class="st">'Subgradient Search'</span>)</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>ax.legend()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lagrange-assignment_files/figure-html/cell-17-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
