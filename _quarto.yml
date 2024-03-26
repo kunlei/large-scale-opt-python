@@ -32,6 +32,9 @@ book:
       chapters: 
         - lagrange-theory.ipynb
         - lagrange-assignment.ipynb
+        - lagrange-ufl.ipynb
+        - lagrange-constrained-shortest-path.ipynb
+        - lagrange-tsp.ipynb
     - part: "Column Generation"
       chapters: 
         - cg-theory.ipynb
@@ -47,8 +50,8 @@ format:
     theme: journal
     include-in-header: mathjax.html
     html-math-method: mathjax
-  pdf:
-    documentclass: scrreprt
+  # pdf:
+  #   documentclass: scrreprt
 
 
 

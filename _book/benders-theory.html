@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.526">
+<meta name="generator" content="quarto-1.4.550">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -100,6 +100,33 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
 <meta name="twitter:title" content="Hands-on Large Scale Optimization in Python - 2&nbsp; Benders Decomposition Theories">
 <meta name="twitter:description" content="">
 <meta name="twitter:card" content="summary">
@@ -114,7 +141,7 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./benders-theory.html">Benders Decomposition</a></li><li class="breadcrumb-item"><a href="./benders-theory.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Benders Decomposition</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./benders-theory.html">Benders Decomposition</a></li><li class="breadcrumb-item"><a href="./benders-theory.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Benders Decomposition Theories</span></a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -166,7 +193,7 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./benders-theory.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Benders Decomposition</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Benders Decomposition Theories</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -189,13 +216,31 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./lagrange-theory.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Lagrange Relaxation Theories</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Lagrangian Relaxation Theories</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./lagrange-assignment.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Assignment Optimization</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Generalized Assignment Problem</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lagrange-ufl.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Uncapacitated Facility Location Problem</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lagrange-constrained-shortest-path.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Constrained Shortest Path Problem</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lagrange-tsp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Traveling Salesman Problem</span></span></a>
   </div>
 </li>
       </ul>
@@ -212,19 +257,19 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./cg-theory.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Column Generation Theories</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Column Generation Theories</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./cg-cutting-stock.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Cutting Stock Problem</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Cutting Stock Problem</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./cg-scheduling.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Scheduling Optimization</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Scheduling Optimization</span></span></a>
   </div>
 </li>
       </ul>
@@ -232,7 +277,7 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./summary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -258,7 +303,7 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./benders-theory.html">Benders Decomposition</a></li><li class="breadcrumb-item"><a href="./benders-theory.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Benders Decomposition</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./benders-theory.html">Benders Decomposition</a></li><li class="breadcrumb-item"><a href="./benders-theory.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Benders Decomposition Theories</span></a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Benders Decomposition Theories</span></h1>
 </div>
@@ -283,69 +328,87 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
 <section id="the-decomposition-logic" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="the-decomposition-logic"><span class="header-section-number">2.1</span> The Decomposition Logic</h2>
 <p>To explain the workings of Benders decomposition, let us look at the standard form of linear programming problems that involve two vector variables, <span class="math inline">\(\mathbf{x}\)</span> and <span class="math inline">\(\mathbf{y}\)</span>. Let <span class="math inline">\(p\)</span> and <span class="math inline">\(q\)</span> indicate the dimensions of <span class="math inline">\(\mathbf{x}\)</span> and <span class="math inline">\(\mathbf{y}\)</span>, respectively. Below is the original problem (<strong>P</strong>) we intend to solve.</p>
-<p><span class="math display">\[\begin{align}
+<p><span class="math display">\[
+\begin{aligned}
 \text{min.} &amp;\quad \mathbf{c}^T \mathbf{x} + \mathbf{f}^T \mathbf{y} \\
 \text{s.t.} &amp;\quad \mathbf{A} \mathbf{x} + \mathbf{B} \mathbf{y} = \mathbf{b} \\
 &amp;\quad \mathbf{x} \geq 0, \mathbf{y} \geq 0
-\end{align}\]</span></p>
+\end{aligned}
+\]</span></p>
 <p>In this formulation, <span class="math inline">\(\mathbf{c}\)</span> and <span class="math inline">\(\mathbf{f}\)</span> in the objective function represent the cost coefficients associated with decision variables <span class="math inline">\(\mathbf{x}\)</span> and <span class="math inline">\(\mathbf{y}\)</span>, respectively. Both of them are column vectors of corresponding dimensions. In the constraints, matrix <span class="math inline">\(\mathbf{A}\)</span> is of dimension <span class="math inline">\(m \times p\)</span>, and matrix <span class="math inline">\(\mathbf{B}\)</span> is of dimension <span class="math inline">\(m \times q\)</span>. <span class="math inline">\(\mathbf{b}\)</span> is a column vector of dimension <span class="math inline">\(m\)</span>.</p>
 <p>Suppose the variable <span class="math inline">\(\mathbf{y}\)</span> is a complicating variable in the sense that the resulting problem is substantially easier to solve if the value of <span class="math inline">\(\mathbf{y}\)</span> is fixed. In this case, we could rewrite problem <span class="math inline">\(\mathbf{P}\)</span> as the following form:</p>
-<p><span class="math display">\[\begin{align}
+<p><span class="math display">\[
+\begin{aligned}
 \text{min.} &amp;\quad \mathbf{f}^T \mathbf{y} + g(\mathbf{y}) \\
 \text{s.t.} &amp;\quad \mathbf{y} \geq 0
-\end{align}\]</span></p>
+\end{aligned}
+\]</span></p>
 <p>where <span class="math inline">\(g(\mathbf{y})\)</span> is a function of <span class="math inline">\(\mathbf{y}\)</span> and is defined as the subproblem <span class="math inline">\(\mathbf{SP}\)</span> of the form below:</p>
-<p><span class="math display">\[\begin{align}
+<p><span class="math display">\[
+\begin{aligned}
     \text{min.} &amp;\quad \mathbf{c}^T \mathbf{x} \\
     \text{s.t.} &amp;\quad \mathbf{A} \mathbf{x}  = \mathbf{b} - \mathbf{B} \mathbf{y} \label{bd-cons1} \\
     &amp;\quad \mathbf{x} \geq 0
-\end{align}\]</span></p>
+\end{aligned}
+\]</span></p>
 <p>Note that the <span class="math inline">\(\mathbf{y}\)</span> in constraint <span class="math inline">\(\eqref{bd-cons1}\)</span> takes on some known values when the problem is solved and the only decision variable in the above formulation is <span class="math inline">\(\mathbf{x}\)</span>. The dual problem of <span class="math inline">\(\mathbf{SP}\)</span>, <span class="math inline">\(\mathbf{DSP}\)</span>, is given below.</p>
-<p><span class="math display">\[\begin{align}
+<p><span class="math display">\[
+\begin{aligned}
     \text{max.} &amp;\quad (\mathbf{b} - \mathbf{B} \mathbf{y})^{T} \mathbf{u} \\
     \text{s.t.} &amp;\quad \mathbf{A}^T \mathbf{u} \leq \mathbf{c} \label{bd-cons2} \\
     &amp;\quad \mathbf{u}\  \text{unrestricted}
-\end{align}\]</span></p>
+\end{aligned}
+\]</span></p>
 <p>A key characteristic of the above <span class="math inline">\(\mathbf{DSP}\)</span> is that its solution space does not depend on the value of <span class="math inline">\(\mathbf{y}\)</span>, which only affects the objective function. According to the Minkowski’s representation theorem, any <span class="math inline">\(\bar{\mathbf{u}}\)</span> satisfying the constraints <span class="math inline">\(\eqref{bd-cons2}\)</span> can be expressed as</p>
-<p><span class="math display">\[\begin{align}
+<p><span class="math display">\[
+\begin{aligned}
 \bar{\mathbf{u}} = \sum_{j \in \mathbf{J}} \lambda_j \mathbf{u}_{j}^{point} + \sum_{k \in \mathbf{K}} \mu_k \mathbf{u}_k^{ray}
-\end{align}\]</span></p>
+\end{aligned}
+\]</span></p>
 <p>where <span class="math inline">\(\mathbf{u}_j^{point}\)</span> and <span class="math inline">\(\mathbf{u}_k^{ray}\)</span> represent an extreme point and extreme ray, respectively. In addition, <span class="math inline">\(\lambda_j \geq 0\)</span> for all <span class="math inline">\(j \in \mathbf{J}\)</span> and <span class="math inline">\(\sum_{j \in \mathbf{J}}\lambda_j = 1\)</span>, and <span class="math inline">\(\mu_k \geq 0\)</span> for all <span class="math inline">\(k \in \mathbf{K}\)</span>. It follows that the <span class="math inline">\(\mathbf{DSP}\)</span> is equivalent to</p>
-<p><span class="math display">\[\begin{align}
+<p><span class="math display">\[
+\begin{aligned}
 \text{max.} &amp;\quad (\mathbf{b} - \mathbf{B} \mathbf{y})^{T} (\sum_{j \in \mathbf{J}} \lambda_j \mathbf{u}_{j}^{point} + \sum_{k \in \mathbf{K}} \mu_k \mathbf{u}_k^{ray}) \\
 \text{s.t.} &amp;\quad \sum_{j \in \mathbf{J}}\lambda_j = 1 \\
 &amp;\quad \lambda_j \geq 0, \ \forall j \in \mathbf{J} \\
 &amp;\quad \mu_k \geq 0, \ \forall k \in \mathbf{K}
-\end{align}\]</span></p>
+\end{aligned}
+\]</span></p>
 <p>We can therefore conclude that</p>
 <ul>
 <li>The <span class="math inline">\(\mathbf{DSP}\)</span> becomes unbounded if any <span class="math inline">\(\mathbf{u}_k^{ray}\)</span> exists such that <span class="math inline">\((\mathbf{b} - \mathbf{B} \mathbf{y})^{T} \mathbf{u}_k^{ray} &gt; 0\)</span>. Note that an unbounded <span class="math inline">\(\mathbf{DSP}\)</span> implies an infeasible <span class="math inline">\(\mathbf{SP}\)</span> and to prevent this from happening, we have to ensure that <span class="math inline">\((\mathbf{b} - \mathbf{B} \mathbf{y})^{T} \mathbf{u}_k^{ray} \leq 0\)</span> for all <span class="math inline">\(k \in \mathbf{K}\)</span>.</li>
 <li>If an optimal solution to <span class="math inline">\(\mathbf{DSP}\)</span> exists, it must occur at one of the extreme points. Let <span class="math inline">\(g\)</span> denote the optimal objective value, it follows that <span class="math inline">\((\mathbf{b} - \mathbf{B} \mathbf{y})^{T} \mathbf{u}_j^{point} \leq g\)</span> for all <span class="math inline">\(j \in \mathbf{J}\)</span>.</li>
 </ul>
 <p>Based on this idea, the <span class="math inline">\(\mathbf{DSP}\)</span> can be reformulated as follows:</p>
-<p><span class="math display">\[\begin{align}
+<p><span class="math display">\[
+\begin{aligned}
 \text{min.} &amp;\quad g \\
 \text{s.t.} &amp;\quad (\mathbf{b} - \mathbf{B} \mathbf{y})^{T} \mathbf{u}_k^{ray} \leq 0, \ \forall j \in \mathbf{J} \label{bd-feas} \\
 &amp;\quad (\mathbf{b} - \mathbf{B} \mathbf{y})^{T} \mathbf{u}_j^{point} \leq g, \ \forall k \in \mathbf{K} \label{bd-opt} \\
 &amp;\quad j \in \mathbf{J}, k \in \mathbf{K}
-\end{align}\]</span></p>
+\end{aligned}
+\]</span></p>
 <p>Constraints <span class="math inline">\(\eqref{bd-feas}\)</span> are called <strong>Benders feasibility cuts</strong>, while constraints <span class="math inline">\(\eqref{bd-opt}\)</span> are called <strong>Benders optimality cuts</strong>. Now we are ready to define the Benders Master Problem (<span class="math inline">\(\mathbf{BMP}\)</span>) as follows:</p>
-<p><span class="math display">\[\begin{align}
+<p><span class="math display">\[
+\begin{aligned}
     \text{min.} &amp;\quad \mathbf{f}^T \mathbf{y} + g \\
     \text{s.t.} &amp;\quad (\mathbf{b} - \mathbf{B} \mathbf{y})^{T} \mathbf{u}_k^{ray} \leq 0, \ \forall j \in \mathbf{J} \\
     &amp;\quad (\mathbf{b} - \mathbf{B} \mathbf{y})^{T} \mathbf{u}_j^{point} \leq g, \ \forall k \in \mathbf{K} \\
     &amp;\quad j \in \mathbf{J}, k \in \mathbf{K}, \mathbf{y} \geq 0
-\end{align}\]</span></p>
+\end{aligned}
+\]</span></p>
 <p>Typically <span class="math inline">\(J\)</span> and <span class="math inline">\(K\)</span> are too large to enumerate upfront and we have to work with subsets of them, denoted by <span class="math inline">\(J_s\)</span> and <span class="math inline">\(K_s\)</span>, respectively. Hence we have the following Restricted Benders Master Problem (<span class="math inline">\(\mathbf{RBMP}\)</span>):</p>
-<p><span class="math display">\[\begin{align}
+<p><span class="math display">\[
+\begin{aligned}
     \text{min.} &amp;\quad \mathbf{f}^T \mathbf{y} + g \\
     \text{s.t.} &amp;\quad (\mathbf{b} - \mathbf{B} \mathbf{y})^{T} \mathbf{u}_k^{ray} \leq 0, \ \forall j \in \mathbf{J}_s \\
     &amp;\quad (\mathbf{b} - \mathbf{B} \mathbf{y})^{T} \mathbf{u}_j^{point} \leq g, \ \forall k \in \mathbf{K}_s \\
     &amp;\quad j \in \mathbf{J}, k \in \mathbf{K}, \mathbf{y} \geq 0
-\end{align}\]</span></p>
-<div class="cell">
+\end{aligned}
+\]</span></p>
+<div class="cell" data-layout-align="default">
 <div class="cell-output-display">
-<div id="fig-benders-flowchart" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-benders-flowchart" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-benders-flowchart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div>
@@ -498,27 +561,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       }
     }
     stripColumnClz(note)
-    const typesetMath = (el) => {
-      if (window.MathJax) {
-        // MathJax Typeset
-        window.MathJax.typeset([el]);
-      } else if (window.katex) {
-        // KaTeX Render
-        var mathElements = el.getElementsByClassName("math");
-        var macros = [];
-        for (var i = 0; i < mathElements.length; i++) {
-          var texText = mathElements[i].firstChild;
-          if (mathElements[i].tagName == "SPAN") {
-            window.katex.render(texText.data, mathElements[i], {
-              displayMode: mathElements[i].classList.contains('display'),
-              throwOnError: false,
-              macros: macros,
-              fleqn: false
-            });
-          }
-        }
-      }
-    }
     if (id === null || id.startsWith('sec-')) {
       // Special case sections, only their first couple elements
       const container = document.createElement("div");
@@ -533,10 +575,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             break;
           }
         }
-        typesetMath(container);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
         return container.innerHTML
       } else {
-        typesetMath(note);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
         return note.innerHTML;
       }
     } else {
@@ -545,8 +591,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (anchorLink) {
         anchorLink.remove();
       }
-      typesetMath(note);
-      return note.innerHTML;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
     }
   }
   for (var i=0; i<xrefs.length; i++) {
@@ -769,12 +822,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./introduction.html" class="pagination-link  aria-label=" &lt;span="">
+      <a href="./introduction.html" class="pagination-link" aria-label="Introduction">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./benders-linear-prog.html" class="pagination-link" aria-label="<span class='chapter-number'>3</span>&nbsp; <span class='chapter-title'>Solving Linear Programming Problems with Benders Decomposition</span>">
+      <a href="./benders-linear-prog.html" class="pagination-link" aria-label="Solving Linear Programming Problems with Benders Decomposition">
         <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Solving Linear Programming Problems with Benders Decomposition</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
