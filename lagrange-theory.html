@@ -20,7 +20,27 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -94,6 +114,35 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
     };
 </script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <meta name="twitter:title" content="Hands-on Large Scale Optimization in Python - 4&nbsp; Lagrangian Relaxation Theories">
 <meta name="twitter:description" content="">
@@ -265,7 +314,11 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
    
   <ul>
   <li><a href="#lagrangian-relaxation-reformulation" id="toc-lagrangian-relaxation-reformulation" class="nav-link active" data-scroll-target="#lagrangian-relaxation-reformulation"><span class="header-section-number">4.1</span> Lagrangian Relaxation Reformulation</a></li>
-  <li><a href="#subgradient-search" id="toc-subgradient-search" class="nav-link" data-scroll-target="#subgradient-search"><span class="header-section-number">4.2</span> Subgradient Search</a></li>
+  <li><a href="#approximating-the-optimal-lagrange-multipliers" id="toc-approximating-the-optimal-lagrange-multipliers" class="nav-link" data-scroll-target="#approximating-the-optimal-lagrange-multipliers"><span class="header-section-number">4.2</span> Approximating the Optimal Lagrange Multipliers</a>
+  <ul class="collapse">
+  <li><a href="#subgradient-search" id="toc-subgradient-search" class="nav-link" data-scroll-target="#subgradient-search"><span class="header-section-number">4.2.1</span> Subgradient search</a></li>
+  <li><a href="#surrogate-subgradient-search" id="toc-surrogate-subgradient-search" class="nav-link" data-scroll-target="#surrogate-subgradient-search"><span class="header-section-number">4.2.2</span> Surrogate subgradient search</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -303,12 +356,77 @@ gtag('config', 'G-XM4LXJY2KJ', { 'anonymize_ip': true});
 </ul>
 <p>Arguably, the first step is more challenging when facing a new optimization problem. The second step is often straightforward to do once one recognize the required structure is present in the model formulation. My experience in using the Lagrangian Relaxation is through problem solving. It is natural to build up intuition once one solves more optimization problem with this powerful algorithm. In this chapter and following chapter, we will use Lagrangian Relaxation to solve a number of classical optimization problems. Hopefully, the exercise will help us gain enough sense of recognizing when Lagrangian Relaxation is applicable.</p>
 <p>Regarding the second point, we will see that sometimes one original problem formulation invites multiple forms of Lagrangian relaxations and some are better than others in terms of providing tighter bounds.</p>
+<p>To illustrate the Lagrangian Relaxation process, we adopt the following primal problem model as in <span class="citation" data-cites="fisher_lagrangian_2004">Fisher (<a href="references.html#ref-fisher_lagrangian_2004" role="doc-biblioref">2004</a>)</span>. In the model, <span class="math inline">\(x\)</span> are the decision variables that are nonnegative and integral. <span class="math inline">\(c\)</span> are the cost coefficients in the objective function. There are two constraints <span class="math inline">\(Ax = b\)</span> and <span class="math inline">\(Dx \leq e\)</span> in the model that by putting one of them into the objective function, the remaining problem becomes easier to solve.</p>
+<p>One example of such case is that <span class="math inline">\(Dx \leq e\)</span> are separable constraints and <span class="math inline">\(Ax = b\)</span> are the complicating constraints that couple all the separable constraints together. After lifting the coupling constraints into the objective function, the remaining problems consists in several independent subproblems and become much tractable to solve.</p>
+<p><span class="math display">\[\begin{align}
+\text{min.} &amp;\quad cx \label{p-obj} \\
+\text{s.t.} &amp;\quad Ax = b \label{p-cons1} \\
+    &amp;\quad Dx \leq e \label{p-cons2} \\
+    &amp;\quad x \geq 0 \ \text{and integral}
+\end{align}\]</span></p>
+<p>To perform Lagrangian Relaxation, we define a vector of Lagrange multipliers for constraints <span class="math inline">\(\eqref{p-cons1}\)</span> and penalize the constraint violations in the objective function.</p>
+<p><span class="math display">\[\begin{align}
+q(u) = \text{min.} &amp;\quad cx + u(Ax - b) \label{lr-obj} \\
+\text{s.t.} &amp;\quad Dx \leq e \label{lr-cons1} \\
+    &amp;\quad x \geq 0 \ \text{and integral}
+\end{align}\]</span></p>
+<p>Note that for any given vector of <span class="math inline">\(u\)</span>, the optimal objective value of the Lagrangian Relaxation is one lower bound of the optimal value of the original problem. The our goal is to find the optimal value of <span class="math inline">\(u^*\)</span> that gives up the best lower bound for the original problem. This dual problem id formally defined below.</p>
+<p><span class="math display">\[\begin{align}
+\text{max.} &amp;\quad q(u) \\
+\text{s.t.} &amp;\quad u \ \text{unrestricted}
+\end{align}\]</span></p>
+<p>Note that the sign of the Lagrange multipliers is decided by the form of objective sense of the original problem and the constraints that are relaxed. In the aforementioned case, the primal objective is minimization and the relaxed constraints take the ‘=’ sign. The value of <span class="math inline">\(Ax\)</span> could be smaller or greater than <span class="math inline">\(b\)</span> and therefore the violations could be positive or negative, which leads to the unrestricted sign of the multipliers <span class="math inline">\(u\)</span>. If the constraints <span class="math inline">\(\eqref{p-cons2}\)</span> are relaxed, the associated Lagrange multipliers must be restricted to <span class="math inline">\(u \geq 0\)</span>.</p>
 </section>
-<section id="subgradient-search" class="level2" data-number="4.2">
-<h2 data-number="4.2" class="anchored" data-anchor-id="subgradient-search"><span class="header-section-number">4.2</span> Subgradient Search</h2>
-<p>The essential component of Lagrangian relaxation is the use of Lagrange multipliers to penalize the violation of constraints that we choose to put in the objective function. The determination of the values of Lagrange multipliers is through the subgradient search algorithm, which is outlined in this section and illustrated in following chapters through concrete examples.</p>
+<section id="approximating-the-optimal-lagrange-multipliers" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="approximating-the-optimal-lagrange-multipliers"><span class="header-section-number">4.2</span> Approximating the Optimal Lagrange Multipliers</h2>
+<p>The essential component of Lagrangian relaxation is the use of Lagrange multipliers to penalize the violation of constraints that we choose to put in the objective function. There are several approaches proposed in the literature to approximate the optimal <span class="math inline">\(u\)</span> values. In the following section, we introduce two such algorithms, namely, subgradient search and surrogate subgradient search.</p>
+<section id="subgradient-search" class="level3" data-number="4.2.1">
+<h3 data-number="4.2.1" class="anchored" data-anchor-id="subgradient-search"><span class="header-section-number">4.2.1</span> Subgradient search</h3>
+<p>The subgradient search algorithm was proposed by <span class="citation" data-cites="polyak_minimization_1969">Polyak (<a href="references.html#ref-polyak_minimization_1969" role="doc-biblioref">1969</a>)</span>. The algorithm workflow is as follows:</p>
+<ul>
+<li>Step 0: initialize stopping criteria. Set lower bound <span class="math inline">\(lb = -\infty\)</span>. Obtain the best bound <span class="math inline">\(q(u^*)\)</span> and prepare the starting values of the Lagrange multipliers <span class="math inline">\(u^k\)</span> with <span class="math inline">\(k\)</span> as the iteration count, <span class="math inline">\(k=0\)</span>.</li>
+<li>Step 1: solve the Lagrangian Relaxation with <span class="math inline">\(u^k\)</span> to get the optimal objective value <span class="math inline">\(q(u^k)\)</span> and relaxed constraint violations <span class="math inline">\(g(x^k) = Ax^k - b\)</span>. Update <span class="math inline">\(lb = g(u^k)\)</span> if <span class="math inline">\(lb &lt; q(u^k)\)</span>.</li>
+<li>Step 2: checking stopping criteria. If satisfied, output the best lower bound <span class="math inline">\(lb\)</span>.</li>
+<li>Step 3: compute the updated Lagrange multipliers according to <span class="math display">\[\begin{align}
+u^{k+1} = u^k + s^k g(x^k)
+\end{align}\]</span> where <span class="math inline">\(s^k\)</span> is the step size and is computed as <span class="math display">\[\begin{align}
+s^k = \gamma \cdot \frac{q(u^*) - q(u^k)}{\lVert g(x^k) \rVert^2}, \ \gamma &lt; 2
+\end{align}\]</span></li>
+<li>Step 4: let <span class="math inline">\(k = k + 1\)</span> and go to step 1.</li>
+</ul>
+<p>In the above algorithm workflow, <span class="math inline">\(g(x^k)\)</span> represents the violations of the relaxed constraints that are lifted into the objective function. It is also used as the subgradient to update the Lagrange multipliers.</p>
+</section>
+<section id="surrogate-subgradient-search" class="level3" data-number="4.2.2">
+<h3 data-number="4.2.2" class="anchored" data-anchor-id="surrogate-subgradient-search"><span class="header-section-number">4.2.2</span> Surrogate subgradient search</h3>
+<p>The surrogate subgradient search we introduce here was proposed by <span class="citation" data-cites="bragin_convergence_2015">Bragin et al. (<a href="references.html#ref-bragin_convergence_2015" role="doc-biblioref">2015</a>)</span>. It follows similar steps with the subgradient search algorithm with the major difference in how the step size is computed.</p>
+<ul>
+<li>Step 0: initialize stopping criteria. Set lower bound <span class="math inline">\(lb = -\infty\)</span>. Obtain the best bound <span class="math inline">\(q(u^*)\)</span> through best available heuristic and <span class="math inline">\(x^0\)</span> through solving the relaxed problem with <span class="math inline">\(u^0\)</span>. Let <span class="math inline">\(k = 1\)</span>. Prepare the starting values of the step size <span class="math inline">\(s^0\)</span> using <span class="math display">\[\begin{align}
+s^0 = \frac{q(u^*) - q(u^0)}{\lVert g(x^0) \rVert^2}
+\end{align}\]</span></li>
+<li>Step 1: update <span class="math inline">\(\alpha_k\)</span> with <span class="math display">\[\begin{align}
+\alpha_k = 1 - \frac{1}{M\cdot k^p}, \ p = 1 - \frac{1}{k^r}, \ M \geq 1, \ 0 &lt; r &lt; 1, k = 1, 2, \cdots
+\end{align}\]</span> Then update the step size <span class="math inline">\(s^k\)</span> using <span class="math display">\[\begin{align}
+s^k = \alpha_k \frac{s^{k-1}\lVert g(x^{k - 1}) \rVert}{\lVert g(x^{k}) \rVert}, \ 0 &lt; \alpha_k &lt; 1, k = 1, 2, \cdots
+\end{align}\]</span> Then update the Lagrange multipliers with <span class="math display">\[\begin{align}
+u^{k+1} = u^k + s^k g(x^k)
+\end{align}\]</span></li>
+<li>Step 2: solve the relaxed problem with the updated multipliers.</li>
+<li>Step 3: checking stopping criteria. If satisfied, output the best lower bound <span class="math inline">\(lb\)</span>. Otherwise, go to step 1.</li>
+</ul>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-bragin_convergence_2015" class="csl-entry" role="listitem">
+Bragin, Mikhail A., Peter B. Luh, Joseph H. Yan, Nanpeng Yu, and Gary A. Stern. 2015. <span>“Convergence of the <span>Surrogate</span> <span>Lagrangian</span> <span>Relaxation</span> <span>Method</span>.”</span> <em>Journal of Optimization Theory and Applications</em> 164 (1): 173–201. <a href="https://doi.org/10.1007/s10957-014-0561-3">https://doi.org/10.1007/s10957-014-0561-3</a>.
+</div>
+<div id="ref-fisher_lagrangian_2004" class="csl-entry" role="listitem">
+Fisher, Marshall L. 2004. <span>“The <span>Lagrangian</span> <span>Relaxation</span> <span>Method</span> for <span>Solving</span> <span>Integer</span> <span>Programming</span> <span>Problems</span>.”</span> <em>Management Science</em> 50 (12_supplement): 1861–71. <a href="https://doi.org/10.1287/mnsc.1040.0263">https://doi.org/10.1287/mnsc.1040.0263</a>.
+</div>
+<div id="ref-polyak_minimization_1969" class="csl-entry" role="listitem">
+Polyak, B. T. 1969. <span>“Minimization of Unsmooth Functionals.”</span> <em>USSR Computational Mathematics and Mathematical Physics</em> 9 (3): 14–29. <a href="https://doi.org/10.1016/0041-5553(69)90061-5">https://doi.org/10.1016/0041-5553(69)90061-5</a>.
+</div>
+</div>
+</section>
 </section>
 
 </main> <!-- /main -->
